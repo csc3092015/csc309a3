@@ -14,6 +14,11 @@ app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname + '/index.html'));
 });
 
+// Should define a regex here so that we can send whenever asked for user collection
+app.get('/user', function(request, response) {
+  response.send('user_collection');
+});
+
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
