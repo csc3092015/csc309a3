@@ -8,7 +8,9 @@ var bodyParser = require('body-parser');
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
@@ -29,11 +31,13 @@ app.listen(app.get('port'), function() {
 });
 
 app.post('/', function(request, response){
+	console.log(request.body);
+
 	if (request.body.inputEmail && request.body.inputPassword){
 		database.connect();
 		var userId = request.body.inputEmail;
 		var userPwd = request.body.inputPassword;
-		response.send('checking ' + userId + ' with pwd:' + userPwd);
+		// response.send('checking ' + userId + ' with pwd:' + userPwd);
 		UserDAO.validate(userId, userPwd, 
 			function(err, v){
 				if (err){
@@ -47,5 +51,7 @@ app.post('/', function(request, response){
 					}
 				}
 			});
-	} 
+	} else {
+		response.send('how to get form input');
+	}
 });
