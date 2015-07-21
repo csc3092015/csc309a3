@@ -30,7 +30,13 @@ userDAOSchema.statics.create = function(userId, password){
 //since find by id is asyn call, we can't return a value, we must use call back
 userDAOSchema.statics.validate = function(userId, password, callback){
 	this.findById(userId, function(err, userDAO){
-		callback(err, (password === userDAO.password));
+		var v;
+		if(userDAO){
+			v = (password === userDAO.password);
+		} else {
+			v = false;
+		}
+		callback(err, v);
 	});
 }
 
