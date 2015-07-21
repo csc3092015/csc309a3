@@ -41,7 +41,7 @@ app.post('/', function(request, response){
 		UserDAO.validate(userId, userPwd, 
 			function(err, v){
 				if (err){
-					response.send(err);
+					response.send('No, you dont exist');
 				}
 				else {
 					if (v){
