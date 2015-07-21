@@ -2,10 +2,12 @@ var express = require('express');
 var path = require('path');
 var app = express(); 
 var UserDAO = require('./model/dao/UserDAO.js');
+var bodyParser = require('body-parser');
 
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser());
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
