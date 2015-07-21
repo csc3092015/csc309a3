@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var app = express(); 
 var UserDAO = require('./model/dao/UserDAO.js');
+var database = require('./model/database.js');
 var bodyParser = require('body-parser');
 
 app.set('port', (process.env.PORT || 5000));
@@ -29,15 +30,22 @@ app.listen(app.get('port'), function() {
 
 app.post('/', function(request, response){
 	if (request.body.inputEmail && request.body.inputPassword){
-	var userId = request.body.inputEmail;
-	var userPwd = request.body.inputPassword;
-	UserDAO.validate(userId, userPwd, 
-		function(v){
-			if (v){
-				response.send('yes, you are an exting user');
-			} else {
-				response.send('No, you dont exist');
-			}
-		});
-} 
+		database.connect();
+		var userId = request.body.inputEmail;
+		var userPwd = request.body.inputPassword;
+		response.send('checking ' + userId + ' with pwd:' + userPwd);
+		UserDAO.validate(userId, userPwd, 
+			function(err, v){
+				if (err){
+					response.send(err);
+				}
+				else {
+					if (v){
+						response.send('yes, you are an exting user');
+					} else {
+						response.send('No, you dont exist');
+					}
+				}
+			});
+	} 
 });

@@ -1,10 +1,10 @@
 var mongoose = require('mongoose');
 var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
-var database = require('./../database.js');
+// var database = require('./../database.js');
 
 //the line below should be moved into control layer later,
 // we only need to open connection once, and exit when server ends
-database.connect();
+// database.connect();
 
 /************************ Table Schema *************************/
 var userDAOSchema = new mongoose.Schema({
@@ -30,11 +30,7 @@ userDAOSchema.statics.create = function(userId, password){
 //since find by id is asyn call, we can't return a value, we must use call back
 userDAOSchema.statics.validate = function(userId, password, callback){
 	this.findById(userId, function(err, userDAO){
-		if(err){
-			console.log('Can\'t find user ' + userId + ' due to ' + err);
-		} else {
-			callback(password === userDAO.password);	
-		}
+		callback(err, (password === userDAO.password));
 	});
 }
 
@@ -42,6 +38,6 @@ userDAOSchema.statics.validate = function(userId, password, callback){
 var UserDAO = mongoose.model("UserDAO", userDAOSchema);
 
 
-UserDAO.validate('jiecao.wang@gmail.com', '1234', function(v){console.log(v)});
+// UserDAO.validate('jiecao.wang@gmail.com', '1234', function(err, v){console.log(v)});
 
 module.exports = UserDAO;
