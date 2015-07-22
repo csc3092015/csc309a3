@@ -5,20 +5,24 @@ var UserDAO = require('./model/dao/UserDAO.js');
 var database = require('./model/database.js');
 var bodyParser = require('body-parser');
 
+function pathMaker(pathName){
+	return path.join(__dirname + pathName);
+}
+
 app.set('port', (process.env.PORT || 5000));
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(pathMaker('/public')));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 
 // views is directory for all template files
-app.set('views', __dirname + '/views');
+app.set('views', pathMaker('/views'));
 app.set('view engine', 'ejs');
 
 app.get('/', function(request, response) {
 	//we will put this into route.js once this is working
-	response.sendFile(path.join(__dirname + '/index.html'));
+	response.sendFile(pathMaker('/index.html'));
 });
 
 // Should define a regex here so that we can send whenever asked for user collection
@@ -45,7 +49,7 @@ app.post('/', function(request, response){
 				}
 				else {
 					if (v){
-						response.send('yes, you are an exting user');
+						response.sendFile(pathMaker('/home.html'));
 					} else {
 						response.send('No, you dont exist');
 					}
