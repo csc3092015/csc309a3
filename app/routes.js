@@ -1,4 +1,5 @@
 // https://scotch.io/tutorials/easy-node-authentication-setup-and-local
+// need to implement routers https://scotch.io/tutorials/learn-to-use-the-new-router-in-expressjs-4
 module.exports = function (app, passport) {
 
 	// welcome page
@@ -13,7 +14,7 @@ module.exports = function (app, passport) {
 
 	// login page
 	app.get('/login', function (req, res) {
-		res.render('login.ejs');
+		res.render('login.ejs', { message: req.flash('loginMessage') });
 	});
 
 	// log out
@@ -43,16 +44,31 @@ module.exports = function (app, passport) {
 	// route middleware to redirect users that aren't logged in
 	function redirectVisitor (req, res, next) {
 		if (loginStatus(req))
-			return next;
-
-		res.redirect('/');
+			next();
+		else
+			res.redirect('/');
 	}
 
 	// route middleware to redirect logged in users to home
 	function redirectUser (req, res, next) {
 		if (!loginStatus(req))
-			return next;
-
-		res.redirect('/home');
+			next();
+		else
+			res.redirect('/home');
 	}
+
+	// process signup application
+	app.post('/signup', 
+		passport.authenticate('local-signup', { successRedirect: '/',
+												failureRedirect: '/signup',
+												failureFlash: true })
+	);
+
+	// process login application
+    app.post('/login', 
+    	passport.authenticate('local-login', { successRedirect: '/',
+    								           failureRedirect: '/login',
+        									   failureFlash: true })
+    );
+
 }
