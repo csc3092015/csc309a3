@@ -2,8 +2,6 @@
 var express = require('express');
 var path = require('path');
 var app = express(); 
-app.set('port', (process.env.PORT || 5000));
-var mongoose = require('mongoose');
 
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
@@ -14,10 +12,7 @@ var flash = require('connect-flash');
 
 var database = require('./model/database.js');
 
-//app.use(favicon(__dirname + '/public/favicon.ico'));
-
 // get configurations
-database.connect();
 require('./config/passport')(passport);
 var sessionOpts = {
   saveUninitialized: true, // saved new sessions
@@ -27,9 +22,13 @@ var sessionOpts = {
   //cookie : { httpOnly: true, maxAge: 2419200000 } // configure when sessions expires, this line doesn't work, fix it later
 }
 
+app.set('port', (process.env.PORT || 5000));
 // set up middleware
+app.use(function(req, res, next){
+	database.connect();
+	next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
@@ -40,12 +39,8 @@ app.use(flash());
 
 // set up ejs templating
 // views is directory for all template files
-app.set('views', __dirname + '/views/pages');
+app.set('views',  __dirname + '/views/pages');
 app.set('view engine', 'ejs');
-
-//app.get('/', function (request, response) {
-//  response.sendFile(path.join(__dirname + '/index.html'));
-//});
 
 // import routes
 require('./app/routes.js')(app, passport);

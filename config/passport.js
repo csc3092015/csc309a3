@@ -3,8 +3,7 @@
 // https://scotch.io/tutorials/easy-node-authentication-setup-and-local
 
 var LocalStrategy = require('passport-local').Strategy;
-var UserBO = require('../control/businessObject/UserBO.js');
-var UserDAO = require('../model/dao/UserDAO.js');
+var UserBO = require('../control/bussinessObject/UserBO.js');
 
 module.exports = function (passport) {
 
