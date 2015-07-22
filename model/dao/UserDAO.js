@@ -27,16 +27,6 @@ userDAOSchema.statics.create = function(userId, password){
 	});
 };
 
-// check if userId exists and call callback with result
-userDAOSchema.statics.validate = function(userId, callback){
-	this.findById(userId, function(err, userDAO){
-		var v = false;
-		if (userDao)
-			v = true;
-		callback(err, v);
-	});
-}
-
 //since find by id is asyn call, we can't return a value, we must use call back
 userDAOSchema.statics.validate = function(userId, password, callback){
 	this.findById(userId, function(err, userDAO){
@@ -49,16 +39,6 @@ userDAOSchema.statics.validate = function(userId, password, callback){
 		callback(err, v);
 	});
 }
-
-/************************ Instance Methods *************************/
-
-userDAOSchema.methods.storeUser = function(callback) {
-	this.save(function(err) {
-		if (err)
-			throw err;
-		callback();
-	});
-};
 
 //the line below has to be called after we define the methods
 var UserDAO = mongoose.model("UserDAO", userDAOSchema);
