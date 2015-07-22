@@ -1,4 +1,5 @@
 // https://scotch.io/tutorials/easy-node-authentication-setup-and-local
+// need to implement routers https://scotch.io/tutorials/learn-to-use-the-new-router-in-expressjs-4
 module.exports = function (app, passport) {
 
 	// welcome page
@@ -12,8 +13,13 @@ module.exports = function (app, passport) {
 	});
 
 	// login page
+<<<<<<< HEAD
 	app.get('/login', function (request, response) {
 		response.render('login.ejs', { message: req.flash('loginMessage') });
+=======
+	app.get('/login', function (req, res) {
+		res.render('login.ejs', { message: req.flash('loginMessage') });
+>>>>>>> 7443b3df389e311c418507ea6ba429a64c21866d
 	});
 
 	// log out
@@ -41,6 +47,7 @@ module.exports = function (app, passport) {
 	}
 
 	// route middleware to redirect users that aren't logged in
+<<<<<<< HEAD
 	function redirectVisitor (request, response, next) {
 		if (loginStatus(request))
 			return next;
@@ -69,5 +76,35 @@ module.exports = function (app, passport) {
         failureRedirect: '/login',
         failureFlash: true
     }));
+=======
+	function redirectVisitor (req, res, next) {
+		if (loginStatus(req))
+			next();
+		else
+			res.redirect('/');
+	}
+
+	// route middleware to redirect logged in users to home
+	function redirectUser (req, res, next) {
+		if (!loginStatus(req))
+			next();
+		else
+			res.redirect('/home');
+	}
+
+	// process signup application
+	app.post('/signup', 
+		passport.authenticate('local-signup', { successRedirect: '/',
+												failureRedirect: '/signup',
+												failureFlash: true })
+	);
+
+	// process login application
+    app.post('/login', 
+    	passport.authenticate('local-login', { successRedirect: '/',
+    								           failureRedirect: '/login',
+        									   failureFlash: true })
+    );
+>>>>>>> 7443b3df389e311c418507ea6ba429a64c21866d
 
 }
