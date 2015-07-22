@@ -15,6 +15,7 @@ var postDAOSchema = new mongoose.Schema({
 	googlePlaceId : {type: Array<String}, required: true},
 	creationDate : {type: String, required: true},
 	rating : {type: float, required: true},
+	postType: {type: float, required: true}
 	totalNumReviews : {type: int, required: true}, {collection: GLOBAL_CONSTANTS.TABLE_NAME.POST, _id: true});
 
 postDAOSchema.statics.create = function(title, keywordsArray, description, authorId, expiryDate, ongoingMutualAgreementIdArray, pictureIdArray, googlePlaceId, creationDate, rating, totalNumReviews){
@@ -32,6 +33,26 @@ postDAOSchema.statics.create = function(title, keywordsArray, description, autho
 		totalNumReviews: totalNumReviews
 	});
 };
+
+postDAOSchema.statics.findPostByKeyword = function(keyword, type, callback){
+	this.find({keyword: currentKeyword, postType: type}, function(err, postDAO){
+		callback(err, postDAO);
+	});
+}
+
+postDAOSchema.statics.findPostByKeywordArray = function(keywordArray, type){
+	var postDAOsWithKeywords = [];
+	function callback = function(err, postDAO){
+		if(!err){
+			postDAOsWithKeywords.push(postDAO);
+		}
+	}
+	for(i=0;i<keywordArray.length;i++){
+		this.findPostByKeyword(keywordArray[i], type, callback);
+	}
+
+	return postDAOsWithKeywords;
+}
 
 var PostDAO = mongoose.model("PostDAO", postDAOSchema);
 
