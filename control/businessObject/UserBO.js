@@ -1,14 +1,3 @@
-<<<<<<< HEAD
- /*******************************Dummy Constructor**************************************/ function User (userId, password, userName, userIdType){
-function User (userId, password, userName, userIdType){
-	this._userId = userId;
-	this._password = password;
-	this._userName = userName;
-	this._userIdType = userIdType;
-}
-
-module.exports = User;
-=======
 var UserDAO = require('./../../model/dao/UserDAO.js');
 //var db = require('./../database.js');
 //db.connect();
@@ -63,6 +52,3 @@ User.prototype.save = function (callback) {
 }
 
 module.exports = User;
-
-// testing
->>>>>>> 7443b3df389e311c418507ea6ba429a64c21866d
