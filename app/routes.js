@@ -75,12 +75,8 @@ module.exports = function (app, passport) {
 
     // submitting a post
     app.post('/post', function(req, res){
-		var title = req.body.post.title;
-		var keywords = req.body.post.keywords;
-		var description = req.body.post.description;
-		var keywordsArray = keywords.split(" ").filter(Boolean);
-		postHandler(title, keywordsArray, description);
-		res.redirect('/');
+		postHandler(req);
+		res.send('Post submitted page goes here.');
 	});
 
 }
