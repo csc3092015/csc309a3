@@ -8,7 +8,7 @@ var postDAOSchema = new mongoose.Schema({
 	title: {type: String, required: true},
 	keywordsArray : {type: Array, required: true },
 	description : {type: String, required: true},
-	//authorId : {type: String, required: true},
+	authorId : {type: String, required: true}
 	//expiryDate : {type: int, required: true},
 	//commentIdArray : {type: Array<String>, required: true},
 	//ongoingMutualAgreementIdArray : {type: Array<String>, required: true},
@@ -20,12 +20,12 @@ var postDAOSchema = new mongoose.Schema({
 	}, {collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.POST, _id: true});
 
 /************************ Static Methods *************************/
-postDAOSchema.statics.create = function(title, keywordsArray, description){
+postDAOSchema.statics.create = function(title, keywordsArray, description, authorId){
 	return new PostDAO({
 		title: title,
 		keywordsArray: keywordsArray,
 		description: description,
-		//authorId: authorId,
+		authorId: authorId
 		//expiryDate: expiryDate,
 		//ongoingMutualAgreementIdArray: ongoingMutualAgreementIdArray,
 		//pictureIdArray: pictureIdArray,
