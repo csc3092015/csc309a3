@@ -1,6 +1,7 @@
 // https://scotch.io/tutorials/easy-node-authentication-setup-and-local
 // need to implement routers https://scotch.io/tutorials/learn-to-use-the-new-router-in-expressjs-4
 var postHandler = require('./../config/postHandler'); 
+var postSearch = require('./../config/postSearch');
 
 module.exports = function (app, passport) {
 
@@ -77,6 +78,17 @@ module.exports = function (app, passport) {
     app.post('/post', function(req, res){
 		postHandler(req);
 		res.send('Post submitted page goes here.');
+	});
+
+	app.post('/search', function(req, res){
+		postSearch(req, function(err, results){
+			if(err){
+				throw err;
+			}
+			else{
+				res.send(results);
+			}
+		});
 	});
 
 }
