@@ -9,8 +9,8 @@ var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var flash = require('connect-flash');
-
 var database = require('./model/database.js');
+var connected = false;
 
 // get configurations
 require('./config/passport')(passport);
@@ -25,7 +25,10 @@ var sessionOpts = {
 app.set('port', (process.env.PORT || 5000));
 // set up middleware
 app.use(function(req, res, next){
-	database.connect();
+	if(!connected){
+		database.connect();
+    connected = true;
+	}
 	next();
 });
 app.use(express.static(path.join(__dirname, 'public')));
