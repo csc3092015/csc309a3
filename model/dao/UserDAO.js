@@ -1,10 +1,5 @@
 var mongoose = require('mongoose');
 var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
-// var database = require('./../database.js');
-
-//the line below should be moved into control layer later,
-// we only need to open connection once, and exit when server ends
-// database.connect();
 
 /************************ Table Schema *************************/
 var userDAOSchema = new mongoose.Schema({
@@ -18,7 +13,7 @@ var userDAOSchema = new mongoose.Schema({
 	http://mongoosejs.com/docs/documents.html
 		document.save(funciton(err, document))
 		document.findByIdAndRemove(_id, funciton(err, document))
-		document.findByIdAndUpdate(id, { $set: { password: 'new_pwd' }}, function (err, document))
+		document.findByIdAndUpdate(_id, { $set: { password: 'new_pwd' }}, function (err, document))
 */
 userDAOSchema.statics.create = function(userId, password){
 	return new UserDAO({
@@ -39,6 +34,13 @@ userDAOSchema.statics.validate = function(userId, password, callback){
 		callback(err, v);
 	});
 }
+
+/************************ Instance Methods *************************/
+/*
+	Mongoose provide instance methods:
+	http://mongoosejs.com/docs/documents.html
+		document.save(funciton(err, document))
+*/
 
 //the line below has to be called after we define the methods
 var UserDAO = mongoose.model("UserDAO", userDAOSchema);
