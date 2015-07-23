@@ -27,6 +27,7 @@ app.set('port', (process.env.PORT || 5000));
 app.use(function(req, res, next){
 	if(!connected){
 		database.connect();
+    connected = true;
 	}
 	next();
 });
