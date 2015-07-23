@@ -1,10 +1,45 @@
 
 <!--Taken from http://bootsnipp.com/snippets/featured/simplest-contact-form--> 
-
+<!-- views/home.ejs -->
+<!doctype html>
 <html>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <div class="container" style="padding-top:20px;">
-  	<div class="row">
+<head>
+    <title>Node Authentication</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
+        body        { padding-top:80px; word-wrap:break-word; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="page-header text-center">
+        <h1><span class="fa fa-anchor"></span> Home Page</h1>
+        <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+    </div>
+
+    <div class="row">
+
+        <!-- LOCAL INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3><span class="fa fa-user"></span> Local</h3>
+
+                    <p>
+                        <strong>email</strong>: <%= user._userId %><br>
+                        <strong>password</strong>: <%= user._password %>
+                    </p>
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+      <div class="container" style="padding-top:20px;">
+    <div class="row">
         <div class="col-md-6 col-md-offset-3">
           <div class="well well-sm">
             <form class="form-horizontal" action="" method="post">
@@ -45,4 +80,11 @@
             </form>
           </div>
         </div>
+
+
+
+
+
+</div>
+</body>
 </html>

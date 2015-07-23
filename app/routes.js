@@ -9,7 +9,7 @@ module.exports = function (app, passport) {
 
 	// sign up page
 	app.get('/signup', function (req, res) {
-		res.render('signup.ejs');
+		res.render('signup.ejs', { message: req.flash('signupMessage') });
 	});
 
 	// login page
@@ -59,16 +59,16 @@ module.exports = function (app, passport) {
 
 	// process signup application
 	app.post('/signup', 
-		passport.authenticate('local-signup', { successRedirect: '/',
-							failureRedirect: '/signup',
-							failureFlash: true })
+		passport.authenticate('local-signup', { successRedirect: '/home',
+												failureRedirect: '/signup',
+												failureFlash: true })
 	);
 
 	// process login application
-	app.post('/login', 
-    		passport.authenticate('local-login', { successRedirect: '/',
-						       failureRedirect: '/login',
-        					       failureFlash: true })
+    app.post('/login', 
+    	passport.authenticate('local-login', { successRedirect: '/home',
+    								           failureRedirect: '/login',
+        									   failureFlash: true })
     );
 
 }
