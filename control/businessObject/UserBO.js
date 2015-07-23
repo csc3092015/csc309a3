@@ -1,6 +1,5 @@
 var UserDAO = require('./../../model/dao/UserDAO.js');
-//var db = require('./../database.js');
-//db.connect();
+var UserConverter = require('./../../model/Converter.js');
 
  /*******************************Dummy Constructor**************************************/ 
 function User (userId, password){
@@ -64,8 +63,8 @@ User.validateIdPw = function (userId, password, callback) {
 // insert user to the database
 // callback(err);
 User.prototype.save = function (callback) {
-	var newUser = UserDAO.create(this._userId, this._password);
-	newUser.save(function (err){
+	var newUserDAO = UserConverter.convertFromUserBOtoUserDAO(this);
+	newUserDAO.save(function (err){
 		callback(err);
 	});
 }
