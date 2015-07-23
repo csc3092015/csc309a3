@@ -13,31 +13,48 @@ function User (userId, password){
 /*******************************Static Method**************************************/
 
 // find if user with userId exists in the database
-// callback(err, v);
-// v is a bool indicating whether it exists
+// callback(err, valid);
+// valid is a bool denoting whether userId already exists
 User.validateId = function (userId, callback) {
 	UserDAO.findById(userId, function (err, user) {
 		if (err) {
 			callback(err);
 		} else {
-			callback(err, user);
+			
+			// valid is initialized as false to denote non existent user
+			var valid = false;
+
+			// if user exists, change valid to true
+			if (user) {
+				valid = true;
+			}
+
+			callback(err, valid);
 		}
 	});
 }
 
 // validate user login by checking userId and password combination
-// callback(err, v);
-// v is a bool indicating whether user id and password combination is valid
+// callback(err, validUser);
+// validUser is null when combination is incorrect
+// validUser is an equivalent UserBO object to the valid UserDAO found
 User.validateIdPw = function (userId, password, callback) {
 	UserDAO.findById(userId, function (err, user) {
 		if (err) {
 			callback(err);
 		} else {
-			var v = false;
+			// initialize validUser to null
+			// invalid combination will keep validUser as null
+			var validUser = null;
+
+			// if the userId and password combination is valid,
+			// make validUser an equivalent UserBO object to the found UserDAO object
 			if (password === user.password) {
-				v = true;
+				validUser = new User(user._id, user.password);
 			}
-			callback(err, v);
+
+			// call back with error and validUser
+			callback(err, validUser);
 		}
 	});
 }
@@ -47,8 +64,10 @@ User.validateIdPw = function (userId, password, callback) {
 // insert user to the database
 // callback(err);
 User.prototype.save = function (callback) {
-	var newUser = UserDAO.create(this.userId, this.password);
-	newUser.save(err);
+	var newUser = UserDAO.create(this._userId, this._password);
+	newUser.save(function (err){
+		callback(err);
+	});
 }
 
 module.exports = User;

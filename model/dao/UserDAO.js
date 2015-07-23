@@ -10,7 +10,7 @@ var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
 var userDAOSchema = new mongoose.Schema({
 	_id : String,
 	password : {type: String, required: true}
-}, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.USER, _id: false});
+}, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.TESTSANDRA, _id: false});
 
 /************************ Static Methods *************************/
 /*

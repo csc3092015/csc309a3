@@ -7,6 +7,7 @@ model.TABLE_NAME = {};
 model.TABLE_NAME.USER = "User";
 model.TABLE_NAME.POST = "Post";
 model.TABLE_NAME.TEST = "Test";
+model.TABLE_NAME.TESTSANDRA = "TestSandra";
 
 
 /***************************************CONTROL CONSTANTS**********************************************/

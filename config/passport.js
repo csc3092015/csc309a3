@@ -1,22 +1,22 @@
 // http://passportjs.org/docs
 // https://www.airpair.com/express/posts/expressjs-and-passportjs-sessions-deep-dive
-// https://scotch.io/tutorials/easy-node-authentication-setup-and-local
+// https://scotch.io/tutorials/easy-node-authentication-setup-and-local\
+// https://github.com/jaredhanson/passport-local/blob/master/examples/express3/app.js
 
 var LocalStrategy = require('passport-local').Strategy;
-var UserBO = require('../control/businessObject/UserBO.js');
-var UserDAO = require('../model/dao/UserDAO.js');
+var UserBO = require('./../control/businessObject/UserBO.js');
 
 module.exports = function (passport) {
 
     // User login session handler
     passport.serializeUser(function (user, done) {
-      var sessionUser = new UserBO(user.__id, user.password)
+      var sessionUser = new UserBO(user._userId, user._password)
       done(null, sessionUser);
-  });
+    });
 
     passport.deserializeUser(function (sessionUser, done) {
       done(null, sessionUser);
-  });
+    });
 
     //WARNING: SIGNUP PART NEEDS FIXING
     passport.use('local-signup', new LocalStrategy({
@@ -25,30 +25,39 @@ module.exports = function (passport) {
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
+    function(req, email, password, done) {
 
-    function(email, password, done) {
+        //process.nextTick(function() {
 
-        process.nextTick(function() {
+            UserBO.validateId(email, function (err, valid) {
 
-            User.validateId (email, function (err, existing) {
                 if (err) {
+                    // return any existing errors
                     return done(err);
                 }
 
-                if (existing)
-                    return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-
+                // set up flash message if entered email is already taken
+                if (valid) {
+                    return done(null, false, req.flash('signupMessage', 'Email is already taken!'));
+                } 
+                // create the user otherwise
                 else {
-                    var newUser = new User(email, password);
-                    newUser.save(function (err) {
-                        if (err)
-                            throw err;
-                        return done(null, newUser);
-                    });
-                }
-            })  
 
-        });
+                    var newUser = new UserBO(email, password);
+                    newUser.save(function (err) {
+                        if (err) {
+                            return done(err);
+                            //console.log("shit happened again");
+                        } else {
+                            return done(null, newUser);
+                        }
+                    });
+
+                }
+
+            })
+
+        //});
 
     }));
 
@@ -62,22 +71,24 @@ module.exports = function (passport) {
 
         // check if user exists, then the user password combination validity
         // pass any error messages to flash module
-        UserBO.validateId(email, function (err, user) {
+        UserBO.validateId(email, function (err, valid) {
+
+            // return any existing errors
             if (err) {
                 return done(err);
             }                 
-            if (!user) {
+            if (!valid) {
                 return done(null, false, req.flash('loginMessage', 'No user found.'));
             }
-            UserBO.validateIdPw(email, password, function (err, valid) {
+            UserBO.validateIdPw(email, password, function (err, validUser) {
                 if (err) {
                     return done(err);
                 }
-                if (!valid) {
+                if (!validUser) {
                     return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
                 }
 
-                return done(null, user);
+                return done(null, validUser);
             })
         })
     }));
