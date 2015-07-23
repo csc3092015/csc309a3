@@ -9,7 +9,6 @@ var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var flash = require('connect-flash');
-
 var database = require('./model/database.js');
 var connected = false;
 

@@ -19,7 +19,6 @@ var postDAOSchema = new mongoose.Schema({
 	/*totalNumReviews : {type: int, required: true},*/ 
 	}, {collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.POST, _id: true});
 
-
 /************************ Static Methods *************************/
 postDAOSchema.statics.create = function(title, keywordsArray, description){
 	return new PostDAO({
