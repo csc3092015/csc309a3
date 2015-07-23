@@ -1,5 +1,7 @@
 // https://scotch.io/tutorials/easy-node-authentication-setup-and-local
 // need to implement routers https://scotch.io/tutorials/learn-to-use-the-new-router-in-expressjs-4
+var postHandler = require('./../config/postHandler'); 
+
 module.exports = function (app, passport) {
 
 	// welcome page
@@ -70,5 +72,15 @@ module.exports = function (app, passport) {
     								           failureRedirect: '/login',
         									   failureFlash: true })
     );
+
+    // submitting a post
+    app.post('/post', function(req, res){
+		var title = req.body.post.title;
+		var keywords = req.body.post.keywords;
+		var description = req.body.post.description;
+		var keywordsArray = keywords.split(" ").filter(Boolean);
+		postHandler(title, keywordsArray, description);
+		res.redirect('/');
+	});
 
 }

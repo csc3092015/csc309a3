@@ -4,4 +4,12 @@ var convertFromUserBOtoUserDAO = function(userBO){
 	userDAO.password = userBO.password;
 }
 
+var convertFromPostBOtoPostDAO = function(postBO){
+	var postBO = {};
+	postDAO.title = userBO.title;
+	postDAO.keywordsArray = postBO.keywordsArray;
+	postDAO.description = postBO.description;
+}
+
 module.exports.convertFromUserBOtoUserDAO = convertFromUserBOtoUserDAO;
+module.exports.convertFromPostBOtoPostDAO = convertFromPostBOtoPostDAO;
