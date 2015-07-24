@@ -3,9 +3,9 @@ var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
 
 /************************ Table Schema *************************/
 var userDAOSchema = new mongoose.Schema({
-	_id : String,
+	_id : { type: String, trim: true },
 	password : {type: String, required: true}
-}, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.TESTSANDRA, _id: false});
+}, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.USER, _id: false});
 
 /************************ Static Methods *************************/
 /*
