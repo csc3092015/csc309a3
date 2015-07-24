@@ -1,6 +1,4 @@
 var PostDAO = require('./../../model/dao/PostDAO.js');
-//var db = require('./../database.js');
-//db.connect();
 
  /*******************************Dummy Constructor**************************************/ 
 function Post (title, keywordsArray, description, authorId){
@@ -19,10 +17,11 @@ function Post (title, keywordsArray, description, authorId){
 }
 
 /*******************************Static Method**************************************/
-
+Post.findPostsByKeywordsArray = function(keywordsArray, callback){
+	PostDAO.findPostsByKeywordsArray(keywordsArray, callback);
+}
 
 /*******************************Instance Method**************************************/
-
 Post.prototype.save = function(callback){
 	var newPost = PostDAO.create(this._title, this._keywordsArray, this._description, this._authorId);
 	newPost.save(function(err){
