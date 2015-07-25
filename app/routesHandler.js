@@ -1,10 +1,19 @@
 var PostBO = require('./../control/businessObject/PostBO.js');
 var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
+var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 
 var keywordsSearchHandler = function(req, res){
 	var keywordsArray = util.stringToArray(req.body.post.keywords);
-	PostBO.findPostsByKeywordsArray(keywordsArray, function(err, results){
+	var optionalDictionary = {};
+	for (var key in GLOBAL_CONSTANTS.MODEL.POST_DAO.MULTIKEY_INDEX){
+		if(req.body.post[key]){
+			optionalDictionary[key] = req.body.post[key];
+		}
+	}
+	console.log("post is:" + req.body.post + "\n");
+	console.log(optionalDictionary);
+	PostBO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, results){
 		if(err){
 			console.error(err);
 		}

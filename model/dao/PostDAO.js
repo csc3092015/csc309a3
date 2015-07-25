@@ -77,13 +77,21 @@ postDAOSchema.statics.findPostsByKeywordsArray = function(keywordsArray, callbac
 	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
 }
 
-postDAOSchema.statics.findPosts = function(keywordsArray, optionalDictionary, callback){
+//The parameter keywordsArray is the input from the req, the criteriaDictionary.keywordsArray is the field name in Mongoose model
+postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
 	var criteriaDictionary = {};
+	criteriaDictionary.keywordsArray = {$in: keywordsArray};
 	var option;
 	for(option in optionalDictionary){
-
+		criteriaDictionary[option] = {$eq: optionalDictionary[option]};
 	}
-	this.find({keywordsArray: {$in: keywordsArray}}, function(err, docs){
+	this.find(criteriaDictionary, function(err, docs){
+		callback(err, docs);
+	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
+}
+
+postDAOSchema.statics.findPosts = function(criteriaDictionary, callback){
+	this.find(criteriaDictionary, function(err, docs){
 		callback(err, docs);
 	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
 }

@@ -26,6 +26,13 @@ function PostBO (title, keywordsArray, description, authorId, byWho, createdAt){
 PostBO.findPostsByKeywordsArray = function(keywordsArray, callback){
 	PostDAO.findPostsByKeywordsArray(keywordsArray, callback);
 }
+PostBO.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
+	PostDAO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, callback);
+}
+
+PostBO.findPosts = function(keywordsArray, callback){
+	PostDAO.findPostsByKeywordsArray(keywordsArray, callback);
+}
 
 /*******************************Instance Method**************************************/
 PostBO.prototype.save = function(callback){
