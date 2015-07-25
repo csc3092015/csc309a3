@@ -4,22 +4,25 @@ var UserBO = require('./../control/businessObject/UserBO');
 var PostBO = require('./../control/businessObject/PostBO');
 
 var convertFromUserBOtoUserDAO = function(userBO){
-	var userDAO = UserDAO.create(userBO._userId, userBO._password);
+	var userDAO = UserDAO.create(userBO.getUserId(), userBO.getPassword());
 	return userDAO;
 }
 
 var convertFromUserDAOtoUserBO = function(userDAO){
-	var userBO = new UserBO(userDAO._id, userDAO.password);
+	var userBO = new UserBO(userDAO.id, userDAO.password);
 	return userBO;
 }
 
 var convertFromPostBOtoPostDAO = function(postBO){
-	var postDAO = PostDAO.create(postBO._title, postBO._keywordsArray, postBO._description, postBO._authorId);
+	var postDAO = PostDAO.create(postBO.getTitle(), postBO.getKeywordsArray(), postBO.getDescription(), postBO.getAuthorId(), postBO.getByWho(), postBO.getIsPurchased(), postBO.getIsExpired(), postBO.getgetCreatedAt());
 	return postDAO;
 }
 
 var convertFromPostDAOtoPostBO = function(postDAO){
-	var postBO = new PostBO(postBO._title, postBO._keywordsArray, postBO._description, postBO._authorId);
+	var postBO = new PostBO(postDAO.title, postDAO.keywordsArray, postDAO.description, postDAO.authorId, postDAO.byWho, postDAO.createdAt);
+	 // set postDAO.isPurchased, postDAO.isExpired
+	postBO.setIsPurchased(postDAO.isPurchased);
+	postBO.setIsExpired(postDAO.isExpired);
 	return postBO;
 }
 
