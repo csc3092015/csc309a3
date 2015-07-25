@@ -123,7 +123,17 @@
                   <textarea class="form-control" id="summary" name="post[description]" placeholder="Please enter your summary here..." rows="5"></textarea>
                 </div>
               </div>
-      
+
+              <!-- Radio input -->
+              <div class="form-group">
+                <label class="radio-inline">
+                  <input name="post[byWho]" id="byConsumerRadio" value="byConsumer" type="radio"> Looking for this service!
+                </label>
+                <label class="radio-inline">
+                  <input name="post[byWho]" id="byProviderRadio" value="byProvider" type="radio" checked=""> Providing this service!
+                </label>
+              </div>
+
               <!-- Form actions -->
               <div class="form-group">
                 <div class="col-md-12 text-right">

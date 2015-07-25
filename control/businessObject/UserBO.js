@@ -1,8 +1,8 @@
 var UserDAO = require('./../../model/dao/UserDAO.js');
-var UserConverter = require('./../../model/Converter.js');
+var Converter = require('./../../model/Converter.js');
 
  /*******************************Dummy Constructor**************************************/ 
-function User (userId, password){
+function UserBO (userId, password){
 	this._userId = userId;
 	this._password = password;
 	//this._userName = userName;
@@ -14,7 +14,7 @@ function User (userId, password){
 // find if user with userId exists in the database
 // callback(err, valid);
 // valid is a bool denoting whether userId already exists
-User.validateId = function (userId, callback) {
+UserBO.validateId = function (userId, callback) {
 	UserDAO.findById(userId, function (err, user) {
 		if (err) {
 			callback(err);
@@ -27,33 +27,33 @@ User.validateId = function (userId, callback) {
 			if (user) {
 				valid = true;
 			}
-
+			
 			callback(err, valid);
 		}
 	});
 }
 
 // validate user login by checking userId and password combination
-// callback(err, validUser);
-// validUser is null when combination is incorrect
-// validUser is an equivalent UserBO object to the valid UserDAO found
-User.validateIdPw = function (userId, password, callback) {
+// callback(err, validUserBO);
+// validUserBO is null when combination is incorrect
+// validUserBO is an equivalent UserBOBO object to the valid UserDAO found
+UserBO.validateIdPw = function (userId, password, callback) {
 	UserDAO.findById(userId, function (err, user) {
 		if (err) {
 			callback(err);
 		} else {
-			// initialize validUser to null
-			// invalid combination will keep validUser as null
-			var validUser = null;
+			// initialize validUserBO to null
+			// invalid combination will keep validUserBO as null
+			var validUserBO = null;
 
 			// if the userId and password combination is valid,
-			// make validUser an equivalent UserBO object to the found UserDAO object
+			// make validUserBO an equivalent UserBOBO object to the found UserDAO object
 			if (password === user.password) {
-				validUser = new User(user._id, user.password);
+				validUserBO = new UserBO(user._id, user.password);
 			}
 
-			// call back with error and validUser
-			callback(err, validUser);
+			// call back with error and validUserBO
+			callback(err, validUserBO);
 		}
 	});
 }
@@ -62,11 +62,22 @@ User.validateIdPw = function (userId, password, callback) {
 
 // insert user to the database
 // callback(err);
-User.prototype.save = function (callback) {
-	var newUserDAO = UserConverter.convertFromUserBOtoUserDAO(this);
+UserBO.prototype.save = function (callback) {
+	var newUserDAO = Converter.convertFromUserBOtoUserDAO(this);
 	newUserDAO.save(function (err){
 		callback(err);
 	});
 }
 
-module.exports = User;
+/*******************************Dummy Getters**************************************/
+UserBO.prototype.getUserId = function(){
+	return this._userId;
+};
+
+UserBO.prototype.getPassword = function(){
+	return this._password;
+};
+
+// We also need setters for these fields, they are private!
+
+module.exports = UserBO;

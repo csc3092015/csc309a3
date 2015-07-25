@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
+var util = require('./../../control/util.js');
 
 /************************ Table Schema *************************/
 var postDAOSchema = new mongoose.Schema({
@@ -20,31 +21,47 @@ var postDAOSchema = new mongoose.Schema({
 		trim: true,
 		required: true
 	},
+	// The following three are for compound indexs, so I have to make sure they are numbers
+	byWho : {
+		type: Number, // see util.Enum constructor
+		required: true
+	},
+	isPurchased : {
+		type: Number,
+		required: true
+	},
+	isExpired : {
+		type: Number,
+		required: true
+	},
 	//expiryDate : {type: int, required: true},
 	//commentIdArray : {type: Array<String>, required: true},
 	//ongoingMutualAgreementIdArray : {type: Array<String>, required: true},
 	//pictureIdArray : {type: Array<String>, required: true},
 	//googlePlaceId : {type: Array<String}, required: true},
-	creationDate : {
-		type: Date, 
-		default: Date.now
+	createdAt : {
+		type: Number, 
+		required: true
 	},
 	//rating : {type: float, required: true},
 	/*totalNumReviews : {type: int, required: true},*/ 
 	}, {collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.POST});
 
 /************************ Static Methods *************************/
-postDAOSchema.statics.create = function(title, keywordsArray, description, authorId){
+postDAOSchema.statics.create = function(title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
 	return new PostDAO({
 		title: title,
 		keywordsArray: keywordsArray,
 		description: description,
-		authorId: authorId
+		authorId: authorId,
+		byWho: byWho,
+		isPurchased: isPurchased, 
+		isExpired: isExpired,
 		//expiryDate: expiryDate,
 		//ongoingMutualAgreementIdArray: ongoingMutualAgreementIdArray,
 		//pictureIdArray: pictureIdArray,
 		//googlePlaceId: googlePlaceId,
-		// creationDate: creationDate, (This is not needed, cuz creationDate is self defined)  
+		createdAt: createdAt
 		//rating: rating,
 		//totalNumReviews: totalNumReviews
 	});
@@ -53,7 +70,7 @@ postDAOSchema.statics.create = function(title, keywordsArray, description, autho
 postDAOSchema.statics.findPostsByKeywordsArray = function(keywordsArray, callback){
 	this.find({keywordsArray: {$in: keywordsArray}}, function(err, docs){
 		callback(err, docs);
-	}).limit(10);
+	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
 }
 
 /************************ Instance Methods *************************/

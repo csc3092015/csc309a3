@@ -9,6 +9,8 @@ model.TABLE_NAME.POST = "Post";
 model.TABLE_NAME.TEST = "Test";
 model.TABLE_NAME.TESTSANDRA = "TestSandra";
 
+model.POST_DAO = {};
+model.POST_DAO.SEARCH_RESULT_NUMBER = 10;
 
 /***************************************CONTROL CONSTANTS**********************************************/
 // module.exports.CONTROL = {};
@@ -16,6 +18,16 @@ model.TABLE_NAME.TESTSANDRA = "TestSandra";
 
 /***************************************VIEW CONSTANTS**********************************************/
 // module.exports.VIEW = {};
+
+
+
+
+
+
+
+
+
+
 
 
 module.exports.MODEL = model;
