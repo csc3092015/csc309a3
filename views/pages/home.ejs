@@ -31,20 +31,38 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
+            
+            <!-- <li><a href="#">Link</a></li> -->
+            <!-- Radio input -->
+              <div class="form-group">
+                <label class="radio-inline">
+                  <input name="post[byWho]" value="byConsumer" type="radio">By Consumer
+                </label>
+                <label class="radio-inline">
+                  <input name="post[byWho]" value="byProvider" type="radio">By Provider
+                </label>
+              </div>
+
+              <!-- Radio input -->
+              <div class="form-group">
+                <label class="radio-inline">
+                  <input name="post[isPurchased]" value="isNotPurchased" type="radio">Not Purchased
+                </label>
+                <label class="radio-inline">
+                  <input name="post[isPurchased]" value="isPurchased" type="radio">Purchased
+                </label>
+              </div>
+
+              <!-- Radio input -->
+              <div class="form-group">
+                <label class="radio-inline">
+                  <input name="post[isExpired]" value="isNotExpired" type="radio">No Expired
+                </label>
+                <label class="radio-inline">
+                  <input name="post[isExpired]" value="isExpired" type="radio">Expired
+                </label>
+              </div>
+
           </ul>
           <form class="navbar-form navbar-left" role="search" action="/search" method="post">
             <div class="form-group">
@@ -127,10 +145,10 @@
               <!-- Radio input -->
               <div class="form-group">
                 <label class="radio-inline">
-                  <input name="post[byWho]" id="byConsumerRadio" value="byConsumer" type="radio"> Looking for this service!
+                  <input name="post[byWho]" value="byConsumer" type="radio"> Looking for this service!
                 </label>
                 <label class="radio-inline">
-                  <input name="post[byWho]" id="byProviderRadio" value="byProvider" type="radio" checked=""> Providing this service!
+                  <input name="post[byWho]" value="byProvider" type="radio" checked=""> Providing this service!
                 </label>
               </div>
 

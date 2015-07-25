@@ -112,7 +112,7 @@ PostBO.prototype.setIsExpired = function(newIsExpired){
 	this._isExpired = PostEnum[newIsExpired];
 };
 
-PostBO.prototype.set = function(newCreatedAt){
+PostBO.prototype.setCreatedAt = function(newCreatedAt){
 	this._createdAt = newCreatedAt;
 };
 

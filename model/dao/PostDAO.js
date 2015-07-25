@@ -47,6 +47,10 @@ var postDAOSchema = new mongoose.Schema({
 	/*totalNumReviews : {type: int, required: true},*/ 
 	}, {collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.POST});
 
+/************************ Compound Index *************************/
+// 1 here just means sort by ascending
+postDAOSchema.index({ byWho: 1, isPurchased: 1, isExpired: 1});
+
 /************************ Static Methods *************************/
 postDAOSchema.statics.create = function(title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
 	return new PostDAO({
@@ -68,6 +72,17 @@ postDAOSchema.statics.create = function(title, keywordsArray, description, autho
 };
 
 postDAOSchema.statics.findPostsByKeywordsArray = function(keywordsArray, callback){
+	this.find({keywordsArray: {$in: keywordsArray}}, function(err, docs){
+		callback(err, docs);
+	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
+}
+
+postDAOSchema.statics.findPosts = function(keywordsArray, optionalDictionary, callback){
+	var criteriaDictionary = {};
+	var option;
+	for(option in optionalDictionary){
+
+	}
 	this.find({keywordsArray: {$in: keywordsArray}}, function(err, docs){
 		callback(err, docs);
 	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
