@@ -4,17 +4,16 @@ var PostEnum = require('./../control/Enum.js').PostEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 
 var keywordsSearchHandler = function(req, res){
-	// check home.ejs and Enum.js
+	// for following part refer to home.ejs and Enum.js
 	var keywordsArray = util.stringToArray(req.body.post.keywords);
 	var optionalDictionary = {};
-	// check which radio button is turned on
+	// the for loop checks which radio button is turned on
 	for (var i = GLOBAL_CONSTANTS.MODEL.POST_DAO.MULTIKEY_INDEX.length - 1; i >= 0; i--) {
 		// so key = either "byWho", "isPurchased", "isExpired"
 		var key = GLOBAL_CONSTANTS.MODEL.POST_DAO.MULTIKEY_INDEX[i];
-		// if the radio button is checked, added the option into optionalDictinary
 		// Eg. key = "byWho", then req.body.post[key] = "byComsumer" or "byProvider"
 		if(req.body.post[key]){
-			// Eg. req.body.post[key] = "byComsumer", then PostEnum[req.body.post[key]] = 0
+			// Eg. req.body.post[key] = "byComsumer", then PostEnum[req.body.post[key]] = 0 if By comsumer radio is checked
 			optionalDictionary[key] = PostEnum[req.body.post[key]];
 		}
 	};
