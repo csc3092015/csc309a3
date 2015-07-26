@@ -6,13 +6,14 @@ var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var keywordsSearchHandler = function(req, res){
 	var keywordsArray = util.stringToArray(req.body.post.keywords);
 	var optionalDictionary = {};
-	for (var key in GLOBAL_CONSTANTS.MODEL.POST_DAO.MULTIKEY_INDEX){
+	// check which radio button is turned on
+	for (var i = GLOBAL_CONSTANTS.MODEL.POST_DAO.MULTIKEY_INDEX.length - 1; i >= 0; i--) {
+		var key = GLOBAL_CONSTANTS.MODEL.POST_DAO.MULTIKEY_INDEX[i];
+		// if the radio button is checked, added the option into optionalDictinary
 		if(req.body.post[key]){
-			optionalDictionary[key] = req.body.post[key];
+			optionalDictionary[key] = PostEnum[req.body.post[key]];
 		}
-	}
-	console.log("post is:" + req.body.post + "\n");
-	console.log(optionalDictionary);
+	};
 	PostBO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, results){
 		if(err){
 			console.error(err);
