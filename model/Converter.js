@@ -1,5 +1,5 @@
 var UserDAO = require('./dao/UserDAO');
-var PostDAO = require('./dao/UserDAO');
+var PostDAO = require('./dao/PostDAO');
 var UserBO = require('./../control/businessObject/UserBO');
 var PostBO = require('./../control/businessObject/PostBO');
 
@@ -19,10 +19,7 @@ var convertFromPostBOtoPostDAO = function(postBO){
 }
 
 var convertFromPostDAOtoPostBO = function(postDAO){
-	var postBO = new PostBO(postDAO.title, postDAO.keywordsArray, postDAO.description, postDAO.authorId, postDAO.byWho, postDAO.createdAt);
-	 // set postDAO.isPurchased, postDAO.isExpired
-	postBO.setIsPurchased(postDAO.isPurchased);
-	postBO.setIsExpired(postDAO.isExpired);
+	var postBO = new PostBO(postDAO.title, postDAO.keywordsArray, postDAO.description, postDAO.authorId, postDAO.byWho, postDAO.isPurchased, postDAO.isExpired, postDAO.createdAt);
 	return postBO;
 }
 
