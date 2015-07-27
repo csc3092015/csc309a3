@@ -55,7 +55,6 @@ var postFormHandler = function(req, res){
 					user : req.user,
 					postBO: postBO
 				});
-
 			} else{
 				console.log('Somehow no erro but didn\'t submit the Post!');
 				res.send('Somehow no erro but didn\'t submit the Post!');
