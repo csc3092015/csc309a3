@@ -38,8 +38,8 @@ PostBO.findPosts = function(keywordsArray, callback){
 PostBO.prototype.save = function(callback){
 	var newPostDAO = PostDAO.create(this.getTitle(), this.getKeywordsArray(), this.getDescription(), this.getAuthorId(), this.getByWho(), 
 		this.getIsPurchased(), this.getIsExpired(), this.getCreatedAt());
-	newPostDAO.save(function(err){
-		callback(err);
+	newPostDAO.save(function(err, postDAO){
+		callback(err, postDAO);
 	});
 }
 

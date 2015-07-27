@@ -2,6 +2,7 @@ var PostBO = require('./../control/businessObject/PostBO.js');
 var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
+var Converter = require('./../model/Converter.js');
 
 var keywordsSearchHandler = function(req, res){
 	// for following part refer to home.ejs and Enum.js
@@ -17,12 +18,19 @@ var keywordsSearchHandler = function(req, res){
 			optionalDictionary[key] = PostEnum[req.body.post[key]];
 		}
 	};
-	PostBO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, results){
+	PostBO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, postDAOs){
 		if(err){
 			console.error(err);
 		}
 		else{
-			res.send(results);
+			var postBOs = [];
+			for (var i = postDAOs.length - 1; i >= 0; i--) {;
+				postBOs.push(Converter.convertFromPostDAOtoPostBO(postDAOs[i]));
+			};
+			res.render('postSearchResult.ejs', {
+				user : req.user,
+				postBOs: postBOs
+			});
 		}
 	});
 }
@@ -36,15 +44,23 @@ var postFormHandler = function(req, res){
 	var byWho = PostEnum[req.body.post.byWho];
 	var createdAt = new Date().getTime();
 	var newPost = new PostBO(title, keywordsArray, description, autherId, byWho, createdAt);
-	newPost.save(function(err){
+	newPost.save(function(err, postDAO){
 		if(err){
 			console.error(err);
 		}
 		else{
-			console.log('Post submitted!');
+			if (postDAO){
+				var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
+				res.render('postSubmit.ejs', {
+					user : req.user,
+					postBO: postBO
+				});
+			} else{
+				console.log('Somehow no erro but didn\'t submit the Post!');
+				res.send('Somehow no erro but didn\'t submit the Post!');
+			}
 		}
 	});
-	res.send('Post submitted page goes here.');
 }
 
 module.exports.keywordsSearchHandler = keywordsSearchHandler;
