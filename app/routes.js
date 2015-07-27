@@ -6,7 +6,7 @@ module.exports = function (app, passport) {
 
 	// welcome page
 	app.get('/', redirectUser, function (req, res) {
-		res.render('index.ejs'); // load the index.ejs file
+		res.render('index.ejs', { message: req.flash('fbSignupMessage') }); // load the index.ejs file
 	});
 
 	// sign up page
@@ -72,6 +72,18 @@ module.exports = function (app, passport) {
     								           failureRedirect: '/login',
         									   failureFlash: true })
     );
+
+    // route for facebook authentication and login
+    app.get('/auth/facebook', passport.authenticate('facebook', { scope : [ 'email', 'user_about_me' ] }));
+
+    // handle the callback after facebook has authenticated the user
+    app.get('/auth/facebook/callback',
+        passport.authenticate('facebook', { successRedirect : '/home',
+            								failureRedirect : '/',
+            								failureFlash: true })
+    );
+
+
 
     // submitting a post
     app.post('/post', function(req, res){

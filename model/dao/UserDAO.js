@@ -1,10 +1,21 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
 
 /************************ Table Schema *************************/
-var userDAOSchema = new mongoose.Schema({
+var userDAOSchema = new Schema({
 	_id : { type: String, trim: true },
-	password : {type: String, required: true}
+	_password : {type: String/*, required: true*/},
+	_facebookId : { type: String },
+	_name : { type: String, trim: true },
+	_userIdType : { type: Number }, //0 for normal user, 1 for admin
+	_rating : { type: Number }/*,
+	_circleIdArray : [Schema.Types.ObjectId],
+	_mutualAgreementIdArrayAreOngoing : [Schema.Types.ObjectId],
+	_reviewIdArrayAreOngoing : [Schema.Types.ObjectId],
+	_postIdArrayNotExpired : [Schema.Types.ObjectId],
+	_postIdArrayExpired : [Schema.Types.ObjectId]
+	*/
 }, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.USER, _id: false});
 
 /************************ Static Methods *************************/
@@ -15,25 +26,27 @@ var userDAOSchema = new mongoose.Schema({
 		document.findByIdAndRemove(_id, funciton(err, document))
 		document.findByIdAndUpdate(_id, { $set: { password: 'new_pwd' }}, function (err, document))
 */
-userDAOSchema.statics.create = function(userId, password){
+
+// create a new user document
+userDAOSchema.statics.create = function(userId, password, facebookId, name,
+	userIdType, rating/*, circleIdArray, mutualAgreementIdArrayAreOngoing,
+	reviewIdArrayAreOngoing, postIdArrayNotExpired, postIdArrayExpired*/){
 	return new UserDAO({
-		_id: userId,
-		password: password
+		_id : userId,
+		_password : password,
+		_facebookId : facebookId,
+		_name : name,
+		_userIdType : userIdType,
+		_rating : rating, // -1 rating before rated!
+		/*
+		_circleIdArray : circleIdArray,
+		_mutualAgreementIdArrayAreOngoing : mutualAgreementIdArrayAreOngoing,
+		_reviewIdArrayAreOngoing : reviewIdArrayAreOngoing,
+		_postIdArrayNotExpired : postIdArrayNotExpired,
+		_postIdArrayExpired : postIdArrayExpired
+		*/
 	});
 };
-
-//since find by id is asyn call, we can't return a value, we must use call back
-userDAOSchema.statics.validate = function(userId, password, callback){
-	this.findById(userId, function(err, userDAO){
-		var v;
-		if(userDAO){
-			v = (password === userDAO.password);
-		} else {
-			v = false;
-		}
-		callback(err, v);
-	});
-}
 
 /************************ Instance Methods *************************/
 /*
