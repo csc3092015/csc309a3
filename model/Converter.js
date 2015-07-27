@@ -4,12 +4,21 @@ var UserBO = require('./../control/businessObject/UserBO');
 var PostBO = require('./../control/businessObject/PostBO');
 
 var convertFromUserBOtoUserDAO = function(userBO){
-	var userDAO = UserDAO.create(userBO.getUserId(), userBO.getPassword());
+	var userDAO = UserDAO.create(userBO.getUserId(), userBO.getPassword(), 
+		userBO.getFacebookId(), userBO.getName(), userBO.getUserIdType()/*, 
+		userBO.getCircleIdArray(), userBO.getMutualAgreementIdArrayAreOngoing(), 
+		userBO.getReviewIdArrayAreOngoing(), userBO.getPostIdArrayNotExpired(), 
+		userBO.getPostIdArrayExpired()*/);
 	return userDAO;
 }
 
 var convertFromUserDAOtoUserBO = function(userDAO){
-	var userBO = new UserBO(userDAO.id, userDAO.password);
+	var userBO = new UserBO(userDAO._id, userDAO._password, 
+		userDAO._facebookId, userDAO._name, userDAO._userIdType,
+		userDAO._rating/*, userDAO._circleIdArray, 
+		userDAO._mutualAgreementIdArrayAreOngoing,
+		userDAO._reviewIdArrayAreOngoing, userDAO._postIdArrayNotExpired,
+		userDAO._postIdArrayExpired*/);
 	return userBO;
 }
 
