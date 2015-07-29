@@ -1,45 +1,45 @@
-<div class="row col-md-10 well">
+<div class="row col-xs-10 well">
 			<form class="form-horizontal" action="/post" method="post">
 				<fieldset>
 					<legend class="text-center">Post a Service</legend>
 
 					<!-- Name input-->
 					<div class="form-group">
-						<label class="col-md-3 control-label" for="title">Title</label>
-						<div class="col-md-9">
+						<label class="col-xs-3 control-label" for="title">Title</label>
+						<div class="col-xs-9">
 							<input id="title" name="post[title]" type="text" placeholder="Title" class="form-control">
 						</div>
 					</div>
 
 					<!-- Email input-->
 					<div class="form-group">
-						<label class="col-md-3 control-label" for="keywords">Keywords</label>
-						<div class="col-md-9">
+						<label class="col-xs-3 control-label" for="keywords">Keywords</label>
+						<div class="col-xs-9">
 							<input id="keywords" name="post[keywords]" type="text" placeholder="Keywords" class="form-control">
 						</div>
 					</div>
 
 					<!-- Message body -->
 					<div class="form-group">
-						<label class="col-md-3 control-label" for="summary">Summary</label>
-						<div class="col-md-9">
+						<label class="col-xs-3 control-label" for="summary">Summary</label>
+						<div class="col-xs-9">
 							<textarea class="form-control" id="summary" name="post[description]" placeholder="Please enter your summary here..." rows="5"></textarea>
 						</div>
 					</div>
 
 					<!-- Radio input -->
 					<div class="form-group">
-						<label class="radio-inline">
+						<label class="radio-inline col-xs-3">
 							<input name="post[byWho]" value="byConsumer" type="radio"> Looking for this service!
 						</label>
-						<label class="radio-inline">
+						<label class="radio-inline col-xs-3">
 							<input name="post[byWho]" value="byProvider" type="radio" checked=""> Providing this service!
 						</label>
 					</div>
 
 					<!-- Form actions -->
 					<div class="form-group">
-						<div class="col-md-12 text-right">
+						<div class="col-xs-12 text-right">
 							<button type="submit" class="btn btn-primary btn-lg">Submit</button>
 						</div>
 					</div>
