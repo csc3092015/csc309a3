@@ -8,14 +8,15 @@
 </head>
 <body>
 	<% include ../partials/searchBar.ejs %>
-	<!-- <% include ../partials/logout.ejs %> -->
-	<!-- <% include ../partials/userPanel.ejs %> -->
-	<ul>
-		<% postBOs.forEach(function(postBO) { %>
-		<li>
-			<% include ../partials/postRender.ejs %>
-		</li>
-		<% }); %>
-	</ul>
+	<div class="container">
+		<% include ../partials/userPanel.ejs %> 
+		<ul>
+			<% postBOs.forEach(function(postBO) { %>
+			<li>
+				<% include ../partials/postRender.ejs %>
+			</li>
+			<% }); %>
+		</ul>
+	</div>
 </body>
 </html>

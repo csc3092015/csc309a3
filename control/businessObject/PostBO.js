@@ -1,10 +1,11 @@
 var PostDAO = require('./../../model/dao/PostDAO.js');
+var Converter = require('./../../model/Converter.js');
 var util = require('./../util.js');
 var Errors = require('./../Errors.js');
 var PostEnum = require('./../Enum.js').PostEnum;
 
  /*******************************Dummy Constructor**************************************/ 
-function PostBO (title, keywordsArray, description, authorId, byWho, createdAt){
+function PostBO (title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
 	this._title = title;
 	this._keywordsArray = keywordsArray;
 	this._description = description;
@@ -17,8 +18,8 @@ function PostBO (title, keywordsArray, description, authorId, byWho, createdAt){
 	//this._rating = rating;
 	//this._totalNumReviews = totalNumReviews;
 	this._byWho = byWho;
-	this._isPurchased = PostEnum.isNotPurchased;
-	this._isExpired = PostEnum.isNotExpired;
+	this._isPurchased = isPurchased;
+	this._isExpired = isExpired;
 	this._createdAt = createdAt;
 }
 
@@ -36,9 +37,9 @@ PostBO.findPosts = function(keywordsArray, callback){
 
 /*******************************Instance Method**************************************/
 PostBO.prototype.save = function(callback){
-	var newPostDAO = PostDAO.create(this.getTitle(), this.getKeywordsArray(), this.getDescription(), this.getAuthorId(), this.getByWho(), 
-		this.getIsPurchased(), this.getIsExpired(), this.getCreatedAt());
+	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
 	newPostDAO.save(function(err, postDAO){
+		// var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
 		callback(err, postDAO);
 	});
 }
