@@ -42,16 +42,20 @@ var postFormHandler = function(req, res){
 	var autherId = req.user._userId;
 
 	var byWho = PostEnum[req.body.post.byWho];
+	var isPurchased = PostEnum.isNotPurchased;
+	var isExpired = PostEnum.isNotExpired;
 	var createdAt = new Date().getTime();
-	var newPost = new PostBO(title, keywordsArray, description, autherId, byWho, createdAt);
-	newPost.save(function(err, postDAO){
+	var newPostBO = new PostBO(title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
+	newPostBO.save(function(err, postDAO){
 		if(err){
 			console.error(err);
 		}
 		else{
 			if (postDAO){
+				console.log(postDAO.createdAt);
 				var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
-				res.render('postSubmit.ejs', {
+				console.log(postBO._createdAt);
+				res.render('postAfterSubmit.ejs', {
 					user : req.user,
 					postBO: postBO
 				});

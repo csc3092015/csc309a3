@@ -23,7 +23,7 @@ var convertFromUserDAOtoUserBO = function(userDAO){
 }
 
 var convertFromPostBOtoPostDAO = function(postBO){
-	var postDAO = PostDAO.create(postBO.getTitle(), postBO.getKeywordsArray(), postBO.getDescription(), postBO.getAuthorId(), postBO.getByWho(), postBO.getIsPurchased(), postBO.getIsExpired(), postBO.getgetCreatedAt());
+	var postDAO = PostDAO.create(postBO.getTitle(), postBO.getKeywordsArray(), postBO.getDescription(), postBO.getAuthorId(), postBO.getByWho(), postBO.getIsPurchased(), postBO.getIsExpired(), postBO.getCreatedAt());
 	return postDAO;
 }
 
