@@ -62,7 +62,7 @@ UserBO.validateIdPw = function (userId, password, callback) {
 
 			// if the userId and password combination is valid,
 			// make validUserBO an equivalent UserBOBO object to the found UserDAO object
-			if (password === user._password) {
+			if (password === user.password) {
 				//validUserBO = Converter.convertFromUserDAOtoUserBO(user);
 				validUserBO = new UserBO(user._id, user._password, user._facebookId,
 					user._name, user._userIdType, user._rating);
@@ -78,7 +78,7 @@ UserBO.validateIdPw = function (userId, password, callback) {
 // callback(err, validUserBO);
 // validUserBO is null when no corresponding user is found
 UserBO.validateFbId = function (facebookId, email, name, callback) {
-	UserDAO.findOne( { '_facebookId' : facebookId }, function (err, user) {
+	UserDAO.findOne( { 'facebookId' : facebookId }, function (err, user) {
 		if (err) {
 			return callback(err);
 		}

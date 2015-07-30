@@ -145,7 +145,7 @@ module.exports = function (passport) {
                     }
 
                     if (existing) {
-                        return done(null, false, req.flash('signupMessage', 
+                        return done(null, false, req.flash('fbSignupMessage', 
                             'Email is already taken!'));
                     }
 

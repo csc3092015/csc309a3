@@ -5,11 +5,11 @@ var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
 /************************ Table Schema *************************/
 var userDAOSchema = new Schema({
 	_id : { type: String, trim: true },
-	_password : {type: String/*, required: true*/},
-	_facebookId : { type: String },
-	_name : { type: String, trim: true },
-	_userIdType : { type: Number }, //0 for normal user, 1 for admin
-	_rating : { type: Number }/*,
+	password : {type: String/*, required: true*/},
+	facebookId : { type: String },
+	name : { type: String, trim: true },
+	userIdType : { type: Number }, //0 for normal user, 1 for admin
+	rating : { type: Number }/*,
 	_circleIdArray : [Schema.Types.ObjectId],
 	_mutualAgreementIdArrayAreOngoing : [Schema.Types.ObjectId],
 	_reviewIdArrayAreOngoing : [Schema.Types.ObjectId],
@@ -33,17 +33,17 @@ userDAOSchema.statics.create = function(userId, password, facebookId, name,
 	reviewIdArrayAreOngoing, postIdArrayNotExpired, postIdArrayExpired*/){
 	return new UserDAO({
 		_id : userId,
-		_password : password,
-		_facebookId : facebookId,
-		_name : name,
-		_userIdType : userIdType,
-		_rating : rating, // -1 rating before rated!
+		password : password,
+		facebookId : facebookId,
+		name : name,
+		userIdType : userIdType,
+		rating : rating, // -1 rating before rated!
 		/*
-		_circleIdArray : circleIdArray,
-		_mutualAgreementIdArrayAreOngoing : mutualAgreementIdArrayAreOngoing,
-		_reviewIdArrayAreOngoing : reviewIdArrayAreOngoing,
-		_postIdArrayNotExpired : postIdArrayNotExpired,
-		_postIdArrayExpired : postIdArrayExpired
+		circleIdArray : circleIdArray,
+		mutualAgreementIdArrayAreOngoing : mutualAgreementIdArrayAreOngoing,
+		reviewIdArrayAreOngoing : reviewIdArrayAreOngoing,
+		postIdArrayNotExpired : postIdArrayNotExpired,
+		postIdArrayExpired : postIdArrayExpired
 		*/
 	});
 };
