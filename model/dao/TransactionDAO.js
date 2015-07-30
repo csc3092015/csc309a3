@@ -13,7 +13,7 @@ var transactionDAOSchema = new mongoose.Schema({
 	mutualAgreementId: {type: String, required: true},
 	consumerReviewId: {type: String, required: false},
 	providerReviewId: {type: String, required: false},
-	creationDate: {type: int, required: true}
+	// creationDate: {type: int, required: true}
 }, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.TRANSACTIONS, _id: true});
 
 transactionDAOSchema.statics.create = function(postId, providerId, consumerId, mutualAgreementId, consumerReviewId, providerReviewId, creationDate){
@@ -36,7 +36,7 @@ transactionDAOSchema.statics.create = function(postId, providerId, consumerId, m
 */
 
 
-
+console.log(mongoose.Types.ObjectId('55ba5d111db22b507b052591').valueOf());
 var TransactionDAO = mongoose.model("TransactionDAO", transactionDAOSchema);
 
 module.exports = TransactionDAO;

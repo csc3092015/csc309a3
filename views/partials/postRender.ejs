@@ -1,10 +1,13 @@
 <div class="row well">
-	<h1>
-		<%= postBO.getTitle(); %>
-	</h1>
+	<h2>
+		Title: <%= postBO.getTitle(); %>
+	</h2>
+	<p>
+		PostId: <%= postBO.getPostId(); %>
+	</p>
 	<p>
 		Keywords: <%= postBO.getKeywordsArray();%>
-	<p>
+	</p>
 	<p>
 		Description: <%= postBO.getDescription();%>
 	</p>
