@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
 var util = require('./../../control/util.js');
-var Converter = require('./../Converter.js');
 
 /************************ Table Schema *************************/
 var postDAOSchema = new mongoose.Schema({
@@ -90,8 +89,7 @@ postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray
 
 postDAOSchema.statics.findPosts = function(criteriaDictionary, callback){
 	this.find(criteriaDictionary, function(err, postDAOArray){
-		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray)
-		callback(err, postBOArray);
+		callback(err, postDAOArray);
 	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
 }
 
