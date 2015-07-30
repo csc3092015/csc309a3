@@ -6,17 +6,13 @@
 	<% include ../partials/header.ejs %>
 </head>
 <body>
-	<% include ../partials/searchBar.ejs %>
 	<div class="container-fluid">
-
-		<div class="col-md-3">
-			<% include ../partials/sidebar.ejs %>
-		</div>
-
-		<div class="profile-content col-md-9">
+		<% include ../partials/searchBar.ejs %>
+		<% include ../partials/sidebar.ejs %>
+		
+		<div class="profilecontent col-md-9">
 			<% include ../partials/postSubmit.ejs %>   
 		</div> 
-
 	</div>
 </body>
 </html>
