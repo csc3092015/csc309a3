@@ -28,7 +28,7 @@ var keywordsSearchHandler = function(req, res){
 				postBOs.push(Converter.convertFromPostDAOtoPostBO(postDAOs[i]));
 			};
 			res.render('postSearchResult.ejs', {
-				user : req.user,
+				userBO : req.user,
 				postBOs: postBOs
 			});
 		}
@@ -52,11 +52,9 @@ var postFormHandler = function(req, res){
 		}
 		else{
 			if (postDAO){
-				console.log(postDAO.createdAt);
 				var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
-				console.log(postBO._createdAt);
 				res.render('postAfterSubmit.ejs', {
-					user : req.user,
+					userBO : req.user,
 					postBO: postBO
 				});
 			} else{

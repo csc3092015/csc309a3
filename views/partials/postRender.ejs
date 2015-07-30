@@ -23,4 +23,12 @@
 	<p>
 		CreatedAt: <%= postBO.getCreatedAt();%>
 	</p>
+
+	<%if (postBO.getAuthorId() !== userBO._userId) { %>
+		<form action="/interested" method="post">
+			<button type="submit" class="btn btn-default">
+				Interested
+			</button>
+		</form>
+	<% } %>
 </div>

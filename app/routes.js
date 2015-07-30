@@ -28,13 +28,13 @@ module.exports = function (app, passport) {
 	// home page for logged in users
 	app.get('/home', redirectVisitor, function (req, res) {
 		res.render('home.ejs', {
-			user : req.user
+			userBO : req.user
 		});
 	});
 
 	app.get('/profile', redirectVisitor, function (req, res) {
 		res.render('profile.ejs', {
-			user : req.user
+			userBO : req.user
 		});
 	});
 
@@ -90,8 +90,14 @@ module.exports = function (app, passport) {
     	routesHandler.postFormHandler(req, res);
 	});
 
+
+    // doing a search
 	app.post('/search', function(req, res){
 		routesHandler.keywordsSearchHandler(req, res);
 	});
 
+	// click interested, create mutual agreement
+	app.post('/interested', function(req, res){
+		routesHandler.establishMutualAgreement(req, res);
+	});
 }
