@@ -3,9 +3,14 @@ var Converter = require('./../../model/Converter.js');
 var util = require('./../util.js');
 var Errors = require('./../Errors.js');
 var PostEnum = require('./../Enum.js').PostEnum;
+// see http://docs.mongodb.org/manual/reference/object-id/
+var ObjectId = require('mongoose').Types.ObjectId;
 
  /*******************************Dummy Constructor**************************************/ 
-function PostBO (title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
+function PostBO (postId, title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
+	// to make it independent to mongodb from here to views, _postId is a string
+	// but it can always be transformed back to the ObjectId Object by ObjectId(_postId)
+	this._postId = postId; // this is a String
 	this._title = title;
 	this._keywordsArray = keywordsArray;
 	this._description = description;
@@ -45,6 +50,10 @@ PostBO.prototype.save = function(callback){
 }
 
 /*******************************Dummy Getters**************************************/
+PostBO.prototype.getPostId = function(){
+	return this._postId;
+};
+
 PostBO.prototype.getTitle = function(){
 	return this._title;
 };
@@ -77,6 +86,11 @@ PostBO.prototype.getCreatedAt = function(){
 	return this._createdAt;
 };
 /*******************************Setters**************************************/
+
+PostBO.prototype.setPostId = function(newPostId){
+	this._postId = newPostId;
+};
+
 PostBO.prototype.setTitle = function(newTitle){
 	if(util.validateEmptyAndSpaceString(newTitle)){
 		this._title = newTitle;

@@ -4,6 +4,10 @@ var util = require('./../../control/util.js');
 
 /************************ Table Schema *************************/
 var postDAOSchema = new mongoose.Schema({
+	_id : {
+		type: mongoose.Schema.Types.ObjectId, 
+		trim: true 
+	},
 	title: {
 		type: String,
 		trim: true,
@@ -45,15 +49,16 @@ var postDAOSchema = new mongoose.Schema({
 	},
 	//rating : {type: float, required: true},
 	/*totalNumReviews : {type: int, required: true},*/ 
-	}, {collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.POST});
+	}, {collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.POST, _id: false});
 
 /************************ Compound Index *************************/
 // 1 here just means sort by ascending
 postDAOSchema.index({ byWho: 1, isPurchased: 1, isExpired: 1});
 
 /************************ Static Methods *************************/
-postDAOSchema.statics.create = function(title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
+postDAOSchema.statics.create = function(postId, title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
 	return new PostDAO({
+		_id: postId,
 		title: title,
 		keywordsArray: keywordsArray,
 		description: description,
