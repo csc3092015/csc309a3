@@ -26,6 +26,8 @@
 
 	<%if (postBO.getAuthorId() !== userBO._userId) { %>
 		<form action="/interested" method="post">
+			<!-- Here we really want to have hidden input about this postBO object in a secured way, Im just hard coding it for now-->
+			<input type="hidden" name="post[postBOId]" value=<%= postBO.name ? user.name : '' %>>
 			<button type="submit" class="btn btn-default">
 				Interested
 			</button>
