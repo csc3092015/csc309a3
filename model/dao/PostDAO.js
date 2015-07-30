@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
 var util = require('./../../control/util.js');
+var Converter = require('./../Converter.js');
 
 /************************ Table Schema *************************/
 var postDAOSchema = new mongoose.Schema({
@@ -76,12 +77,6 @@ postDAOSchema.statics.create = function(postId, title, keywordsArray, descriptio
 	});
 };
 
-postDAOSchema.statics.findPostsByKeywordsArray = function(keywordsArray, callback){
-	this.find({keywordsArray: {$in: keywordsArray}}, function(err, docs){
-		callback(err, docs);
-	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
-}
-
 //The parameter keywordsArray is the input from the req, the criteriaDictionary.keywordsArray is the field name in Mongoose model
 postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
 	var criteriaDictionary = {};
@@ -90,14 +85,13 @@ postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray
 	for(option in optionalDictionary){
 		criteriaDictionary[option] = {$eq: optionalDictionary[option]};
 	}
-	this.find(criteriaDictionary, function(err, docs){
-		callback(err, docs);
-	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
+	this.findPosts(criteriaDictionary, callback);
 }
 
 postDAOSchema.statics.findPosts = function(criteriaDictionary, callback){
-	this.find(criteriaDictionary, function(err, docs){
-		callback(err, docs);
+	this.find(criteriaDictionary, function(err, postDAOArray){
+		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray)
+		callback(err, postBOArray);
 	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
 }
 

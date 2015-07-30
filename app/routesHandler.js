@@ -3,6 +3,8 @@ var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
+// see http://docs.mongodb.org/manual/reference/object-id/
+var ObjectId = require('mongoose').Types.ObjectId;
 
 var keywordsSearchHandler = function(req, res){
 	// for following part refer to home.ejs and Enum.js
@@ -18,18 +20,14 @@ var keywordsSearchHandler = function(req, res){
 			optionalDictionary[key] = PostEnum[req.body.post[key]];
 		}
 	};
-	PostBO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, postDAOs){
+	PostBO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, postBOArray){
 		if(err){
 			console.error(err);
 		}
 		else{
-			var postBOs = [];
-			for (var i = postDAOs.length - 1; i >= 0; i--) {;
-				postBOs.push(Converter.convertFromPostDAOtoPostBO(postDAOs[i]));
-			};
 			res.render('postSearchResult.ejs', {
 				user : req.user,
-				postBOs: postBOs
+				postBOArray: postBOArray
 			});
 		}
 	});
@@ -45,14 +43,13 @@ var postFormHandler = function(req, res){
 	var isPurchased = PostEnum.isNotPurchased;
 	var isExpired = PostEnum.isNotExpired;
 	var createdAt = new Date().getTime();
-	var newPostBO = new PostBO(title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
-	newPostBO.save(function(err, postDAO){
+	var newPostBO = new PostBO(ObjectId().valueOf(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
+	newPostBO.save(function(err, postBO){
 		if(err){
 			console.error(err);
 		}
 		else{
-			if (postDAO){
-				var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
+			if (postBO){
 				res.render('postAfterSubmit.ejs', {
 					user : req.user,
 					postBO: postBO

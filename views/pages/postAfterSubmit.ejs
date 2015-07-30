@@ -7,10 +7,11 @@
 	<% include ../partials/header.ejs %>
 </head>
 <body>
-	<% include ../partials/searchBar.ejs %>
-	<div class="container">		
-		<% include ../partials/userPanel.ejs %> 
-		<% include ../partials/postRender.ejs %>
+	<div class="container-fluid">
+		<% include ../partials/alwaysInclude.ejs %>
+		<div class="profilecontent col-md-9">	 
+			<% include ../partials/postRender.ejs %>
+		</div>
 	</div>
 </body>
 </html>

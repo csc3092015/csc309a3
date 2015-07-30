@@ -29,23 +29,22 @@ function PostBO (postId, title, keywordsArray, description, authorId, byWho, isP
 }
 
 /*******************************Static Method**************************************/
-PostBO.findPostsByKeywordsArray = function(keywordsArray, callback){
-	PostDAO.findPostsByKeywordsArray(keywordsArray, callback);
-}
+
 PostBO.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
 	PostDAO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, callback);
 }
 
 PostBO.findPosts = function(keywordsArray, callback){
-	PostDAO.findPostsByKeywordsArray(keywordsArray, callback);
+	PostDAO.findPosts(keywordsArray, callback);
 }
 
 /*******************************Instance Method**************************************/
+// So finally now no one sees postDAO!
 PostBO.prototype.save = function(callback){
 	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
 	newPostDAO.save(function(err, postDAO){
-		// var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
-		callback(err, postDAO);
+		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
+		callback(err, postBO);
 	});
 }
 
