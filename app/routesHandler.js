@@ -62,5 +62,11 @@ var postFormHandler = function(req, res){
 	});
 }
 
+var uploadToDB = function(req, res){
+	var photo = req.body.post.file;
+	console.log(photo);
+}
+
 module.exports.keywordsSearchHandler = keywordsSearchHandler;
 module.exports.postFormHandler = postFormHandler;
+module.exports.uploadToDB = uploadToDB;

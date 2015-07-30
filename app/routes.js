@@ -98,4 +98,8 @@ module.exports = function (app, passport) {
 		routesHandler.keywordsSearchHandler(req, res);
 	});
 
+	app.post('/uploadSucceeded', function(req, res){
+		routesHandler.uploadToDB(req, res);
+	});
+
 }
