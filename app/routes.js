@@ -38,6 +38,12 @@ module.exports = function (app, passport) {
 		});
 	});
 
+	app.get('/uploadProfilePic', redirectVisitor, function (req, res) {
+		res.render('upload.ejs', {
+			user : req.user
+		});
+	});
+
 	// check is user is logged in
 	function loginStatus (req) {
 		return req.isAuthenticated();
@@ -82,8 +88,6 @@ module.exports = function (app, passport) {
             								failureRedirect : '/',
             								failureFlash: true })
     );
-
-
 
     // submitting a post
     app.post('/post', function(req, res){
