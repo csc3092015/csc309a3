@@ -3,13 +3,12 @@ var Converter = require('./../../model/Converter.js');
 var util = require('./../util.js');
 var Errors = require('./../Errors.js');
 var PostEnum = require('./../Enum.js').PostEnum;
-// see http://docs.mongodb.org/manual/reference/object-id/
-var ObjectId = require('mongoose').Types.ObjectId;
 
  /*******************************Dummy Constructor**************************************/ 
 function PostBO (postId, title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
 	// to make it independent to mongodb from here to views, _postId is a string
 	// but it can always be transformed back to the ObjectId Object by ObjectId(_postId)
+	// see http://docs.mongodb.org/manual/reference/object-id/
 	this._postId = postId; // this is a String
 	this._title = title;
 	this._keywordsArray = keywordsArray;
@@ -31,12 +30,18 @@ function PostBO (postId, title, keywordsArray, description, authorId, byWho, isP
 /*******************************Static Method**************************************/
 
 PostBO.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
-	PostDAO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, callback);
-}
+	PostDAO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, postDAOArray){
+		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
+		callback(err, postBOArray);
+	});
+};
 
 PostBO.findPosts = function(keywordsArray, callback){
-	PostDAO.findPosts(keywordsArray, callback);
-}
+	PostDAO.findPosts(keywordsArray, function(err, postDAOArray){
+		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
+		callback(err, postBOArray);
+	});
+};
 
 /*******************************Instance Method**************************************/
 // So finally now no one sees postDAO!
@@ -46,7 +51,7 @@ PostBO.prototype.save = function(callback){
 		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
 		callback(err, postBO);
 	});
-}
+};
 
 /*******************************Dummy Getters**************************************/
 PostBO.prototype.getPostId = function(){

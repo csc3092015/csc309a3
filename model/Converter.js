@@ -1,9 +1,13 @@
 var UserDAO = require('./dao/UserDAO');
 var PostDAO = require('./dao/PostDAO');
+var MutualAgreementDAO = require('./dao/MutualAgreementDAO');
 var UserBO = require('./../control/businessObject/UserBO');
 var PostBO = require('./../control/businessObject/PostBO');
+var MutualAgreementBO = require('./../control/businessObject/MutualAgreementBO');
 var ObjectId = require('mongoose').Types.ObjectId;
 
+
+/************************ User *************************/
 var convertFromUserBOtoUserDAO = function(userBO){
 	if(userBO === null){
 		return null;
@@ -29,6 +33,7 @@ var convertFromUserDAOtoUserBO = function(userDAO){
 	return userBO;
 }
 
+/************************ Post *************************/
 var convertFromPostBOtoPostDAO = function(postBO){
 	if(postBO === null){
 		return null;
@@ -61,9 +66,32 @@ var convertFromPostDAOArraytoPostBOArray = function(postDAOArray){
 	return postBOArray;
 }
 
+/************************ MutualAgreement *************************/
+var convertFromMutualAgreementDAOtoMutualAgreementBO = function(mutualAgreementDAO){
+	if(mutualAgreementDAO === null){
+		return null;
+	}
+	var mutualAgreementBO = new MutualAgreementBO(ObjectId(mutualAgreementDAO._id).valueOf(), mutualAgreementDAO.providerId, mutualAgreementDAO.consumerId, mutualAgreementDAO.description, mutualAgreementDAO.postId,
+	mutualAgreementDAO.providerConsent, mutualAgreementDAO.consumerConsent, mutualAgreementDAO.isFinalized, mutualAgreementDAO.isLocked, mutualAgreementDAO.finishAt);
+	return mutualAgreementBO;
+}
+
+var convertFromMutualAgreementBOtoMutualAgreementDAO = function(mutualAgreementBO){
+	if(mutualAgreementBO === null){
+		return null;
+	}
+	var mutualAgreementDAO = MutualAgreementDAO.create(ObjectId(mutualAgreementBO.getMutualAgreementId()), mutualAgreementBO.getProviderId(), mutualAgreementBO.getConsumerId(), mutualAgreementBO.getDescription(), mutualAgreementBO.getPostId(), mutualAgreementBO.getProviderConsent(), mutualAgreementBO.getConsumerConsent(), mutualAgreementBO.getIsFinalized(), mutualAgreementBO.getIsLocked(), mutualAgreementBO.getFinishAt());
+	return mutualAgreementDAO;
+}
+
+/************************ User *************************/
 module.exports.convertFromUserBOtoUserDAO = convertFromUserBOtoUserDAO;
 module.exports.convertFromUserDAOtoUserBO = convertFromUserDAOtoUserBO;
+/************************ Post *************************/
 module.exports.convertFromPostBOtoPostDAO = convertFromPostBOtoPostDAO;
 module.exports.convertFromPostDAOtoPostBO = convertFromPostDAOtoPostBO;
 module.exports.convertFromPostBOArraytoPostDAOArray = convertFromPostBOArraytoPostDAOArray;
 module.exports.convertFromPostDAOArraytoPostBOArray = convertFromPostDAOArraytoPostBOArray;
+/************************ MutualAgreement *************************/
+module.exports.convertFromMutualAgreementDAOtoMutualAgreementBO = convertFromMutualAgreementDAOtoMutualAgreementBO;
+module.exports.convertFromMutualAgreementBOtoMutualAgreementDAO = convertFromMutualAgreementBOtoMutualAgreementDAO;
