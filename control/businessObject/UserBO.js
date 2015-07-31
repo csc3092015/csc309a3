@@ -105,6 +105,16 @@ UserBO.findByIdAndUpdate = function(userId, updateDictionary, callback){
 	});
 };
 
+// callback is optional here
+UserBO.findById = function(userId, callback){
+	UserDAO.findById(userId, function(err, userDAO){
+		var userBO = Converter.convertFromUserDAOtoUserBO(userDAO);
+		if(callback){
+			callback(err, userBO);
+		}
+	});
+};
+
 /*******************************Instance Method**************************************/
 
 // insert user to the database

@@ -59,7 +59,7 @@ var postFormHandler = function(req, res){
 				res.send('Somehow no erro but didn\'t submit the Post!');
 			}
 		}
-	});
+	}, autherId);
 }
 
 module.exports.keywordsSearchHandler = keywordsSearchHandler;

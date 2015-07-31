@@ -1,4 +1,5 @@
 var PostDAO = require('./../../model/dao/PostDAO.js');
+var UserDAO = require('./../../model/dao/UserDAO.js');
 var Converter = require('./../../model/Converter.js');
 var util = require('./../util.js');
 var Errors = require('./../Errors.js');
@@ -51,16 +52,18 @@ PostBO.prototype.save = function(callback, authorId){
 	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
 	newPostDAO.save(function(err, postDAO){
 		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
-		callback(err, postBO);
 		if(postBO){
-			//now this post is saved, we need update its author(UserBO), so that the user remember what posts he has created
-			//do some UserBO update thing
-			// http://docs.mongodb.org/manual/reference/operator/update/addToSet/
-			var updateDictionary = {$addToSet: {postIdArray: postDAO._id}}; 
-			UserBO.findByIdAndUpdate(authorId, updateDictionary, function(err){
+			//now this post is saved, we need update its author so that it remember which post he has created
+			console.log('start to update user postIdArray for user: ' + authorId);
+			UserDAO.findById(authorId, function(err, userDAO){
 				console.log(err);
+				console.log("userDAO is: " + userDAO);
+				userDAO.postIdArray.push(postDAO);
+				console.log("postIdArray is: " + userDAO.postIdArray);
+				userDAO.save();
 			});
 		}
+		callback(err, postBO);
 	});
 };
 
