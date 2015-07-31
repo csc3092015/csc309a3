@@ -4,6 +4,8 @@ var util = require('./../util.js');
 var Errors = require('./../Errors.js');
 var PostEnum = require('./../Enum.js').PostEnum;
 
+var UserBO = require('./UserBO.js');
+
  /*******************************Dummy Constructor**************************************/ 
 function PostBO (postId, title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
 	// to make it independent to mongodb from here to views, _postId is a string
@@ -45,11 +47,18 @@ PostBO.findPosts = function(keywordsArray, callback){
 
 /*******************************Instance Method**************************************/
 // So finally now no one sees postDAO!
-PostBO.prototype.save = function(callback){
+PostBO.prototype.save = function(callback, authorId){
 	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
 	newPostDAO.save(function(err, postDAO){
 		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
 		callback(err, postBO);
+		if(postBO){
+			//now this post is saved, we need update its author(UserBO), so that the user remember what posts he has created
+			//do some UserBO update thing
+			// http://docs.mongodb.org/manual/reference/operator/update/addToSet/
+			var updateDictionary = {$addToSet: {postIdArray: postDAO._id}}; 
+			UserBO.findByIdAndUpdate(authorId, updateDictionary);
+		}
 	});
 };
 

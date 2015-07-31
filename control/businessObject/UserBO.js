@@ -3,7 +3,7 @@ var Converter = require('./../../model/Converter.js');
 
 /*******************************Dummy Constructor**************************************/ 
 
-function UserBO (userId, password, facebookId, name, userIdType, rating/*,
+function UserBO (userId, password, facebookId, name, userIdType, rating, postIdArray/*,
 	circleIdArray, mutualAgreementIdArrayAreOngoing, reviewIdArrayAreOngoing,
 	postIdArrayNotExpired, postIdArrayExpired*/) {
 	this._userId = userId;
@@ -12,6 +12,7 @@ function UserBO (userId, password, facebookId, name, userIdType, rating/*,
 	this._name = name;
 	this._userIdType = userIdType;
 	this._rating = rating;
+	this._postIdArray = postIdArray;
 	/*
 	this._circleIdArray = circleIdArray;
 	this._mutualAgreementIdArrayAreOngoing = mutualAgreementIdArrayAreOngoing;
@@ -95,6 +96,16 @@ UserBO.validateFbId = function (facebookId, email, name, callback) {
 	});
 }
 
+// callback is optional here
+UserBO.findByIdAndUpdate = function(userId, updateDictionary, callback){
+	UserDAO.findByIdAndUpdate(userId, updateDictionary, function(err, userDAO){
+		var userBO = Converter.convertFromUserDAOtoUserBO(userDAO);
+		if(callback){
+			callback(err, userBO);	
+		}
+	});
+};
+
 /*******************************Instance Method**************************************/
 
 // insert user to the database
@@ -128,31 +139,38 @@ UserBO.prototype.getUserIdType = function(){
 	return this._userIdType;
 };
 
-UserBO.prototype.getCircleIdArray = function(){
-	return this._circleIdArray;
+// these methods are not being used and can't to be used, so comment out for now
+// UserBO.prototype.getCircleIdArray = function(){
+// 	return this._circleIdArray;
+// };
+
+// UserBO.prototype.getMutualAgreementIdArrayAreOngoing = function(){
+// 	return this._mutualAgreementIdArrayAreOngoing;
+// };
+
+// UserBO.prototype.getReviewIdArrayAreOngoing = function(){
+// 	return this._reviewIdArrayAreOngoing;
+// };
+
+UserBO.prototype.getPostIdArray = function(){
+	return this._postIdArray;
 };
 
-UserBO.prototype.getMutualAgreementIdArrayAreOngoing = function(){
-	return this._mutualAgreementIdArrayAreOngoing;
-};
-
-UserBO.prototype.getReviewIdArrayAreOngoing = function(){
-	return this._reviewIdArrayAreOngoing;
-};
-
-UserBO.prototype.getPostIdArrayNotExpired = function(){
-	return this._postIdArrayNotExpired;
-};
-
-UserBO.prototype.getPostIdArrayExpired = function(){
-	return this._postIdArrayExpired;
-};
 
 /*********************************Setters****************************************/
 
 // set the UserBO object's facebook id to facebookid
 UserBO.prototype.setFbId = function (facebookId) {
-	UserBO._facebookId = facebookId;
+	// UserBO._facebookId = facebookId; (why u r making a static variable?)
+	this._facebookId = facebookId;
+}
+
+UserBO.prototype.pushPostId = function(newPostId){
+	this._postIdArray.push(newPostId);
+}
+
+UserBO.prototype.setPostIdArray = function(newPostIdArray){
+	this._postIdArray = newPostIdArray.slice();
 }
 
 module.exports = UserBO;
