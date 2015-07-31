@@ -57,7 +57,9 @@ PostBO.prototype.save = function(callback, authorId){
 			//do some UserBO update thing
 			// http://docs.mongodb.org/manual/reference/operator/update/addToSet/
 			var updateDictionary = {$addToSet: {postIdArray: postDAO._id}}; 
-			UserBO.findByIdAndUpdate(authorId, updateDictionary);
+			UserBO.findByIdAndUpdate(authorId, updateDictionary, function(err){
+				console.log(err);
+			});
 		}
 	});
 };

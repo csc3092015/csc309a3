@@ -22,9 +22,9 @@ module.exports = function (passport) {
 
     // User login session handler
     passport.serializeUser(function (user, done) {
-        // var sessionUser = new UserBO(user._userId, user._password, 
-        //     user._facebookId, user._name, user._userIdType, user._rating);
-        var sessionUser = Converter.convertFromUserDAOtoUserBO(user);
+        var sessionUser = new UserBO(user._userId, user._password, 
+            user._facebookId, user._name, user._userIdType, user._rating);
+        // var sessionUser = Converter.convertFromUserDAOtoUserBO(user);
         done(null, sessionUser);
     });
 
@@ -58,7 +58,7 @@ module.exports = function (passport) {
                 // create the user otherwise
                 else {
                     var name = req.params.name;
-                    var newUser = new UserBO(email, password, "", name, 0, -1, [], [], [], [], [], []); // so far we have 7 fields, i don't get why we are supplying extra param
+                    var newUser = new UserBO(email, password, "", name, 0, -1, [], [], [], [], []); // so far we have 7 fields, i don't get why we are supplying extra param
                     newUser.save(function (err) {
                         if (err) {
                             return done(err);
@@ -154,7 +154,7 @@ module.exports = function (passport) {
 
                     // create a new user with that facebook id
                     var newUser = new UserBO(profile.emails[0].value, "", profile.id,  
-                        profile.name.familyName, 0, -1, [], [], [], [], [], []);
+                        profile.name.familyName, 0, -1, [], [], [], [], []);
 
                     newUser.save(function (err) {
                         if (err) {

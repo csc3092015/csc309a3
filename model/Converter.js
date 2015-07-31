@@ -38,11 +38,14 @@ var convertFromUserBOtoUserDAO = function(userBO){
 		return null;
 	}
 	var userDAO = UserDAO.create(userBO.getUserId(), userBO.getPassword(), 
-		userBO.getFacebookId(), userBO.getName(), userBO.getUserIdType(), 
-		convertFromBOIdArrayToDaoIdArray(userBO.getPostIdArray())/*, 
+		userBO.getFacebookId(), userBO.getName(), userBO.getUserIdType()
+		/*, 
 		userBO.getCircleIdArray(), userBO.getMutualAgreementIdArrayAreOngoing(), 
 		userBO.getReviewIdArrayAreOngoing(), userBO.getPostIdArrayNotExpired(), 
 		userBO.getPostIdArrayExpired()*/);
+	if(userBO.getPostIdArray()){
+		userDAO.postIdArray.push.apply(userDAO.postIdArray, convertFromBOIdArrayToDaoIdArray(userBO.getPostIdArray()));
+	}
 	return userDAO;
 }
 
@@ -52,11 +55,14 @@ var convertFromUserDAOtoUserBO = function(userDAO){
 	}
 	var userBO = new UserBO(userDAO._id, userDAO._password, 
 		userDAO._facebookId, userDAO._name, userDAO._userIdType,
-		userDAO._rating, 
-		convertFromDAOIdArrayToBOIdArray(userDAO.postIdArray)/*, userDAO._circleIdArray, 
+		userDAO._rating
+		/*, userDAO._circleIdArray, 
 		userDAO._mutualAgreementIdArrayAreOngoing,
 		userDAO._reviewIdArrayAreOngoing, userDAO._postIdArrayNotExpired,
 		userDAO._postIdArrayExpired*/);
+	if(userDAO.postIdArray){
+		userBO.setPostIdArray(convertFromDAOIdArrayToBOIdArray(userDAO.postIdArray));	
+	}
 	return userBO;
 }
 

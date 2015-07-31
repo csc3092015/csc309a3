@@ -3,7 +3,7 @@ var Converter = require('./../../model/Converter.js');
 
 /*******************************Dummy Constructor**************************************/ 
 
-function UserBO (userId, password, facebookId, name, userIdType, rating, postIdArray/*,
+function UserBO (userId, password, facebookId, name, userIdType, rating/*,
 	circleIdArray, mutualAgreementIdArrayAreOngoing, reviewIdArrayAreOngoing,
 	postIdArrayNotExpired, postIdArrayExpired*/) {
 	this._userId = userId;
@@ -12,7 +12,6 @@ function UserBO (userId, password, facebookId, name, userIdType, rating, postIdA
 	this._name = name;
 	this._userIdType = userIdType;
 	this._rating = rating;
-	this._postIdArray = postIdArray;
 	/*
 	this._circleIdArray = circleIdArray;
 	this._mutualAgreementIdArrayAreOngoing = mutualAgreementIdArrayAreOngoing;
@@ -166,7 +165,11 @@ UserBO.prototype.setFbId = function (facebookId) {
 }
 
 UserBO.prototype.pushPostId = function(newPostId){
-	this._postIdArray.push(newPostId);
+	if(this._postIdArray){
+		this._postIdArray.push(newPostId);	
+	} else {
+		this._postIdArray = [newPostId];
+	}
 }
 
 UserBO.prototype.setPostIdArray = function(newPostIdArray){
