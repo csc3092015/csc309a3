@@ -22,7 +22,6 @@ var userDAOSchema = new Schema({
 /*
 	Mongoose provide static methods:
 	http://mongoosejs.com/docs/documents.html
-		document.save(funciton(err, document))
 		document.findByIdAndRemove(_id, funciton(err, document))
 		document.findByIdAndUpdate(_id, { $set: { password: 'new_pwd' }}, function (err, document))
 */
