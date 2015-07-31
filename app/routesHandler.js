@@ -5,6 +5,7 @@ var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
 // see http://docs.mongodb.org/manual/reference/object-id/
 var ObjectId = require('mongoose').Types.ObjectId;
+var fs = require('fs');
 
 var keywordsSearchHandler = function(req, res){
 	// for following part refer to home.ejs and Enum.js
@@ -63,8 +64,25 @@ var postFormHandler = function(req, res){
 }
 
 var uploadToDB = function(req, res){
-	var photo = req.body.post;
-	console.log(photo);
+	var fstream;
+	var filename = req.user._userId;
+	var fieldname = req.body;
+	var file = req.files;
+	var encoding = "multipart/form-data";
+    req.pipe(req.busboy);
+    try{
+    	req.busboy.on('file', function (fieldname, file, filename, encoding) {
+	        console.log("Uploading: " + filename); 
+	        fstream = fs.createWriteStream(__dirname + '/files/' + filename);
+	        file.pipe(fstream);
+	        fstream.on('close', function () {
+	            res.redirect('back');
+	        });
+	    });
+    }
+    catch(err){
+    	console.error(err);
+    }
 }
 
 module.exports.keywordsSearchHandler = keywordsSearchHandler;

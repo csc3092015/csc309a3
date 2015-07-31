@@ -2,6 +2,7 @@
 var express = require('express');
 var path = require('path');
 var app = express(); 
+var busboy = require('connect-busboy');
 
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
@@ -35,6 +36,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
+// Added now
+app.use(busboy());
+// End
 app.use(session(sessionOpts));
 app.use(passport.initialize());
 app.use(passport.session());
