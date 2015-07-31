@@ -63,7 +63,7 @@ var postFormHandler = function(req, res){
 }
 
 var uploadToDB = function(req, res){
-	var photo = req.body.post.file;
+	var photo = req.body.post;
 	console.log(photo);
 }
 

@@ -1,15 +1,17 @@
 <!--http://stackoverflow.com/questions/13666243/twitter-bootstrap-image-upload-with-preview-and-progress-bar-->
- <div class="fileupload fileupload-new well" data-provides="fileupload">
-	<form action="/uploadSucceeded" method="post" enctype='multipart/form-data'>
-    <span class="btn btn-file">
-    	<div class="fileupload-preview thumbnail" style="width: 200px; height: 200px;">
-			</div>
-    	<input type="file" name="post[file]">
-    	<div class="space">
-    		<p></p>
-    	</div>
-    	<button type="submit" class="btn btn-default btn-sm col-md-5">Submit</button>
-    	<button type="button" class="btn btn-default btn-sm col-md-5" style="positon: relative !important; left: 10px !important;">Cancel</button>
-    </span>
-</form>
-</div>
+<body>
+	<div class="fileupload fileupload-new well" data-provides="fileupload">
+		<form action="/uploadSucceeded" method="post">
+			<span class="btn btn-file">
+				<div class="fileupload-preview thumbnail" style="width: 200px; height: 200px;">
+				</div>
+				<input type='file' name='post'/>
+				<div class="space">
+		    		<p></p>
+		    	</div>
+				<input type='submit' class="btn btn-default btn-sm col-md-5" value="Submit"/></form>
+				<button type="button" class="btn btn-default btn-sm col-md-5" style="positon: relative !important; left: 10px !important;">Cancel</button>
+			</span>
+		</form>
+	</div>
+</body>
