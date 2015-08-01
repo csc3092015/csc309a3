@@ -1,6 +1,6 @@
 <% if(typeof postBOByConsumerArray != 'undefined'){ %>
 	<div class="well"> 
-		<h1>Here are some people may want Your Service!!</h1>
+		<h1>People who may want what you provide.</h1>
 		<ul>
 			<% postBOByConsumerArray.forEach(function(postBO) { %>
 			<li>
@@ -11,7 +11,7 @@
 	</div>
 <% } if (typeof postBOByProviderArray != 'undefined'){ %> 
 	<div class="well"> 
-	   	<h1>Here are some people may provide what Your Want!!</h1>
+	   	<h1>People who may provide what you want.</h1>
 	   	<ul>
 			<% postBOByProviderArray.forEach(function(postBO) { %>
 			<li>
@@ -22,7 +22,7 @@
 	</div>
 <% } if (typeof postBOFeaturedArray != 'undefined') {%>
 	<div class="well"> 
-   <h1>Here are just some random posts not yours!!</h1>
+   		<h1>Random Posts</h1>
 	   	<ul>
 			<% postBOFeaturedArray.forEach(function(postBO) { %>
 			<li>
