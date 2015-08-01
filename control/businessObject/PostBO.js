@@ -54,12 +54,9 @@ PostBO.prototype.save = function(callback, authorId){
 		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
 		if(postBO){
 			//now this post is saved, we need update its author so that it remember which post he has created
-			console.log('start to update user postIdArray for user: ' + authorId);
 			UserDAO.findById(authorId, function(err, userDAO){
-				console.log(err);
-				console.log("userDAO is: " + userDAO);
+				console.error(err);
 				userDAO.postIdArray.push(postDAO);
-				console.log("postIdArray is: " + userDAO.postIdArray);
 				userDAO.save();
 			});
 		}
