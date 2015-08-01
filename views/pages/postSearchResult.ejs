@@ -3,13 +3,13 @@
 <!-- views/home.ejs -->
 <!doctype html>
 <html>
-	<% include ../partials/header.ejs %>
+<% include ../partials/header.ejs %>
 <body>
 	<div class="container-fluid">
 		<% include ../partials/alwaysInclude.ejs %>
 		<div class="profilecontent col-md-9">
 			<ul>
-				<% postBOArray.forEach(function(postBO) { %>
+				<% postBOs.forEach(function(postBO) { %>
 				<li>
 					<% include ../partials/postRender.ejs %>
 				</li>
