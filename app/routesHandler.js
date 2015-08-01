@@ -64,25 +64,9 @@ var postFormHandler = function(req, res){
 }
 
 var uploadToDB = function(req, res){
-	var fstream;
-	var filename = req.user._userId;
-	var fieldname = req.body;
-	var file = req.files;
-	var encoding = "multipart/form-data";
-    req.pipe(req.busboy);
-    try{
-    	req.busboy.on('file', function (fieldname, file, filename, encoding) {
-	        console.log("Uploading: " + filename); 
-	        fstream = fs.createWriteStream(__dirname + '/files/' + filename);
-	        file.pipe(fstream);
-	        fstream.on('close', function () {
-	            res.redirect('back');
-	        });
-	    });
-    }
-    catch(err){
-    	console.error(err);
-    }
+	req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+    	console.log(file);
+  	});
 }
 
 module.exports.keywordsSearchHandler = keywordsSearchHandler;
