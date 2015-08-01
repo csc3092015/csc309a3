@@ -32,7 +32,7 @@ module.exports = function (app, passport) {
 
 	app.get('/profile', redirectVisitor, function (req, res) {
 		res.render('profile.ejs', {
-			user : req.user
+			userBO : req.user
 		});
 	});
 
@@ -93,15 +93,50 @@ module.exports = function (app, passport) {
             								failureFlash: true })
     );
 
-
-
     // submitting a post
     app.post('/post', function(req, res){
     	routesHandler.postFormHandler(req, res);
 	});
 
+
+    // doing a search
 	app.post('/search', function(req, res){
 		routesHandler.keywordsSearchHandler(req, res);
+	});
+
+	// click interested, create mutual agreement
+	app.post('/interested', function(req, res){
+		routesHandler.establishMutualAgreement(req, res);
+	});
+
+	app.get("/serviceAgreement/:mutualAgreementId(^[0-9a-fA-F]{24}$)", redirectVisitor, function(req, res){
+		routesHandler.mutualAgreementInfoHandler(req, res);
+	});
+
+	app.post("/serviceAgreement/:mutualAgreementId(^[0-9a-fA-F]{24}$/change)", redirectVisitor, function(req, res){
+		routesHandler.mutualAgreementInfoUpdateHandler(req, res);
+	});
+
+	
+
+	// Error handler
+	app.get('*', function (req, res, next) {
+		var err = new Error();
+		err.status = 404;
+		next(err);
+	});
+
+	app.use(function(err, req, res, next){
+	  if (err.status == 404) {
+	  	res.render('404.ejs', { error: err });
+	  } 
+	  else if (err.status == 403) {
+	  	res.render('403.ejs', { error: err });
+	  } 
+	  else {
+	  	res.status(err.status || 500);
+	  	res.render('500.ejs', { error: err });
+	  }
 	});
 
 }

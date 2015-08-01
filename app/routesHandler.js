@@ -1,7 +1,10 @@
 var UserBO = require('./../control/businessObject/UserBO.js');
 var PostBO = require('./../control/businessObject/PostBO.js');
+var MutualAgreementBO = require('./../control/businessObject/MutualAgreementBO.js');
 var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
+var UserTypeEnum = require('./../control/Enum.js').UserTypeEnum;
+var UserRoleEnum = require('./../control/Enum.js').UserRoleEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
 // see http://docs.mongodb.org/manual/reference/object-id/
@@ -161,6 +164,84 @@ var postFormHandler = function(req, res){
 	}, autherId);
 }
 
+/**************************Mutual Agreement Handling*************************************/
+
+// depending on the user's identity, load the mutual agreement page or deny access.
+// in event of permitted access, set up socket.io for real-time agreement updates.
+var mutualAgreementInfoHandler = function(req, res) {
+	var mutualAgreementId = req.params.mutualAgreementId;
+	MutualAgreementBO.findById(mutualAgreementId, function(err, mutualAgreementBO){
+		if (err) {
+			console.error(err);
+		}
+
+		if (mutualAgreementBO) {
+			var userId = req.user._userId;
+			var userRole = UserRoleEnum["noAccess"];	
+			// user role is consumer, provider w.r.t. 
+			// mutual agreement, or neither but is 
+			// admin, or do not have permission to view
+			// agreement
+
+			// check accessing user's role
+			if (userId === mutualAgreementBO.getConsumerId()) {
+				userRole = UserRoleEnum["consumer"];
+			} else if (userId === mutualAgreementBO.getProviderId()) {
+				userRole = UserRoleEnum["provider"];
+			} else if (req.user._userIdType === UserTypeEnum["admin"]) {
+				userRole = UserRoleEnum["adminOnly"];
+			}
+
+			// display insufficient permissions page if user has no permission
+			// to view the mutual agreement
+			if (UserRoleEnum.getName(userRole) === "noAccess") {
+				// trigger a 403 forbidden error since user
+				// has no access to this mutual agreement
+				var err = new Error();
+				err.status = 403;
+				next(err);
+			} else {
+
+				var postTitle = PostBO.findPostById(mutualAgreementBO.getPostId(),
+					function(err, postBO) {
+						if (err) {
+							console.error(err);
+						} else {
+							return postBO.getTitle();
+						}
+					});
+
+				// set up a new mutual agreement namespace for clients to connect
+				var agreementNsp = io.of('/mutualAgreement/' + mutualAgreementId);
+
+				// set up socket event handlers
+				agreementNsp.on('connection', function(socket) {
+					console.log(req.user._userId + ' connected to socket ' 
+						+ 'for agreement ID ' + mutualAgreementId);
+				});
+
+				res.render('mutualAgreement.ejs', {
+					userRole : userRole,
+					userBO : req.user,
+					mutualAgreementBO : mutualAgreementBO,
+					postTitle : postTitle
+				});
+
+			}
+		} else {
+			// trigger a 404 error since mutual agreement
+			// does not exist
+			var err = new Error();
+			err.status = 404;
+			next(err);
+		}
+	});
+}
+
+var mutualAgreementInfoUpdateHandler = function(req, res) {
+
+}
+
 /**************************General Helper*************************************/
 
 
@@ -175,3 +256,7 @@ module.exports.keywordsSearchHandler = keywordsSearchHandler;
 
 /**************************Submit a New Post*************************************/
 module.exports.postFormHandler = postFormHandler;
+
+/**************************Mutual Agreement Page*************************************/
+module.exports.mutualAgreementInfoHandler = mutualAgreementInfoHandler;
+module.exports.mutualAgreementInfoUpdateHandler = mutualAgreementInfoUpdateHandler;

@@ -1,0 +1,140 @@
+<!-- Mutual Agreement Page -->
+
+<%	// Requirements: userBO, userRole, mutualAgreementBO, postTitle from render
+	var myIdentity = userRoleEnum.getName(userRole);
+	var providerId = mutualAgreementBO.getProviderId();
+	var consumerId = mutualAgreementBO.getConsumerId();
+	var providerLink = "/" + providerId.replace("@", "%40"); 
+	var consumerLink = "/" +  consumerId.replace("@", "%40"); 
+	var postLink = "/" +  mutualAgreementBO.getPostId(); 
+	var finishAt = new Date(mutualAgreementBO.getFinishAt());
+	var finishDate = finishAt.day + "/" + finishAt.month + "/" + finishAt.year + " (date/month/year)";
+	var description = mutualAgreementBO.getDescription();
+	var providerConsent = mutualAgreementBO.getProviderConsent();
+	var consumerConsent = mutualAgreementBO.getConsumerConsent();
+	var isFinalized = mutualAgreementBO.getIsFinalized();
+	var isLocked = mutualAgreementBO.getIsLocked();
+	var curURL = '/mutualAgreement/' + mutualAgreementId;
+	var data;	// holds the post data
+
+	// connect to socket.io for this mutual agreement for updates
+	var socket = io.connect(curURL);
+
+	function setUpSocketResponses() {
+		socket.on('provider consent change', function (receivedData) {
+			providerConsent = receivedData.newProviderConsent;
+			$('#providerConsent').attr('checked', providerConsent);
+		})
+
+		socket.on('consumer consent change', function (receivedData) {
+			consumerConsent = receivedData.newConsumerConsent;
+			$('#consumerConsent').attr('checked', consumerConsent);
+		})
+
+		socket.on('finalize', function (receivedData) {
+			isFinalized = receivedData.finalized;
+			$('#finalizeButton').attr('checked', providerConsent);
+			finalizeButtons();
+		})
+	}
+
+	function changeClass(jQueryObj, newClass) {
+		var curClass = jQueryObj.attr('class');
+		jQueryObj.removeClass(curClass);
+		jQueryObj.addClass(newClass);
+		return jQueryObj;
+	}
+
+	// switch buttons to finalized mode by preventing further changes 
+	// and display green, finalized button as feedback
+	function finalizeButtons() {
+		$('[name="agreementButton"]').attr("disabled", true);
+		changeClass($('#finalizeButton').text("Finalized"), "btn btn-success btn-lg");
+	}
+
+	$(document).ready(function(){
+		// since buttons and toggles are disabled by default,
+		// check if they should be enabled based on the 
+		// mutual agreement attributes, and set up
+		// onclick events if the agreement is not finalized
+		if (!isFinalized) {
+			// set up onclick events
+			$(function(){
+				// prepare the changes for agreement updates
+				setUpSocketResponses();
+
+				$('#providerConsent').click(function(event) {
+					// prevent redirect
+					event.preventDefault();
+					providerConsent = !providerConsent;
+					data = {
+						newProviderConsent : providerConsent
+					};
+					$.post(curURL + "/change", data, function(){
+						console.log("provider consent successfully changed");
+						socket.emit('provider consent change', { newProviderConsent: providerConsent });
+					});
+				});
+
+				$('#consumerConsent').click(function(event) {
+					// prevent redirect
+					event.preventDefault();
+					consumerConsent = !consumerConsent;
+					data = {
+						newConsumerConsent : consumerConsent
+					};
+					$.post(curURL + "/change", data, function(){
+						console.log("consumer consent successfully changed");
+						socket.emit('consumer consent change', { newConsumerConsent: consumerConsent });
+					});
+				});
+
+				// when finalize is clicked, disable all buttons, 
+				$('#finalizeButton').click(function(event) {
+					// prevent redirect
+					event.preventDefault();
+					isFinalized = true;
+					data = {
+						finalized : true
+					};
+					$.post(curURL + "/change", data, function(){
+						console.log("mutual agreement successfully finalized");
+						socket.emit('finalize', { finalized: true });
+					});
+				});
+			});
+			
+			// set up buttons according to mutual agreement status
+			if (!isLocked) {
+				$("#editButton").attr("disabled", false);
+			}
+			if (providerConsent) {
+				$("#providerConsent").attr("checked", true);
+			}
+			if (consumerConsent) {
+				$("#consumerConsent").attr("checked", true);
+			}
+			if (providerConsent && consumerConsent) {
+				$('#finalizeButton').attr("disabled", false);
+			}
+		// if finalized
+		} else {
+			finalizeButtons();
+		}
+	});
+
+
+%>
+
+<!doctype html>
+<html>
+<head>
+	<% include ../partials/header.ejs %>
+</head>
+<body>
+	<div class="row col-xs-10 well">
+	<% include ../partials/mutualAgreementTop.ejs %>
+	<% include ../partials/mutualAgreementInfo.ejs %>
+	</div>
+</body>
+</html>
