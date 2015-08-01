@@ -1,25 +1,32 @@
-<div class="row col-xs-10 well">
-	<form class="form-horizontal" action="/post" method="post">
-		<fieldset>
-			<legend class="text-center">Mutual Agreement</legend>
+<form class="form-horizontal" action="/post" method="post">
+<fieldset>
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="finishDate">Service Finish Date:</label>
+		<div class="col-sm-5">
+			<input type="date" id="myDate" value=<%= finishAt %>>
+		</div>
+	</div>
 
-			<!-- Message body -->
-			<div class="form-group">
-				<label class="col-xs-3 control-label">Agreement</label>
-				<div class="col-xs-9">
-					<textarea class="form-control" id="agreement" name="post[agreement]" placeholder="Here are the additional agreement in addition to original post" rows="5"></textarea>
-				</div>
+	<p>Service Finish Date: </p>
+	<p>Description:
+		<!-- Message body -->
+		<div class="form-group">
+			<label class="col-xs-3 control-label">Agreement</label>
+			<div class="col-xs-9">
+				<textarea class="form-control" id="agreement" name="post[agreement]" placeholder="Tailored description of this service" rows="5"><%= mutualAgreementBO.getDescription() %></textarea>
 			</div>
+		</div>
+	</p>
 
-			<!-- Form actions -->
-			<div class="form-group">
-				<div class="col-xs-12 text-right">
-					<button type="button" class="btn btn-default">Agree</button>
-				</div>
-				<div class="col-xs-12 text-right">
-					<button type="submit" class="btn btn-primary btn-lg">Submit</button>
-				</div>
-			</div>
-		</fieldset>
-	</form>
-</div>
+	<!-- Form actions -->
+	<div class="form-group">
+		<div class="col-xs-12 text-center">
+			<button type="submit" name="editButton" class="btn btn-primary btn-lg" value="editSubmit">Submit</button>
+		</div>
+		<div class="col-xs-12 text-center">
+			<button type="submit" name="editButton" class="btn btn-primary btn-lg" value="editCancel">Cancel</button>
+		</div>
+	</div>
+
+</fieldset>
+</form>

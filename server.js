@@ -12,6 +12,9 @@ var flash = require('connect-flash');
 var database = require('./model/database.js');
 var connected = false;
 
+var io = require('socket.io')(app);
+var fs = require('fs');
+
 // get configurations
 require('./config/passport')(passport);
 var sessionOpts = {

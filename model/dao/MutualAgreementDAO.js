@@ -4,6 +4,10 @@ var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
 
 /************************ Table Schema *************************/
 var mutualAgreementDAOSchema = new Schema({
+	_id : {
+		type: Schema.Types.ObjectId, 
+		trim: true 
+	},
 	providerId : {
 		type: String,
 		ref: "UserDAO",
@@ -38,29 +42,37 @@ var mutualAgreementDAOSchema = new Schema({
 	isFinalized : {
 		type: Boolean,
 		required: true
+	},
+	isLocked : {
+		type: Boolean,
+		required: true
+	},
+	finishAt : {
+		type: Number,
+		required: true
 	}
-}, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.MUTUAL_AGREEMENT});
-
+}, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.MUTUAL_AGREEMENT, _id: false});
 /************************ Static Methods *************************/
 /*
 	Mongoose provide static methods:
 	http://mongoosejs.com/docs/documents.html
-		document.save(funciton(err, document))
 		document.findByIdAndRemove(_id, funciton(err, document))
 		document.findByIdAndUpdate(_id, { $set: { password: 'new_pwd' }}, function (err, document))
 */
 
-// create a new mutualAgreementDAOSchema
-mutualAgreementDAOSchema.statics.create = function(providerId, consumerId, description, postId,
-	providerConsent, consumerConsent, isFinalized){
+mutualAgreementDAOSchema.statics.create = function(mutualAgreementId, providerId, consumerId, description, postId,
+	providerConsent, consumerConsent, isFinalized, isLocked, finishAt){
 	return new MutualAgreementDAO({
+		_id: mutualAgreementId,
 		providerId : providerId,
 		consumerId : consumerId,
 		description : description,
 		postId : postId,
 		providerConsent : providerConsent,
 		consumerConsent : consumerConsent,
-		isFinalized: isFinalized
+		isFinalized: isFinalized,
+		isLocked: isLocked,
+		finishAt: finishAt
 	});
 };
 

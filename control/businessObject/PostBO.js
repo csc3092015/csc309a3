@@ -5,7 +5,11 @@ var Errors = require('./../Errors.js');
 var PostEnum = require('./../Enum.js').PostEnum;
 
  /*******************************Dummy Constructor**************************************/ 
-function PostBO (title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
+function PostBO (postId, title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
+	// to make it independent to mongodb from here to views, _postId is a string
+	// but it can always be transformed back to the ObjectId Object by ObjectId(_postId)
+	// see http://docs.mongodb.org/manual/reference/object-id/
+	this._postId = postId; // this is a String
 	this._title = title;
 	this._keywordsArray = keywordsArray;
 	this._description = description;
@@ -24,27 +28,43 @@ function PostBO (title, keywordsArray, description, authorId, byWho, isPurchased
 }
 
 /*******************************Static Method**************************************/
-PostBO.findPostsByKeywordsArray = function(keywordsArray, callback){
-	PostDAO.findPostsByKeywordsArray(keywordsArray, callback);
-}
-PostBO.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
-	PostDAO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, callback);
-}
 
-PostBO.findPosts = function(keywordsArray, callback){
-	PostDAO.findPostsByKeywordsArray(keywordsArray, callback);
-}
-
-/*******************************Instance Method**************************************/
-PostBO.prototype.save = function(callback){
-	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
-	newPostDAO.save(function(err, postDAO){
-		// var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
-		callback(err, postDAO);
+PostBO.findPostById = function(postId, callback){
+	PostDAO.findPostById(postId, function(err, postDAO) {
+		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
+		callback(err, postBO);
 	});
 }
 
+PostBO.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
+	PostDAO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, postDAOArray){
+		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
+		callback(err, postBOArray);
+	});
+};
+
+PostBO.findPosts = function(keywordsArray, callback){
+	PostDAO.findPosts(keywordsArray, function(err, postDAOArray){
+		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
+		callback(err, postBOArray);
+	});
+};
+
+/*******************************Instance Method**************************************/
+// So finally now no one sees postDAO!
+PostBO.prototype.save = function(callback){
+	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
+	newPostDAO.save(function(err, postDAO){
+		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
+		callback(err, postBO);
+	});
+};
+
 /*******************************Dummy Getters**************************************/
+PostBO.prototype.getPostId = function(){
+	return this._postId;
+};
+
 PostBO.prototype.getTitle = function(){
 	return this._title;
 };
@@ -77,6 +97,11 @@ PostBO.prototype.getCreatedAt = function(){
 	return this._createdAt;
 };
 /*******************************Setters**************************************/
+
+PostBO.prototype.setPostId = function(newPostId){
+	this._postId = newPostId;
+};
+
 PostBO.prototype.setTitle = function(newTitle){
 	if(util.validateEmptyAndSpaceString(newTitle)){
 		this._title = newTitle;

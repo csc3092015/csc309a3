@@ -1,0 +1,68 @@
+<!--
+User Profile Sidebar by @keenthemes
+A component of Metronic Theme - #1 Selling Bootstrap 3 Admin Theme in Themeforest: http://j.mp/metronictheme
+Licensed under MIT
+-->
+<div class="row-fluid well float-left col-md-3">
+	<div class="profile-sidebar">
+		<!-- SIDEBAR USERPIC -->
+		<div class="profile-userpic">
+			<img src="http://keenthemes.com/preview/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg" class="img-responsive" alt="">
+		</div>
+		<!-- END SIDEBAR USERPIC -->
+		<!-- SIDEBAR USER TITLE -->
+		<div class="profile-usertitle">
+			<div class="profile-usertitle-name">
+					<p>
+			        <strong>email</strong>: <%= user._userId %> <!--<br>
+			        <strong>password</strong>: <%= user._password %>-->
+					</p>
+			</div>
+		</div>
+		<!-- END SIDEBAR USER TITLE -->
+		<!-- SIDEBAR BUTTONS -->
+		<div class="profile-userbuttons">
+			<div id="userFunctions">
+				<button type="button" class="btn btn-success btn-sm">Follow</button>
+				<button type="button" class="btn btn-primary btn-sm">Message</button>
+			</div>
+			<div class="space">
+				<p></p>
+			</div>
+			<div id="logout">
+			 	<form action="/logout" method="get">
+					<button type="submit" class="btn btn-danger btn-sm">Logout</button>
+				</form>
+			</div>
+		</div>
+		<!-- END SIDEBAR BUTTONS -->
+		<!-- SIDEBAR MENU -->
+		<div class="profile-usermenu">
+			<ul class="nav">
+				<li class="">
+					<a href="/home">
+					<i class="glyphicon glyphicon-home"></i>
+					Home </a>
+				</li>
+				<li>
+					<a href="/Profile">
+					<i class="glyphicon glyphicon-user"></i>
+					Profile </a>
+				</li>
+				<li>
+					<a href="/Circle" target="_blank">
+					<i class="glyphicon glyphicon-record"></i>
+					Circle </a>
+				</li>
+				<li>
+					<a href="">
+					<i class="glyphicon glyphicon-flag"></i>
+					Help </a>
+				</li>
+			</ul>
+		</div>
+		<!-- END MENU -->
+	</div>
+</div>
+<br>
+<br>

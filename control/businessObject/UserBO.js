@@ -27,7 +27,7 @@ function UserBO (userId, password, facebookId, name, userIdType, rating/*,
 // callback(err, valid);
 // valid is a bool denoting whether userId already exists
 UserBO.validateId = function (userId, callback) {
-	UserDAO.findById(userId, function (err, user) {
+	UserDAO.findById(userId, function (err, userDAO) {
 		// in event of error, callback with error 
 		if (err) {
 			callback(err);
@@ -37,7 +37,7 @@ UserBO.validateId = function (userId, callback) {
 			var valid = false;
 
 			// if user exists, change valid to true
-			if (user) {
+			if (userDAO) {
 				valid = true;
 			}
 			
@@ -51,7 +51,7 @@ UserBO.validateId = function (userId, callback) {
 // validUserBO is null when combination is incorrect
 // validUserBO is an equivalent UserBOBO object to the valid UserDAO found
 UserBO.validateIdPw = function (userId, password, callback) {
-	UserDAO.findById(userId, function (err, user) {
+	UserDAO.findById(userId, function (err, userDAO) {
 		// callback with error if there is an error
 		if (err) {
 			callback(err);
@@ -62,10 +62,10 @@ UserBO.validateIdPw = function (userId, password, callback) {
 
 			// if the userId and password combination is valid,
 			// make validUserBO an equivalent UserBOBO object to the found UserDAO object
-			if (password === user.password) {
+			if (password === userDAO.password) {
 				//validUserBO = Converter.convertFromUserDAOtoUserBO(user);
-				validUserBO = new UserBO(user._id, user._password, user._facebookId,
-					user._name, user._userIdType, user._rating);
+				validUserBO = new UserBO(userDAO._id, userDAO._password, userDAO._facebookId,
+					userDAO._name, userDAO._userIdType, userDAO._rating);
 			}
 
 			// call back with error and validUserBO
@@ -78,16 +78,16 @@ UserBO.validateIdPw = function (userId, password, callback) {
 // callback(err, validUserBO);
 // validUserBO is null when no corresponding user is found
 UserBO.validateFbId = function (facebookId, email, name, callback) {
-	UserDAO.findOne( { 'facebookId' : facebookId }, function (err, user) {
+	UserDAO.findOne( { 'facebookId' : facebookId }, function (err, userDAO) {
 		if (err) {
 			return callback(err);
 		}
 		var validUserBO = null;
 
-		if (user) {
+		if (userDAO) {
 			//validUserBO = Converter.convertFromUserDAOtoUserBO(user);
-			validUserBO = new UserBO(user._id, user._password, user._facebookId,
-					user._name, user._userIdType, user._rating);
+			validUserBO = new UserBO(userDAO._id, userDAO._password, userDAO._facebookId,
+					userDAO._name, userDAO._userIdType, userDAO._rating);
 		} 
 
 		callback(err, validUserBO);
