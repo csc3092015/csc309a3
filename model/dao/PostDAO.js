@@ -78,20 +78,25 @@ postDAOSchema.statics.create = function(postId, title, keywordsArray, descriptio
 
 //The parameter keywordsArray is the input from the req, the criteriaDictionary.keywordsArray is the field name in Mongoose model
 postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
-	var criteriaDictionary = {};
-	criteriaDictionary.keywordsArray = {$in: keywordsArray};
+	var multiQueryExpressionArray = [];
+	multiQueryExpressionArray.push({'keywordsArray': {$in: keywordsArray}});
 	var option;
 	for(option in optionalDictionary){
-		criteriaDictionary[option] = {$eq: optionalDictionary[option]};
+		var queryExpression = {};
+		queryExpression[option] = {$eq: optionalDictionary[option]};
+		multiQueryExpressionArray.push(queryExpression);
 	}
-	this.findPosts(criteriaDictionary, callback);
-}
+	//http://docs.mongodb.org/manual/reference/operator/query/and/
+	// and here just force that all the expression has to be evaluated to be true
+	var criteriaDictionary = {$and: multiQueryExpressionArray};
+	this.findPosts(criteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER, callback);
+};
 
-postDAOSchema.statics.findPosts = function(criteriaDictionary, callback){
+postDAOSchema.statics.findPosts = function(criteriaDictionary, resultSizeUpperBound, callback){
 	this.find(criteriaDictionary, function(err, postDAOArray){
 		callback(err, postDAOArray);
-	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
-}
+	}).limit(resultSizeUpperBound);
+};
 
 /************************ Instance Methods *************************/
 /*

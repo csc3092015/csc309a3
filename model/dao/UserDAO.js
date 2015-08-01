@@ -9,13 +9,15 @@ var userDAOSchema = new Schema({
 	facebookId : { type: String },
 	name : { type: String, trim: true },
 	userIdType : { type: Number }, //0 for normal user, 1 for admin
-	rating : { type: Number }/*,
+	rating : { type: Number },
+	/*
 	_circleIdArray : [Schema.Types.ObjectId],
 	_mutualAgreementIdArrayAreOngoing : [Schema.Types.ObjectId],
 	_reviewIdArrayAreOngoing : [Schema.Types.ObjectId],
 	_postIdArrayNotExpired : [Schema.Types.ObjectId],
 	_postIdArrayExpired : [Schema.Types.ObjectId]
 	*/
+	postIdArray : [{ type: Schema.Types.ObjectId, ref: 'PostDAO'}]
 }, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.USER, _id: false});
 
 /************************ Static Methods *************************/
@@ -28,7 +30,7 @@ var userDAOSchema = new Schema({
 
 // create a new user document
 userDAOSchema.statics.create = function(userId, password, facebookId, name,
-	userIdType, rating/*, circleIdArray, mutualAgreementIdArrayAreOngoing,
+	userIdType, rating, postIdArray/*, circleIdArray, mutualAgreementIdArrayAreOngoing,
 	reviewIdArrayAreOngoing, postIdArrayNotExpired, postIdArrayExpired*/){
 	return new UserDAO({
 		_id : userId,

@@ -2,8 +2,6 @@ var MutualAgreementDAO = require('./../../model/dao/MutualAgreementDAO.js');
 var Converter = require('./../../model/Converter.js');
 var util = require('./../util.js');
 var Errors = require('./../Errors.js');
-// see http://docs.mongodb.org/manual/reference/object-id/
-var ObjectId = require('mongoose').Types.ObjectId;
 
 /*******************************Dummy Constructor**************************************/ 
 function MutualAgreementBO (mutualAgreementId, providerId, consumerId, description, postId,
@@ -23,17 +21,16 @@ function MutualAgreementBO (mutualAgreementId, providerId, consumerId, descripti
 
 /*******************************Static Method**************************************/
 MutualAgreementBO.findById = function(mutualAgreementId, callback){
-	MutualAgreementDAO.findById(ObjectId(mutualAgreementId), function(err, MutualAgreementDAO){
+	MutualAgreementDAO.findById(Converter.convertFromBOIdToDaoId(mutualAgreementId), function(err, MutualAgreementDAO){
 		var mutualAgreementBO = Converter.convertFromMutualAgreementDAOtoMutualAgreementBO(MutualAgreementDAO);
 		callback(err, mutualAgreementBO);
 	});
 };
 
-// updateDictionary looks like {description: "new description", isLocked : true}
-// beaware if you are dealing with id, make sure it is {postId: ObjectId(this.getPostId())}
+// updateDictionary looks like {description: "new description", isLocked : true, postId: ObjectId(this.getPostId())}
 // because really these fields are referring to the fields in the DAO
 MutualAgreementBO.findByIdAndUpdate = function(mutualAgreementId, updateDictionary, callback){
-	MutualAgreementDAO.findByIdfindByIdAndUpdate(ObjectId(mutualAgreementId), updateDictionary, function(err, MutualAgreementDAO){
+	MutualAgreementDAO.findByIdfindByIdAndUpdate(Converter.convertFromBOIdToDaoId(mutualAgreementId), updateDictionary, function(err, MutualAgreementDAO){
 		var mutualAgreementBO = Converter.convertFromMutualAgreementDAOtoMutualAgreementBO(MutualAgreementDAO);
 		callback(err, mutualAgreementBO);
 	});
@@ -41,7 +38,7 @@ MutualAgreementBO.findByIdAndUpdate = function(mutualAgreementId, updateDictiona
 
 //Im not sure about this anonymous call back function, I do not know if it will return the removed object
 MutualAgreementBO.findByIdAndRemove = function(mutualAgreementId,callback){
-	MutualAgreementDAO.findByIdfindByIdAndRemove(ObjectId(mutualAgreementId), function(err, MutualAgreementDAO){
+	MutualAgreementDAO.findByIdfindByIdAndRemove(Converter.convertFromBOIdToDaoId(mutualAgreementId), function(err, MutualAgreementDAO){
 		var mutualAgreementBO = Converter.convertFromMutualAgreementDAOtoMutualAgreementBO(MutualAgreementDAO);
 		callback(err, mutualAgreementBO);
 	});
