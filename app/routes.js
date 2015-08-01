@@ -27,14 +27,24 @@ module.exports = function (app, passport) {
 
 	// home page for logged in users
 	app.get('/home', redirectVisitor, function (req, res) {
-		res.render('home.ejs', {
-			userBO : req.user
-		});
+		routesHandler.renderHomePage(req, res);
 	});
 
 	app.get('/profile', redirectVisitor, function (req, res) {
 		res.render('profile.ejs', {
 			userBO : req.user
+		});
+	});
+
+	app.get('/post', redirectVisitor, function (req, res) {
+		res.render('post.ejs', {
+			user : req.user
+		});
+	});
+
+	app.get('/req', redirectVisitor, function (req, res) {
+		res.render('request.ejs', {
+			user : req.user
 		});
 	});
 

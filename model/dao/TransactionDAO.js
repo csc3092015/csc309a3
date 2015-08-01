@@ -36,7 +36,7 @@ transactionDAOSchema.statics.create = function(postId, providerId, consumerId, m
 */
 
 
-console.log(mongoose.Types.ObjectId('55ba5d111db22b507b052591').valueOf());
+// console.log(mongoose.Types.ObjectId('55ba5d111db22b507b052591').valueOf());
 var TransactionDAO = mongoose.model("TransactionDAO", transactionDAOSchema);
 
 module.exports = TransactionDAO;

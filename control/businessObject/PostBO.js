@@ -1,8 +1,11 @@
 var PostDAO = require('./../../model/dao/PostDAO.js');
+var UserDAO = require('./../../model/dao/UserDAO.js');
 var Converter = require('./../../model/Converter.js');
 var util = require('./../util.js');
 var Errors = require('./../Errors.js');
 var PostEnum = require('./../Enum.js').PostEnum;
+
+var UserBO = require('./UserBO.js');
 
  /*******************************Dummy Constructor**************************************/ 
 function PostBO (postId, title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
@@ -30,7 +33,7 @@ function PostBO (postId, title, keywordsArray, description, authorId, byWho, isP
 /*******************************Static Method**************************************/
 
 PostBO.findPostById = function(postId, callback){
-	PostDAO.findPostById(postId, function(err, postDAO) {
+	PostDAO.findPostById(Converter.convertFromBOIdToDaoId(postId), function(err, postDAO) {
 		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
 		callback(err, postBO);
 	});
@@ -43,8 +46,8 @@ PostBO.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDicti
 	});
 };
 
-PostBO.findPosts = function(keywordsArray, callback){
-	PostDAO.findPosts(keywordsArray, function(err, postDAOArray){
+PostBO.findPosts = function(criteriaDictionary, resultSizeUpperBound, callback){
+	PostDAO.findPosts(criteriaDictionary, resultSizeUpperBound, function(err, postDAOArray){
 		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
 		callback(err, postBOArray);
 	});
@@ -52,10 +55,18 @@ PostBO.findPosts = function(keywordsArray, callback){
 
 /*******************************Instance Method**************************************/
 // So finally now no one sees postDAO!
-PostBO.prototype.save = function(callback){
+PostBO.prototype.save = function(callback, authorId){
 	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
 	newPostDAO.save(function(err, postDAO){
 		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
+		if(postBO){
+			//now this post is saved, we need update its author so that it remember which post he has created
+			UserDAO.findById(authorId, function(err, userDAO){
+				console.error(err);
+				userDAO.postIdArray.push(postDAO);
+				userDAO.save();
+			});
+		}
 		callback(err, postBO);
 	});
 };

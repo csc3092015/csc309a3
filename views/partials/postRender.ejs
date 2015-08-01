@@ -1,39 +1,66 @@
-<div class="row well">
-	<h1>
-		<%= postBO.getTitle(); %>
-	</h1>
-	<p>
-		PostId: <%= postBO.getPostId(); %>
-	</p>
-	<p>
-		Keywords: <%= postBO.getKeywordsArray();%>
-	</p>
-	<p>
-		Description: <%= postBO.getDescription();%>
-	</p>
-	<p>
-		AuthorId: <%= postBO.getAuthorId();%>
-	</p>
-	<p>
-		ByWho: <%= postBO.getByWho();%>
-	</p>
-	<p>
-		IsPurchased: <%= postBO.getIsPurchased();%>
-	</p>
-	<p>
-		IsExpired: <%= postBO.getIsExpired();%>
-	</p>
-	<p>
-		CreatedAt: <%= postBO.getCreatedAt();%>
-	</p>
+<div class="">
+	<div class="post">
+		<h2 class="post-title">
+			<%= postBO.getTitle();%>
+		</h2>
+		<div class="keyValuePair">
+			<div class="post-label">
+				<p>Keywords: </p>
+			</div>
+			<div class="post-field">
+				<p>
+					<%= postBO.getKeywordsArray();%>
+				</p>
+			</div>
+		</div>
 
-	<%if (postBO.getAuthorId() !== userBO._userId) { %>
-		<form action="/interested" method="post">
-			<!-- Here we really want to have hidden input about this postBO object in a secured way, Im just hard coding it for now-->
-			<input type="hidden" name="post[postBOId]" value=<%= postBO.name ? user.name : '' %>>
-			<button type="submit" class="btn btn-default">
-				Interested
-			</button>
-		</form>
-	<% } %>
+		<div class="keyValuePair">
+			<div class="post-label">
+				<p>Description: </p>
+			</div>
+			<div class="post-field">
+				<p>
+					<%= postBO.getDescription();%>
+				</p>
+			</div>
+		</div>
+
+		<div class="post-metaData">
+		<p>
+			<%if (postBO.getByWho() == PostEnum.byConsumer){%>
+				<p>
+					<%= postBO.getAuthorId();%>	is looking for this service!
+				</p> 
+			<%} else if (postBO.getByWho() == PostEnum.byProvider){%>
+				<p>
+					<%= postBO.getAuthorId();%> is providing this service!
+				</p>
+			<%}%>
+		</p>
+		
+		<p>
+			<%if (postBO.getIsPurchased() == PostEnum.isPurchased){%>
+				<p>
+					Some one has purchased this service!
+				</p> 
+			<%} else if (postBO.getIsPurchased() == PostEnum.isNotPurchased){%>
+				<p>
+					No one has purchased this service!
+				</p>
+			<%}%>
+		</p>
+		
+		<p>Posted On: <%= postBO.getCreatedAt();%></p>
+		<p>
+			<%if (postBO.getIsExpired() == PostEnum.isExpired){%>
+				<p>
+					Is Expired:	Yes
+				</p> 
+			<%} else if (postBO.getIsExpired() == PostEnum.isNotExpired){%>
+				<p>
+					Is Expired: No
+				</p>
+			<%}%>
+		</div>
+	</div>
 </div>

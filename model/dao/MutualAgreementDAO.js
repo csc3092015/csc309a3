@@ -52,6 +52,7 @@ var mutualAgreementDAOSchema = new Schema({
 		required: true
 	}
 }, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.MUTUAL_AGREEMENT, _id: false});
+
 /************************ Static Methods *************************/
 /*
 	Mongoose provide static methods:

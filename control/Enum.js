@@ -18,6 +18,7 @@ Enum.prototype.validate = function(name){
 
 /************************ PostDAO Enum *************************/
 var PostEnum = new Enum('byConsumer', 'byProvider', 'isNotPurchased', 'isPurchased','isNotExpired', 'isExpired');
+var UserEnum = new Enum('normal', 'admin');
 
 /************************ UserDAO Enum *************************/
 var UserTypeEnum = new Enum('normal', 'admin');

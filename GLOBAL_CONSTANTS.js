@@ -12,6 +12,7 @@ model.TABLE_NAME.TESTSANDRA = "TestSandra";
 
 model.POST_DAO = {};
 model.POST_DAO.SEARCH_RESULT_NUMBER = 10;
+model.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER = 5;
 model.POST_DAO.MULTIKEY_INDEX = ["byWho", "isPurchased", "isExpired"];
 /***************************************CONTROL CONSTANTS**********************************************/
 // module.exports.CONTROL = {};
