@@ -3,10 +3,6 @@
 		<h2 class="post-title">
 			<%= postBO.getTitle();%>
 		</h2>
-		<!--
-		<p>
-			PostId: <%= postBO.getPostId();%>
-		</p>-->
 		<div class="keyValuePair">
 			<div class="post-label">
 				<p>Keywords: </p>
@@ -30,17 +26,41 @@
 		</div>
 
 		<div class="post-metaData">
-		<p>Provider: <%= postBO.getAuthorId();%></p>
-		<!--
 		<p>
-			ByWho: <%= postBO.getByWho();%>
+			<%if (postBO.getByWho() == PostEnum.byConsumer){%>
+				<p>
+					<%= postBO.getAuthorId();%>	is looking for this service!
+				</p> 
+			<%} else if (postBO.getByWho() == PostEnum.byProvider){%>
+				<p>
+					<%= postBO.getAuthorId();%> is providing this service!
+				</p>
+			<%}%>
 		</p>
+		
 		<p>
-			IsPurchased: <%= postBO.getIsPurchased();%>
+			<%if (postBO.getIsPurchased() == PostEnum.isPurchased){%>
+				<p>
+					Some one has purchased this service!
+				</p> 
+			<%} else if (postBO.getIsPurchased() == PostEnum.isNotPurchased){%>
+				<p>
+					No one has purchased this service!
+				</p>
+			<%}%>
 		</p>
-		-->
+		
 		<p>Posted On: <%= postBO.getCreatedAt();%></p>
-		<p>Expires On: <%= postBO.getIsExpired();%></p>
+		<p>
+			<%if (postBO.getIsExpired() == PostEnum.isExpired){%>
+				<p>
+					Is Expired:	Yes
+				</p> 
+			<%} else if (postBO.getIsExpired() == PostEnum.isNotExpired){%>
+				<p>
+					Is Expired: No
+				</p>
+			<%}%>
 		</div>
 	</div>
 </div>

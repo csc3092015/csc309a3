@@ -36,6 +36,18 @@ module.exports = function (app, passport) {
 		});
 	});
 
+	app.get('/post', redirectVisitor, function (req, res) {
+		res.render('post.ejs', {
+			user : req.user
+		});
+	});
+
+	app.get('/req', redirectVisitor, function (req, res) {
+		res.render('request.ejs', {
+			user : req.user
+		});
+	});
+
 	// check is user is logged in
 	function loginStatus (req) {
 		return req.isAuthenticated();

@@ -67,7 +67,8 @@ var renderHomePage = function(req, res){
 					res.render('home.ejs', {
 						user : req.user,
 						postBOByConsumerArray: postBOByConsumerArray, 
-						postBOByProviderArray: postBOByProviderArray
+						postBOByProviderArray: postBOByProviderArray,
+						PostEnum: PostEnum
 					});
 				});
 			});
@@ -90,7 +91,8 @@ var renderHomePage = function(req, res){
 				var postBOFeaturedArray = postBOArray;
 				res.render('home.ejs', {
 					user : req.user,
-					postBOFeaturedArray: postBOFeaturedArray
+					postBOFeaturedArray: postBOFeaturedArray,
+					PostEnum: PostEnum
 				});
 			});
 
@@ -121,7 +123,8 @@ var keywordsSearchHandler = function(req, res){
 		else{
 			res.render('postSearchResult.ejs', {
 				user : req.user,
-				postBOArray: postBOArray
+				postBOArray: postBOArray,
+				PostEnum: PostEnum
 			});
 		}
 	});
@@ -147,7 +150,8 @@ var postFormHandler = function(req, res){
 			if (postBO){
 				res.render('postAfterSubmit.ejs', {
 					user : req.user,
-					postBO: postBO
+					postBO: postBO,
+					PostEnum: PostEnum
 				});
 			} else{
 				console.log('Somehow no erro but didn\'t submit the Post!');
