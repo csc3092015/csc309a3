@@ -84,14 +84,14 @@ postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray
 	for(option in optionalDictionary){
 		criteriaDictionary[option] = {$eq: optionalDictionary[option]};
 	}
-	this.findPosts(criteriaDictionary, callback);
-}
+	this.findPosts(criteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER, callback);
+};
 
-postDAOSchema.statics.findPosts = function(criteriaDictionary, callback){
+postDAOSchema.statics.findPosts = function(criteriaDictionary, resultSizeUpperBound, callback){
 	this.find(criteriaDictionary, function(err, postDAOArray){
 		callback(err, postDAOArray);
-	}).limit(GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER);
-}
+	}).limit(resultSizeUpperBound);
+};
 
 /************************ Instance Methods *************************/
 /*

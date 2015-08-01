@@ -1,5 +1,6 @@
 var UserDAO = require('./../../model/dao/UserDAO.js');
 var Converter = require('./../../model/Converter.js');
+var PostBO = require('./PostBO.js');
 
 /*******************************Dummy Constructor**************************************/ 
 
@@ -114,6 +115,19 @@ UserBO.findById = function(userId, callback){
 		}
 	});
 };
+
+UserBO.findAllPostBOsByUserId = function(userId, callback){
+	// http://mongoosejs.com/docs/populate.html
+	UserDAO
+		.findOne({_id: userId})
+		.populate('postIdArray')
+		.exec(function(err, userDAO){
+			// now userDAO.postIdArray is no longer a ref array
+			// it is populated so it contains actual PostDAO objects
+			var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(userDAO.postIdArray);
+			callback(err, postBOArray);
+		});
+}
 
 /*******************************Instance Method**************************************/
 
