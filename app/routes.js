@@ -93,8 +93,6 @@ module.exports = function (app, passport) {
             								failureFlash: true })
     );
 
-
-
     // submitting a post
     app.post('/post', function(req, res){
     	routesHandler.postFormHandler(req, res);
@@ -121,59 +119,24 @@ module.exports = function (app, passport) {
 
 	
 
-	// Error handlers from https://github.com/strongloop/express/blob/master/examples/error-pages/index.js
-
-	// Since this is the last non-error-handling
-	// middleware use()d, we assume 404, as nothing else
-	// responded.
-
-	// $ curl http://localhost:3000/notfound
-	// $ curl http://localhost:3000/notfound -H "Accept: application/json"
-	// $ curl http://localhost:3000/notfound -H "Accept: text/plain"
-
-	app.use(function(req, res, next){
-		res.status(404);
-
-	  // respond with html page
-	  if (req.accepts('html')) {
-	  	res.render('404', { url: req.url });
-	  	return;
-	  }
-
-	  // respond with json
-	  if (req.accepts('json')) {
-	  	res.send({ error: 'Not found' });
-	  	return;
-	  }
-
-	  // default to plain-text. send()
-	  res.type('txt').send('Not found');
+	// Error handler
+	app.get('*', function (req, res, next) {
+		var err = new Error();
+		err.status = 404;
+		next(err);
 	});
-
-	// error-handling middleware, take the same form
-	// as regular middleware, however they require an
-	// arity of 4, aka the signature (err, req, res, next).
-	// when connect has an error, it will invoke ONLY error-handling
-	// middleware.
-
-	// If we were to next() here any remaining non-error-handling
-	// middleware would then be executed, or if we next(err) to
-	// continue passing the error, only error-handling middleware
-	// would remain being executed, however here
-	// we simply respond with an error page.
 
 	app.use(function(err, req, res, next){
-	  // we may use properties of the error object
-	  // here and next(err) appropriately, or if
-	  // we possibly recovered from the error, simply next().
-	  res.status(err.status || 500);
-	  res.render('500', { error: err });
+	  if (err.status == 404) {
+	  	res.render('404.ejs', { error: err });
+	  } 
+	  else if (err.status == 403) {
+	  	res.render('403.ejs', { error: err });
+	  } 
+	  else {
+	  	res.status(err.status || 500);
+	  	res.render('500.ejs', { error: err });
+	  }
 	});
-
-	/* istanbul ignore next */
-	if (!module.parent) {
-		app.listen(3000);
-		console.log('Express started on port 3000');
-	}
 
 }

@@ -164,6 +164,8 @@ var postFormHandler = function(req, res){
 	}, autherId);
 }
 
+/**************************Mutual Agreement Handling*************************************/
+
 // depending on the user's identity, load the mutual agreement page or deny access.
 // in event of permitted access, set up socket.io for real-time agreement updates.
 var mutualAgreementInfoHandler = function(req, res) {
@@ -193,7 +195,11 @@ var mutualAgreementInfoHandler = function(req, res) {
 			// display insufficient permissions page if user has no permission
 			// to view the mutual agreement
 			if (UserRoleEnum.getName(userRole) === "noAccess") {
-				res.render('insufficientPermissions.ejs');
+				// trigger a 403 forbidden error since user
+				// has no access to this mutual agreement
+				var err = new Error();
+				err.status = 403;
+				next(err);
 			} else {
 
 				var postTitle = PostBO.findPostById(mutualAgreementBO.getPostId(),
@@ -223,10 +229,11 @@ var mutualAgreementInfoHandler = function(req, res) {
 
 			}
 		} else {
-			// trigger a 404 since no other middleware
-			// will match after this one, and we're not
-			// responding here
-			next();
+			// trigger a 404 error since mutual agreement
+			// does not exist
+			var err = new Error();
+			err.status = 404;
+			next(err);
 		}
 	});
 }

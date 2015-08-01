@@ -1,7 +1,8 @@
 // set up
 var express = require('express');
 var path = require('path');
-var app = express(); 
+var app = express();
+var server = require('http').Server(app);
 
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
@@ -12,7 +13,7 @@ var flash = require('connect-flash');
 var database = require('./model/database.js');
 var connected = false;
 
-var io = require('socket.io')(app);
+var io = require('socket.io')(server);
 var fs = require('fs');
 
 // get configurations
