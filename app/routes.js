@@ -27,9 +27,7 @@ module.exports = function (app, passport) {
 
 	// home page for logged in users
 	app.get('/home', redirectVisitor, function (req, res) {
-		res.render('home.ejs', {
-			user : req.user
-		});
+		routesHandler.renderHomePage(req, res);
 	});
 
 	app.get('/profile', redirectVisitor, function (req, res) {

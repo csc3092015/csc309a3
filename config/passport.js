@@ -15,6 +15,8 @@ var UserBO = require('./../control/businessObject/UserBO.js');
 // load the authentication variables
 var authConfig = require('./auth');
 
+var Converter = require('./../model/Converter.js');
+
 
 module.exports = function (passport) {
 
@@ -22,6 +24,7 @@ module.exports = function (passport) {
     passport.serializeUser(function (user, done) {
         var sessionUser = new UserBO(user._userId, user._password, 
             user._facebookId, user._name, user._userIdType, user._rating);
+        // var sessionUser = Converter.convertFromUserDAOtoUserBO(user);
         done(null, sessionUser);
     });
 
@@ -55,7 +58,7 @@ module.exports = function (passport) {
                 // create the user otherwise
                 else {
                     var name = req.params.name;
-                    var newUser = new UserBO(email, password, "", name, 0, -1, [], [], [], [], []);
+                    var newUser = new UserBO(email, password, "", name, 0, -1, [], [], [], [], []); // so far we have 7 fields, i don't get why we are supplying extra param
                     newUser.save(function (err) {
                         if (err) {
                             return done(err);
