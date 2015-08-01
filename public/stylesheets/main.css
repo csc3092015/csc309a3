@@ -71,4 +71,11 @@ ul {
 	margin: 10px;
 }
 
+.post-home {
+	padding-right:50px !important;
+}
 
+h1.main {
+	text-align: center;
+	padding-bottom: 40px;
+}
