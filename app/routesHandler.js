@@ -32,10 +32,13 @@ var renderHomePage = function(req, res){
 		if(keywordsArray.length > 0){
 			// search for all the posts that are not owned by this user, byConsumer, not expired
 			var byConsumerCriteriaDictionary = {
-				keywordsArray: {$in: keywordsArray},
-				byWho: {$eq: PostEnum['byConsumer']},
-				isExpired: {$eq: PostEnum['isNotExpired']},
-				aurthorId: {$ne: userId}
+				$and:
+					[
+						{authorId: {$ne: userId}},
+						{keywordsArray: {$in: keywordsArray}},
+						{byWho: {$eq: PostEnum['byConsumer']}},
+						{isExpired: {$eq: PostEnum['isNotExpired']}}
+					]
 			};
 			PostBO.findPosts(byConsumerCriteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
 				// search for all the posts that are not owned by thie user, byProvider, not expired
@@ -46,10 +49,13 @@ var renderHomePage = function(req, res){
 				}
 				var postBOByConsumerArray = postBOArray;
 				var byProviderCriteriaDictionary = {
-					keywordsArray: {$in: keywordsArray},
-					byWho: {$eq: PostEnum['byProvider']},
-					isExpired: {$eq: PostEnum['isNotExpired']},
-					aurthorId: {$ne: userId}
+					$and:
+						[
+							{authorId: {$ne: userId}},
+							{keywordsArray: {$in: keywordsArray}},
+							{byWho: {$eq: PostEnum['byProvider']}},
+							{isExpired: {$eq: PostEnum['isNotExpired']}}
+						]
 				};
 				PostBO.findPosts(byProviderCriteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
 					if(err){
@@ -69,8 +75,11 @@ var renderHomePage = function(req, res){
 			// if i have time, show some posts that are most searched most of the time
 			// if not, show random posts (right now just show any 5 posts)
 			var criteriaDictionary = {
-				isExpired: {$eq: PostEnum['isNotExpired']},
-				aurthorId: {$ne: userId}
+				$and:
+					[
+						{authorId: {$ne: userId}},
+						{isExpired: {$eq: PostEnum['isNotExpired']}}
+					]
 			};
 			PostBO.findPosts(criteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
 				if(err){

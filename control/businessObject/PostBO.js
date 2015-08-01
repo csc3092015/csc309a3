@@ -39,16 +39,10 @@ PostBO.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDicti
 	});
 };
 
-//additionalArg is the only way i know how to pass a local var within a callback chainning, it is not clean but i don't know what else to do
-// most of the time, you can just ignore this additional Arg, just supply the previous 3 parameters
-PostBO.findPosts = function(criteriaDictionary, resultSizeUpperBound, callback, additionalArg){
+PostBO.findPosts = function(criteriaDictionary, resultSizeUpperBound, callback){
 	PostDAO.findPosts(criteriaDictionary, resultSizeUpperBound, function(err, postDAOArray){
 		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
-		if (additionalArg){
-			callback(err, postBOArray, additionalArg);	
-		} else {
-			callback(err, postBOArray);
-		}
+		callback(err, postBOArray);
 	});
 };
 
