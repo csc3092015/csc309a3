@@ -46,6 +46,11 @@ var convertFromUserBOtoUserDAO = function(userBO){
 	if(userBO.getPostIdArray()){
 		userDAO.postIdArray.push.apply(userDAO.postIdArray, convertFromBOIdArrayToDaoIdArray(userBO.getPostIdArray()));
 	}
+	if(userBO.getImage()){
+		userDAO.image.id = userBO.getImageName();
+		userDAO.image.data = userBO.getImageData();
+		userDAO.image.contentType = userBO.getImageType();
+	}
 	return userDAO;
 }
 
@@ -62,6 +67,9 @@ var convertFromUserDAOtoUserBO = function(userDAO){
 		userDAO._postIdArrayExpired*/);
 	if(userDAO.postIdArray){
 		userBO.setPostIdArray(convertFromDAOIdArrayToBOIdArray(userDAO.postIdArray));	
+	}
+	if(userDAO.image){
+		userBO.setImage(userDAO.image.id, userDAO.image.data, userDAO.image.contentType);
 	}
 	return userBO;
 }

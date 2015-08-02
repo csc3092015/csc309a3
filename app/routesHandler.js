@@ -6,11 +6,10 @@ var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
 // see http://docs.mongodb.org/manual/reference/object-id/
 var ObjectId = require('mongoose').Types.ObjectId;
-var fs = require('fs');
-
+var fs = require('fs')
 /**************************Home Page*************************************/
 var renderHomePage = function(req, res){
-	var userId = req.user._userId;
+	var userId = req.user.getUserId;
 	UserBO.findAllPostBOsByUserId(userId, function(err, postBOArray){
 		// find all the posts that this user has
 		// construct the keyword set out of those posts
@@ -136,7 +135,7 @@ var postFormHandler = function(req, res){
 	var title = req.body.post.title;
 	var keywordsArray = util.stringToArray(req.body.post.keywords);
 	var description = req.body.post.description;
-	var autherId = req.user._userId;
+	var autherId = req.user.getUserId;
 
 	var byWho = PostEnum[req.body.post.byWho];
 	var isPurchased = PostEnum.isNotPurchased;
@@ -163,9 +162,20 @@ var postFormHandler = function(req, res){
 }
 
 var uploadToDB = function(req, res){
-	req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-    	console.log(file);
-  	});
+	var name = req.user.getUserId();
+	var contentType = req.files.file.headers['content-type'];
+	fs.readFile(path, 'utf8', function (err, data) {
+  		if (err) {
+    		return console.log(err);
+  		}
+  		req.user.setImage(name, data, contentType);
+  		UserDAO.findByIdAndUpdate(req.user, {$set: {image: {id: req.user.getImageName(), data: req.user.getImageData(), contentType: req.user.getImageType()}}}, function(err, userBOReturned){
+  			req.user = userBOReturned;
+  			res.render('uploadSucceeded.ejs', {
+				user : req.user
+			});
+  		});
+	});
 }
 
 /**************************General Helper*************************************/

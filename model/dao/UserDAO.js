@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
+var ImageDAO = require('./../dao/ImageDAO');
 
 /************************ Table Schema *************************/
 var userDAOSchema = new Schema({
@@ -17,13 +18,14 @@ var userDAOSchema = new Schema({
 	_postIdArrayNotExpired : [Schema.Types.ObjectId],
 	_postIdArrayExpired : [Schema.Types.ObjectId]
 	*/
-	postIdArray : [{ type: Schema.Types.ObjectId, ref: 'PostDAO'}]
+	postIdArray : [{ type: Schema.Types.ObjectId, ref: 'PostDAO'}],
+	image : { id: {type:String}, data: Buffer, contentType: String} 
 }, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.USER, _id: false});
 
 /************************ Static Methods *************************/
 /*
 	Mongoose provide static methods:
-	http://mongoosejs.com/docs/documents.html
+	http://mongoosejs.com/docs/documents.htmlrp
 		document.findByIdAndRemove(_id, funciton(err, document))
 		document.findByIdAndUpdate(_id, { $set: { password: 'new_pwd' }}, function (err, document))
 */

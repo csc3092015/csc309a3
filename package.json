@@ -19,7 +19,9 @@
     "passport-facebook": "^2.0.0",
     "passport-local": "^1.0.0",
     "path": "^0.11.14",
-    "busboy": "*"
+    "busboy": "*",
+    "multiparty": "~4.1.2",
+    "connect-multiparty": "^2.0.0"
   },
   "engines": {
     "node": "0.12.2"
