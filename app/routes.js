@@ -54,6 +54,12 @@ module.exports = function (app, passport) {
 		});
 	});
 
+	app.get('/myCircle', redirectVisitor, function (req, res) {
+		res.render('circle.ejs', {
+			user : req.user
+		});
+	});
+
 	// check is user is logged in
 	function loginStatus (req) {
 		return req.isAuthenticated();
