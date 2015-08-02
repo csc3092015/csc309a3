@@ -4,12 +4,26 @@ var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
 
 /************************ Table Schema *************************/
 var userDAOSchema = new Schema({
-	_id : { type: String, trim: true },
-	password : {type: String/*, required: true*/},
-	facebookId : { type: String },
-	name : { type: String, trim: true },
-	userIdType : { type: Number }, //0 for normal user, 1 for admin
-	rating : { type: Number },
+	_id : { 
+		type: String, 
+		trim: true
+	},
+	password : {
+		type: String/*, required: true*/
+	},
+	facebookId : { 
+		type: String 
+	},
+	name : { 
+		type: String, 
+		trim: true 
+	},
+	userIdType : {
+		type: Number 
+	}, //0 for normal user, 1 for admin
+	rating : {
+		type: Number
+	},
 	/*
 	_circleIdArray : [Schema.Types.ObjectId],
 	_mutualAgreementIdArrayAreOngoing : [Schema.Types.ObjectId],
@@ -17,13 +31,19 @@ var userDAOSchema = new Schema({
 	_postIdArrayNotExpired : [Schema.Types.ObjectId],
 	_postIdArrayExpired : [Schema.Types.ObjectId]
 	*/
-	postIdArray : [{ type: Schema.Types.ObjectId, ref: 'PostDAO'}]
+	/*********************optional fields*********************/
+	postIdArray : [{ type: Schema.Types.ObjectId, ref: 'PostDAO'}],
+	image : { 
+		id: {type:String}, 
+		data: Buffer, 
+		contentType: String
+	} 
 }, { collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.USER, _id: false});
 
 /************************ Static Methods *************************/
 /*
 	Mongoose provide static methods:
-	http://mongoosejs.com/docs/documents.html
+	http://mongoosejs.com/docs/documents.htmlrp
 		document.findByIdAndRemove(_id, funciton(err, document))
 		document.findByIdAndUpdate(_id, { $set: { password: 'new_pwd' }}, function (err, document))
 */

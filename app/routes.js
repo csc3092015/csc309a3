@@ -1,6 +1,8 @@
 // https://scotch.io/tutorials/easy-node-authentication-setup-and-local
 // need to implement routers https://scotch.io/tutorials/learn-to-use-the-new-router-in-expressjs-4
 var routesHandler = require('./routesHandler.js');
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 
 module.exports = function (app, passport) {
 
@@ -30,18 +32,32 @@ module.exports = function (app, passport) {
 		routesHandler.renderHomePage(req, res);
 	});
 
+	// getting profile page
 	app.get('/profile', redirectVisitor, function (req, res) {
 		res.render('profile.ejs', {
 			user : req.user
 		});
 	});
 
+	// getting upload profile pic page
+	app.get('/uploadProfilePic', redirectVisitor, function (req, res) {
+		res.render('upload.ejs', {
+		user : req.user
+		});
+	});
+	
+	app.get('/uploadSucceeded', redirectVisitor, function(req, res){
+		// Do something here
+	})
+
+	// getting post page
 	app.get('/post', redirectVisitor, function (req, res) {
 		res.render('post.ejs', {
 			user : req.user
 		});
 	});
 
+	// getting request page
 	app.get('/req', redirectVisitor, function (req, res) {
 		res.render('request.ejs', {
 			user : req.user
@@ -93,15 +109,19 @@ module.exports = function (app, passport) {
             								failureFlash: true })
     );
 
-
-
     // submitting a post
-    app.post('/post', function(req, res){
+    app.post('/post', redirectVisitor, function(req, res){
     	routesHandler.postFormHandler(req, res);
 	});
 
-	app.post('/search', function(req, res){
+    // searching for a post
+	app.post('/search', redirectVisitor, function(req, res){
 		routesHandler.keywordsSearchHandler(req, res);
+	});
+
+	// upload finished page sent after upload is handled
+	app.post('/uploadSucceeded', multipartMiddleware, function(req, res){
+		routesHandler.uploadToDB(req, res);
 	});
 
 }

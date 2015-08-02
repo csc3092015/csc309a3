@@ -1,6 +1,7 @@
 var UserDAO = require('./../../model/dao/UserDAO.js');
 var Converter = require('./../../model/Converter.js');
 var PostBO = require('./PostBO.js');
+var ImageBO = require('./ImageBO.js');
 
 /*******************************Dummy Constructor**************************************/ 
 
@@ -179,6 +180,9 @@ UserBO.prototype.getPostIdArray = function(){
 	return this._postIdArray;
 };
 
+UserBO.prototype.getImage = function(){
+	return this._photo;
+}
 
 /*********************************Setters****************************************/
 
@@ -198,6 +202,10 @@ UserBO.prototype.pushPostId = function(newPostId){
 
 UserBO.prototype.setPostIdArray = function(newPostIdArray){
 	this._postIdArray = newPostIdArray.slice();
+}
+
+UserBO.prototype.setImage = function(name, data, contentType){
+	this._photo = new ImageBO(name, data, contentType);
 }
 
 module.exports = UserBO;

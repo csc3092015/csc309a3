@@ -1,11 +1,12 @@
+var UserDAO = require('./../model/dao/UserDAO');
 var UserBO = require('./../control/businessObject/UserBO.js');
 var PostBO = require('./../control/businessObject/PostBO.js');
+var ImageBO = require('./../control/businessObject/ImageBO.js');
 var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
-// see http://docs.mongodb.org/manual/reference/object-id/
-var ObjectId = require('mongoose').Types.ObjectId;
+var fs = require('fs');
 
 /**************************Home Page*************************************/
 var renderHomePage = function(req, res){
@@ -141,7 +142,7 @@ var postFormHandler = function(req, res){
 	var isPurchased = PostEnum.isNotPurchased;
 	var isExpired = PostEnum.isNotExpired;
 	var createdAt = new Date().getTime();
-	var newPostBO = new PostBO(ObjectId().valueOf(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
+	var newPostBO = new PostBO(Converter.generateBOId(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
 	newPostBO.save(function(err, postBO){
 		if(err){
 			console.error(err);
@@ -161,6 +162,49 @@ var postFormHandler = function(req, res){
 	}, autherId);
 }
 
+var uploadToDB = function(req, res){
+	// for convenience
+	var user = req.user;
+	// connect-multipart creates this convenient req.files.file and its attributes
+	// connect-multipart module is imported in routes.js
+	var file = req.files.file;
+
+	// name photos by their user's name
+	var name = user._userId;
+	// getting file attributes
+	var path = file.path;
+	var contentType = file.headers['content-type'];
+
+	fs.readFile(path, function (err, data) {
+  		if (err) {
+    		return console.log(err);
+  		}
+  		
+  		// Creating ImageBO 
+  		var image = new ImageBO(name, data, contentType);
+  		// Updating UserDAO's image
+  		UserDAO.findByIdAndUpdate(req.user._userId, {$set: {image: {id: image.getImageName(), data: image.getImageData(), contentType: image.getImageType()}}}, function(err, userDAOReturned){
+			if(err){
+				console.log(err);
+			}
+			else{
+				// Setting refined user
+				// Converter fails on new UserBO so decided not to use it
+				req.user._userId = userDAOReturned._id;
+				console.log(req.user._userId);
+				// Creating image object
+				var contentType = userDAOReturned.image.contentType;
+				var name = userDAOReturned.image.id;
+				var data = userDAOReturned.image.data;
+				// Passing image so that uploadSucceeded can receive it
+				res.contentType(contentType);
+          		res.send(data);
+          		res.end();
+			}
+  		});
+	});
+}
+
 /**************************General Helper*************************************/
 
 
@@ -175,3 +219,5 @@ module.exports.keywordsSearchHandler = keywordsSearchHandler;
 
 /**************************Submit a New Post*************************************/
 module.exports.postFormHandler = postFormHandler;
+/**************************Upload A Profile Picture**********/
+module.exports.uploadToDB = uploadToDB;
