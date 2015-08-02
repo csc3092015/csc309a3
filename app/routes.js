@@ -1,6 +1,8 @@
 // https://scotch.io/tutorials/easy-node-authentication-setup-and-local
 // need to implement routers https://scotch.io/tutorials/learn-to-use-the-new-router-in-expressjs-4
 var routesHandler = require('./routesHandler.js');
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 
 module.exports = function (app, passport) {
 
@@ -33,6 +35,12 @@ module.exports = function (app, passport) {
 	app.get('/profile', redirectVisitor, function (req, res) {
 		res.render('profile.ejs', {
 			user : req.user
+		});
+	});
+
+	app.get('/uploadProfilePic', redirectVisitor, function (req, res) {
+		res.render('upload.ejs', {
+		user : req.user
 		});
 	});
 
@@ -93,15 +101,17 @@ module.exports = function (app, passport) {
             								failureFlash: true })
     );
 
-
-
     // submitting a post
-    app.post('/post', function(req, res){
+    app.post('/post', redirectVisitor, function(req, res){
     	routesHandler.postFormHandler(req, res);
 	});
 
-	app.post('/search', function(req, res){
+	app.post('/search', redirectVisitor, function(req, res){
 		routesHandler.keywordsSearchHandler(req, res);
+	});
+
+	app.post('/uploadSucceeded', multipartMiddleware, function(req, res){
+		routesHandler.uploadToDB(req, res);
 	});
 
 }
