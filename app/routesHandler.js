@@ -197,13 +197,9 @@ var uploadToDB = function(req, res){
 				var name = userDAOReturned.image.id;
 				var data = userDAOReturned.image.data;
 				// Passing image so that uploadSucceeded can receive it
-				// Rendering page
-  				res.render('uploadSucceeded.ejs', {
-					user : req.user,
-					name: name,
-					data: data,
-					type: contentType
-				});
+				res.contentType(contentType);
+          		res.send(data);
+          		res.end();
 			}
   		});
 	});
@@ -223,5 +219,5 @@ module.exports.keywordsSearchHandler = keywordsSearchHandler;
 
 /**************************Submit a New Post*************************************/
 module.exports.postFormHandler = postFormHandler;
-
+/**************************Upload A Profile Picture**********/
 module.exports.uploadToDB = uploadToDB;

@@ -45,9 +45,9 @@ module.exports = function (app, passport) {
 		user : req.user
 		});
 	});
-
+	
 	app.get('/uploadSucceeded', redirectVisitor, function(req, res){
-		res.redirect('/home');
+		// Do something here
 	})
 
 	// getting post page
