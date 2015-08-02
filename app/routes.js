@@ -31,7 +31,7 @@ module.exports = function (app, passport) {
 	});
 
 	app.get('/profile', redirectVisitor, function (req, res) {
-		res.render('profile.ejs', {
+		res.render('profilePage.ejs', {
 			user : req.user
 		});
 	});
