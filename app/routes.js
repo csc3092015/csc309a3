@@ -36,6 +36,12 @@ module.exports = function (app, passport) {
 		});
 	});
 
+	app.get('/admin', redirectVisitor, function (req, res) {
+		res.render('adminPage.ejs', {
+			user : req.user
+		});
+	});
+
 	app.get('/post', redirectVisitor, function (req, res) {
 		res.render('post.ejs', {
 			user : req.user
