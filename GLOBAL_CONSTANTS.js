@@ -6,6 +6,7 @@ model.DATABASE_URI = "mongodb://elio303:ekotani@ds059692.mongolab.com:59692/geti
 model.TABLE_NAME = {};
 model.TABLE_NAME.USER = "User";
 model.TABLE_NAME.POST = "Post";
+model.TABLE_NAME.COMMENT = "COMMENT";
 model.TABLE_NAME.TEST = "Test";
 model.TABLE_NAME.TESTSANDRA = "TestSandra";
 
