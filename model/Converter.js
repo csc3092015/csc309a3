@@ -1,9 +1,12 @@
-var UserDAO = require('./dao/UserDAO');
-var PostDAO = require('./dao/PostDAO');
-var MutualAgreementDAO = require('./dao/MutualAgreementDAO');
-var UserBO = require('./../control/businessObject/UserBO');
-var PostBO = require('./../control/businessObject/PostBO');
-var MutualAgreementBO = require('./../control/businessObject/MutualAgreementBO');
+var UserDAO = require('./dao/UserDAO.js');
+var PostDAO = require('./dao/PostDAO.js');
+var MutualAgreementDAO = require('./dao/MutualAgreementDAO.js');
+var CommentDAO = require('./dao/CommentDAO.js');
+
+var UserBO = require('./../control/businessObject/UserBO.js');
+var PostBO = require('./../control/businessObject/PostBO.js');
+var MutualAgreementBO = require('./../control/businessObject/MutualAgreementBO.js');
+var CommentBO = require('./../control/businessObject/CommentBO.js');
 // see http://docs.mongodb.org/manual/reference/object-id/
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -11,7 +14,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 
 var convertFromDAOIdToBOId =  function(daoId){
 	return daoId.valueOf();
-}
+};
 
 var convertFromDAOIdArrayToBOIdArray = function(daoIdArray){
 	var boIdArray = [];
@@ -19,11 +22,11 @@ var convertFromDAOIdArrayToBOIdArray = function(daoIdArray){
 		boIdArray.push(convertFromDAOIdToBOId(daoIdArray[i]));
 	}
 	return boIdArray;
-}
+};
 
 var convertFromBOIdToDaoId = function(boId){
 	return ObjectId(boId);
-}
+};
 
 var convertFromBOIdArrayToDaoIdArray = function(boIdArray){
 	var daoIdArray = [];
@@ -31,7 +34,7 @@ var convertFromBOIdArrayToDaoIdArray = function(boIdArray){
 		daoIdArray.push(convertFromBOIdToDaoId(boIdArray[i]));
 	}
 	return daoIdArray;
-}
+};
 /************************ User *************************/
 var convertFromUserBOtoUserDAO = function(userBO){
 	if(userBO === null){
@@ -47,7 +50,7 @@ var convertFromUserBOtoUserDAO = function(userBO){
 		userDAO.postIdArray.push.apply(userDAO.postIdArray, convertFromBOIdArrayToDaoIdArray(userBO.getPostIdArray()));
 	}
 	return userDAO;
-}
+};
 
 var convertFromUserDAOtoUserBO = function(userDAO){
 	if(userDAO === null){
@@ -64,7 +67,7 @@ var convertFromUserDAOtoUserBO = function(userDAO){
 		userBO.setPostIdArray(convertFromDAOIdArrayToBOIdArray(userDAO.postIdArray));	
 	}
 	return userBO;
-}
+};
 
 /************************ Post *************************/
 var convertFromPostBOtoPostDAO = function(postBO){
@@ -73,7 +76,7 @@ var convertFromPostBOtoPostDAO = function(postBO){
 	}
 	var postDAO = PostDAO.create(convertFromBOIdToDaoId(postBO.getPostId()), postBO.getTitle(), postBO.getKeywordsArray(), postBO.getDescription(), postBO.getAuthorId(), postBO.getByWho(), postBO.getIsPurchased(), postBO.getIsExpired(), postBO.getCreatedAt());
 	return postDAO;
-}
+};
 
 var convertFromPostDAOtoPostBO = function(postDAO){
 	if(postDAO === null){
@@ -81,7 +84,7 @@ var convertFromPostDAOtoPostBO = function(postDAO){
 	}
 	var postBO = new PostBO(convertFromDAOIdToBOId(postDAO._id), postDAO.title, postDAO.keywordsArray, postDAO.description, postDAO.authorId, postDAO.byWho, postDAO.isPurchased, postDAO.isExpired, postDAO.createdAt);
 	return postBO;
-}
+};
 
 var convertFromPostBOArraytoPostDAOArray = function(postBOArray){
 	var postDAOArray = [];
@@ -89,7 +92,7 @@ var convertFromPostBOArraytoPostDAOArray = function(postBOArray){
 		postDAOArray.push(convertFromPostBOtoPostDAO(postBOArray[i]));
 	};
 	return postDAOArray;
-}
+};
 
 var convertFromPostDAOArraytoPostBOArray = function(postDAOArray){
 	var postBOArray = [];
@@ -97,7 +100,7 @@ var convertFromPostDAOArraytoPostBOArray = function(postDAOArray){
 		postBOArray.push(convertFromPostDAOtoPostBO(postDAOArray[i]));
 	};
 	return postBOArray;
-}
+};
 
 /************************ MutualAgreement *************************/
 var convertFromMutualAgreementDAOtoMutualAgreementBO = function(mutualAgreementDAO){
@@ -107,7 +110,7 @@ var convertFromMutualAgreementDAOtoMutualAgreementBO = function(mutualAgreementD
 	var mutualAgreementBO = new MutualAgreementBO(convertFromDAOIdToBOId(mutualAgreementDAO._id), mutualAgreementDAO.providerId, mutualAgreementDAO.consumerId, mutualAgreementDAO.description, mutualAgreementDAO.postId,
 	mutualAgreementDAO.providerConsent, mutualAgreementDAO.consumerConsent, mutualAgreementDAO.isFinalized, mutualAgreementDAO.isLocked, mutualAgreementDAO.finishAt);
 	return mutualAgreementBO;
-}
+};
 
 var convertFromMutualAgreementBOtoMutualAgreementDAO = function(mutualAgreementBO){
 	if(mutualAgreementBO === null){
@@ -115,7 +118,27 @@ var convertFromMutualAgreementBOtoMutualAgreementDAO = function(mutualAgreementB
 	}
 	var mutualAgreementDAO = MutualAgreementDAO.create(convertFromBOIdToDaoId(mutualAgreementBO.getMutualAgreementId()), mutualAgreementBO.getProviderId(), mutualAgreementBO.getConsumerId(), mutualAgreementBO.getDescription(), mutualAgreementBO.getPostId(), mutualAgreementBO.getProviderConsent(), mutualAgreementBO.getConsumerConsent(), mutualAgreementBO.getIsFinalized(), mutualAgreementBO.getIsLocked(), mutualAgreementBO.getFinishAt());
 	return mutualAgreementDAO;
-}
+};
+
+
+/************************ Comment *************************/
+var convertFromCommentDAOtoCommentBO = function(commentDAO){
+	if (commentDAO === null){
+		return null;
+	}
+	var commentBO = new CommentBO(convertFromDAOIdToBOId(commentDAO._id), commentDAO.description, commentDAO.authorId, commentDAO.createdAt);
+	return commentBO;
+};
+
+var convertFromeCommentBOtoCommentDAO = function(commentBO){
+	if (commentBO === null){
+		return null;
+	}
+	var commentDAO = CommentDAO.create(convertFromBOIdToDaoId(commentBO.getCommentId()), commentBO.getDescription(), commentBO.getAuthorId(), commentBO.getCreatedAt());
+	return commentDAO;
+};
+
+
 
 /************************ Id *************************/
 module.exports.convertFromDAOIdToBOId = convertFromDAOIdToBOId;
@@ -134,3 +157,6 @@ module.exports.convertFromPostDAOArraytoPostBOArray = convertFromPostDAOArraytoP
 /************************ MutualAgreement *************************/
 module.exports.convertFromMutualAgreementDAOtoMutualAgreementBO = convertFromMutualAgreementDAOtoMutualAgreementBO;
 module.exports.convertFromMutualAgreementBOtoMutualAgreementDAO = convertFromMutualAgreementBOtoMutualAgreementDAO;
+/************************ Comment *************************/
+module.exports.convertFromCommentDAOtoCommentBO = convertFromCommentDAOtoCommentBO;
+module.exports.convertFromeCommentBOtoCommentDAO = convertFromeCommentBOtoCommentDAO;

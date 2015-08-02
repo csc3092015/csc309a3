@@ -47,7 +47,6 @@ PostBO.findPosts = function(criteriaDictionary, resultSizeUpperBound, callback){
 };
 
 /*******************************Instance Method**************************************/
-// So finally now no one sees postDAO!
 PostBO.prototype.save = function(callback, authorId){
 	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
 	newPostDAO.save(function(err, postDAO){

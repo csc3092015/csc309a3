@@ -11,6 +11,23 @@ function CommentBO(commentId, description, authorId, createdAt){
 }
 
 /*******************************Static Method**************************************/
+CommentBO.findCommentById = function(commentId, callback){
+	CommentDAO.findCommentById(commentId, function(err, commentDAO){
+		var commentBO = Converter.convertFromCommentDAOtoCommentBO(commentDAO);
+		if(callback){
+			callback(err, commentBO);
+		}
+	});
+};
+
+/*******************************Instance Method**************************************/
+CommentBO.prototype.save = function(callback){
+	var newCommentDAO = Converter.convertFromeCommentBOtoCommentDAO(this);
+	newCommentDAO.save(function(err, commentDAO){
+		var commentBO = Converter.convertFromCommentDAOtoCommentBO(commentDAO);
+		callback(err, commentBO);
+	});
+};
 
 /*******************************Dummy Getters**************************************/
 CommentBO.prototype.getCommentId = function(){
