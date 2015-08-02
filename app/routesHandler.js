@@ -4,8 +4,6 @@ var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
-// see http://docs.mongodb.org/manual/reference/object-id/
-var ObjectId = require('mongoose').Types.ObjectId;
 var fs = require('fs')
 /**************************Home Page*************************************/
 var renderHomePage = function(req, res){
@@ -141,7 +139,7 @@ var postFormHandler = function(req, res){
 	var isPurchased = PostEnum.isNotPurchased;
 	var isExpired = PostEnum.isNotExpired;
 	var createdAt = new Date().getTime();
-	var newPostBO = new PostBO(ObjectId().valueOf(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
+	var newPostBO = new PostBO(Converter.generateBOId(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
 	newPostBO.save(function(err, postBO){
 		if(err){
 			console.error(err);

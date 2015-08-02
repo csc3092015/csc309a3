@@ -1,6 +1,7 @@
 var UserDAO = require('./../../model/dao/UserDAO.js');
 var Converter = require('./../../model/Converter.js');
 var PostBO = require('./PostBO.js');
+var ImageBO = require('./ImageBO.js');
 
 /*******************************Dummy Constructor**************************************/ 
 
@@ -20,14 +21,6 @@ function UserBO (userId, password, facebookId, name, userIdType, rating/*,
 	this._postIdArrayNotExpired = postIdArrayNotExpired;
 	this._postIdArrayExpired = postIdArrayExpired;
 	*/
-}
-
-// Image constructor
-
-function Image (name, data, contentType){
-	this._name = name;
-	this._data = data;
-	this._contentType = contentType;
 }
 
 /*******************************Static Method**************************************/
@@ -187,21 +180,11 @@ UserBO.prototype.getPostIdArray = function(){
 	return this._postIdArray;
 };
 
-UserBO.prototype.getImage = function(){
-	return this._photo;
+UserBO.prototype.getImageId = function(){
+	return this._imageId;
 }
 
-UserBO.prototype.getImageName = function(){
-	return this._photo._name;
-}
 
-UserBO.prototype.getImageData = function(){
-	return this._photo._data;
-}
-
-UserBO.prototype.getImageType = function(){
-	return this._photo._contentType;
-}
 
 /*********************************Setters****************************************/
 
@@ -223,21 +206,9 @@ UserBO.prototype.setPostIdArray = function(newPostIdArray){
 	this._postIdArray = newPostIdArray.slice();
 }
 
-UserBO.prototype.setImage = function(name, data, contentType){
-	this._photo = new Image(name, data, contentType);
+UserBO.prototype.setImageId = function(newImageId){
+	this._imageId = newImageId;
 }
 
-UserBO.prototype.setImageName = function(name){
-	this._photo._name = name;
-}
-
-UserBO.prototype.setImageData = function(data){	
-	this._photo._data = data;
-}
-
-UserBO.prototype.setImageType = function(contentType){
-	this._photo._contentType = contentType;
-}
 
 module.exports = UserBO;
-module.exports = Image;
