@@ -32,24 +32,32 @@ module.exports = function (app, passport) {
 		routesHandler.renderHomePage(req, res);
 	});
 
+	// getting profile page
 	app.get('/profile', redirectVisitor, function (req, res) {
 		res.render('profile.ejs', {
 			user : req.user
 		});
 	});
 
+	// getting upload profile pic page
 	app.get('/uploadProfilePic', redirectVisitor, function (req, res) {
 		res.render('upload.ejs', {
 		user : req.user
 		});
 	});
 
+	app.get('/uploadSucceeded', redirectVisitor, function(req, res){
+		res.redirect('/home');
+	})
+
+	// getting post page
 	app.get('/post', redirectVisitor, function (req, res) {
 		res.render('post.ejs', {
 			user : req.user
 		});
 	});
 
+	// getting request page
 	app.get('/req', redirectVisitor, function (req, res) {
 		res.render('request.ejs', {
 			user : req.user
@@ -106,10 +114,12 @@ module.exports = function (app, passport) {
     	routesHandler.postFormHandler(req, res);
 	});
 
+    // searching for a post
 	app.post('/search', redirectVisitor, function(req, res){
 		routesHandler.keywordsSearchHandler(req, res);
 	});
 
+	// upload finished page sent after upload is handled
 	app.post('/uploadSucceeded', multipartMiddleware, function(req, res){
 		routesHandler.uploadToDB(req, res);
 	});

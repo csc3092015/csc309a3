@@ -1,15 +1,16 @@
+var UserDAO = require('./../model/dao/UserDAO');
 var UserBO = require('./../control/businessObject/UserBO.js');
 var PostBO = require('./../control/businessObject/PostBO.js');
+var ImageBO = require('./../control/businessObject/ImageBO.js');
 var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
-// see http://docs.mongodb.org/manual/reference/object-id/
-var ObjectId = require('mongoose').Types.ObjectId;
-var fs = require('fs')
+var fs = require('fs');
+
 /**************************Home Page*************************************/
 var renderHomePage = function(req, res){
-	var userId = req.user.getUserId;
+	var userId = req.user._userId;
 	UserBO.findAllPostBOsByUserId(userId, function(err, postBOArray){
 		// find all the posts that this user has
 		// construct the keyword set out of those posts
@@ -135,13 +136,13 @@ var postFormHandler = function(req, res){
 	var title = req.body.post.title;
 	var keywordsArray = util.stringToArray(req.body.post.keywords);
 	var description = req.body.post.description;
-	var autherId = req.user.getUserId;
+	var autherId = req.user._userId;
 
 	var byWho = PostEnum[req.body.post.byWho];
 	var isPurchased = PostEnum.isNotPurchased;
 	var isExpired = PostEnum.isNotExpired;
 	var createdAt = new Date().getTime();
-	var newPostBO = new PostBO(ObjectId().valueOf(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
+	var newPostBO = new PostBO(Converter.generateBOId(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
 	newPostBO.save(function(err, postBO){
 		if(err){
 			console.error(err);
@@ -162,18 +163,48 @@ var postFormHandler = function(req, res){
 }
 
 var uploadToDB = function(req, res){
-	var name = req.user.getUserId();
-	var contentType = req.files.file.headers['content-type'];
-	fs.readFile(path, 'utf8', function (err, data) {
+	// for convenience
+	var user = req.user;
+	// connect-multipart creates this convenient req.files.file and its attributes
+	// connect-multipart module is imported in routes.js
+	var file = req.files.file;
+
+	// name photos by their user's name
+	var name = user._userId;
+	// getting file attributes
+	var path = file.path;
+	var contentType = file.headers['content-type'];
+
+	fs.readFile(path, function (err, data) {
   		if (err) {
     		return console.log(err);
   		}
-  		req.user.setImage(name, data, contentType);
-  		UserDAO.findByIdAndUpdate(req.user, {$set: {image: {id: req.user.getImageName(), data: req.user.getImageData(), contentType: req.user.getImageType()}}}, function(err, userBOReturned){
-  			req.user = userBOReturned;
-  			res.render('uploadSucceeded.ejs', {
-				user : req.user
-			});
+  		
+  		// Creating ImageBO 
+  		var image = new ImageBO(name, data, contentType);
+  		// Updating UserDAO's image
+  		UserDAO.findByIdAndUpdate(req.user._userId, {$set: {image: {id: image.getImageName(), data: image.getImageData(), contentType: image.getImageType()}}}, function(err, userDAOReturned){
+			if(err){
+				console.log(err);
+			}
+			else{
+				// Setting refined user
+				// Converter fails on new UserBO so decided not to use it
+				req.user._userId = userDAOReturned._id;
+				console.log(req.user._userId);
+				// Creating image object
+				var contentType = userDAOReturned.image.contentType;
+				var name = userDAOReturned.image.id;
+				var data = userDAOReturned.image.data;
+				// Passing image so that uploadSucceeded can receive it
+				// Rendering page
+  				res.render('uploadSucceeded.ejs', {
+					user : req.user,
+					name: name,
+					data: data,
+					type: contentType
+				});
+			}
   		});
 	});
 }

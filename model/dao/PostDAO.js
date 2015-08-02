@@ -56,6 +56,14 @@ var postDAOSchema = new mongoose.Schema({
 postDAOSchema.index({ byWho: 1, isPurchased: 1, isExpired: 1});
 
 /************************ Static Methods *************************/
+
+/*
++	Mongoose provide static methods:
++	http://mongoosejs.com/docs/documents.htmlrp
++		document.findByIdAndRemove(_id, funciton(err, document))
++		document.findByIdAndUpdate(_id, { $set: { password: 'new_pwd' }}, function (err, document))
++*/
+
 postDAOSchema.statics.create = function(postId, title, keywordsArray, description, authorId, byWho, isPurchased, isExpired, createdAt){
 	return new PostDAO({
 		_id: postId,
