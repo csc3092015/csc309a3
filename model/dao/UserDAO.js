@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var GLOBAL_CONSTANTS = require('./../../GLOBAL_CONSTANTS.js');
-var ImageDAO = require('./../dao/ImageDAO');
 
 /************************ Table Schema *************************/
 var userDAOSchema = new Schema({
