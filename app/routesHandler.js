@@ -286,12 +286,9 @@ var mutualAgreementInfoUpdateHandler = function(req, res) {
 			// otherwise, it is a submit request, so
 			// change mutual agreement according to the request
 			if (responseObj.isLocked === true) {
-				console.log("locked true");
 				var updateDict = { isLocked : true };
 			} else {
-				console.log("locked false");
 				if (responseObj.editted) {
-					console.log("detected that agreement was editted");
 					var updateDict = { 
 						isLocked : false,
 						description : responseObj.newDescription,
