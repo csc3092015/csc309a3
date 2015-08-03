@@ -295,7 +295,8 @@
 
 			// set up click-triggered AJAX for edit submit
 			$('#editSubmit').click(function(evt) {
-				evt.stopImmediatePropagation();
+				evt.stopPropagation();
+				evt.preventDefault();
 				var newDescription = $("textarea#description").val();
 				var newDate = $("input#finishDate").val();
 				var newUnix = new Date(newDate).getTime() / 1000;

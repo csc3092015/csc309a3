@@ -83,7 +83,7 @@ postDAOSchema.statics.findPostById = function(postId, callback){
 }
 
 //The parameter keywordsArray is the input from the req, the criteriaDictionary.keywordsArray is the field name in Mongoose model
-postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
+postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(fieldsString, keywordsArray, optionalDictionary, callback){
 	var multiQueryExpressionArray = [];
 	multiQueryExpressionArray.push({'keywordsArray': {$in: keywordsArray}});
 	var option;
@@ -95,7 +95,7 @@ postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray
 	//http://docs.mongodb.org/manual/reference/operator/query/and/
 	// and here just force that all the expression has to be evaluated to be true
 	var criteriaDictionary = {$and: multiQueryExpressionArray};
-	this.findPosts(criteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER, callback);
+	this.findPostsWithPopulatedFields(fieldsString, criteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.SEARCH_RESULT_NUMBER, callback);
 };
 
 postDAOSchema.statics.findPosts = function(criteriaDictionary, resultSizeUpperBound, callback){
@@ -108,7 +108,7 @@ postDAOSchema.statics.findPostsWithPopulatedFields = function(fieldsString, crit
 	this
 		.find(criteriaDictionary)
 		.limit(resultSizeUpperBound)
-		.populate(fieldsString)
+		.populate({path: fieldsString, options: { sort: { 'createdAt': -1 } } })
 		.exec(function(err, postDAOArray){
 			callback(err, postDAOArray);
 	});

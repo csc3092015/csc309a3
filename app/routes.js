@@ -126,13 +126,12 @@ module.exports = function (app, passport) {
 	});
 
 	// submitting a comment 
-	app.post('/postComment', function(req, res, next){
-		routesHandler.postCommentHandler(req, res);	
-		// if(req.xhr){// this is an AJAX request
-			
-		// } else {
-		// 	next();
-		// }
+	app.post('/postComment', function(req, res, next){		
+		if(req.xhr){// this is an AJAX request
+			routesHandler.postCommentHandler(req, res);		
+		} else {
+			next();
+		}
 	});
 	// click interested, create mutual agreement
 

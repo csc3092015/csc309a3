@@ -29,7 +29,7 @@
 				type: "POST",
 				success: function(newCommentHtml){
 					var commentSectionId = commentPostId + 'commentSection';
-					$('#' + commentSectionId).append(newCommentHtml);
+					$('#' + commentSectionId).prepend(newCommentHtml);
 				}
 			});
 		});

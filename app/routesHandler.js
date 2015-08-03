@@ -117,7 +117,8 @@ var keywordsSearchHandler = function(req, res){
 			optionalDictionary[key] = PostEnum[req.body.post[key]];
 		}
 	};
-	PostBO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, postBOArray){
+	// allow me to populate commentId on Return
+	PostBO.findPostsByKeywordsArrayAndOption('commentIdArray', keywordsArray, optionalDictionary, function(err, postBOArray){
 		if(err){
 			console.error(err);
 		}

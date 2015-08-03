@@ -39,8 +39,8 @@ PostBO.findPostById = function(postId, callback){
 	});
 }
 
-PostBO.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
-	PostDAO.findPostsByKeywordsArrayAndOption(keywordsArray, optionalDictionary, function(err, postDAOArray){
+PostBO.findPostsByKeywordsArrayAndOption = function(fieldsString, keywordsArray, optionalDictionary, callback){
+	PostDAO.findPostsByKeywordsArrayAndOption(fieldsString, keywordsArray, optionalDictionary, function(err, postDAOArray){
 		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
 		callback(err, postBOArray);
 	});
