@@ -31,8 +31,14 @@ module.exports = function (app, passport) {
 	});
 
 	app.get('/profile', redirectVisitor, function (req, res) {
-		res.render('profile.ejs', {
-			userBO : req.user
+		res.render('profilePage.ejs', {
+			user : req.user
+		});
+	});
+
+	app.get('/admin', redirectVisitor, function (req, res) {
+		res.render('adminPage.ejs', {
+			user : req.user
 		});
 	});
 
@@ -48,9 +54,10 @@ module.exports = function (app, passport) {
 		});
 	});
 
-	// mutual agreement page
-	app.get("/serviceAgreement/:mutualAgreementId([0-9a-fA-F]{24}$)", redirectVisitor, function (req, res) {
-		routesHandler.mutualAgreementInfoHandler(req, res, req.params.mutualAgreementId);
+	app.get('/myCircle', redirectVisitor, function (req, res) {
+		res.render('circle.ejs', {
+			user : req.user
+		});
 	});
 
 	// check is user is logged in
