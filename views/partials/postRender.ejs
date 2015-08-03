@@ -27,93 +27,70 @@
 		</div>
 
 		<div class="post-metaData">
-		<p>
-			<%if (postBO.getByWho() == PostEnum.byConsumer){%>
+			<p>
+				<%if (postBO.getByWho() == PostEnum.byConsumer){%>
 				<p>
 					<%= postBO.getAuthorId();%>	is looking for this service!
 				</p> 
-			<%} else if (postBO.getByWho() == PostEnum.byProvider){%>
+				<%} else if (postBO.getByWho() == PostEnum.byProvider){%>
 				<p>
 					<%= postBO.getAuthorId();%> is providing this service!
 				</p>
-			<%}%>
-		</p>
-		
-		<p>
-			<%if (postBO.getIsPurchased() == PostEnum.isPurchased){%>
+				<%}%>
+			</p>
+
+			<p>
+				<%if (postBO.getIsPurchased() == PostEnum.isPurchased){%>
 				<p>
 					Some one has purchased this service!
 				</p> 
-			<%} else if (postBO.getIsPurchased() == PostEnum.isNotPurchased){%>
+				<%} else if (postBO.getIsPurchased() == PostEnum.isNotPurchased){%>
 				<p>
 					No one has purchased this service!
 				</p>
-			<%}%>
-		</p>
-		
-		<p>Posted On: <%= postBO.getCreatedAt();%></p>
-		<p>
-			<%if (postBO.getIsExpired() == PostEnum.isExpired){%>
+				<%}%>
+			</p>
+
+			<p>Posted On: <%= postBO.getCreatedAt();%></p>
+			<p>
+				<%if (postBO.getIsExpired() == PostEnum.isExpired){%>
 				<p>
 					Is Expired:	Yes
 				</p> 
-			<%} else if (postBO.getIsExpired() == PostEnum.isNotExpired){%>
+				<%} else if (postBO.getIsExpired() == PostEnum.isNotExpired){%>
 				<p>
 					Is Expired: No
 				</p>
-			<%}%>
+				<%}%>
+			</p>
 		</div>
-		<form>
+		<form class="commentForm" action="/postComment" method="post">
 			<fieldset>
-				<!-- Comment Form--> 
 				<br>
 				<br>
-				<label class="col-xs-2 control-label" for="userId">Comments</label>
+				<label class="col-xs-2 control-label" for="comment">Comments</label>
 				<br>
 				<div class="form-group">
 					<div class="col-xs-12">
-						<input id="userId" name="post[userId]" type="text" placeholder="Be nice..." class="form-control">
+						<input id="commentDescription" name="commentDescription" type="text" placeholder="Be nice..." class="form-control">
+						<input id="commentAuthorId" name="commentAuthorId" type="hidden" class="form-control" value="<%= user._userId%>" >
+						<input id="commentPostId" name="commentPostId" type="hidden" class="form-control" value="<%= postBO.getPostId()%>" >
 					</div>
 				</div>
 				<div class="col-xs-12 text-right">
 					<br>
-						<button type="submit" class="btn btn-primary btn-lg">Submit</button>
+					<button id="commentSubmitButton" type="submit" class="btn btn-primary btn-lg">Submit</button>
 				</div>
 			</fieldset>
 		</form>
-		<div>
-			<p class="comment"> This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. 
-				<p class="comment-author"> 
-					Author: Anonymous
-				</p>
-				<p class="comment-date"> 
-					Written on: 00/00/0000
-				</p>
-			</p>
-			<p class="comment"> This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. 
-				<p class="comment-author"> 
-					Author: Anonymous
-				</p>
-				<p class="comment-date"> 
-					Written on: 00/00/0000
-				</p>
-			</p>
-			<p class="comment"> This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. 
-				<p class="comment-author"> 
-					Author: Anonymous
-				</p>
-				<p class="comment-date"> 
-					Written on: 00/00/0000
-				</p>
-			</p>
-			<p class="comment"> This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. This is a comment. 
-				<p class="comment-author"> 
-					Author: Anonymous
-				</p>
-				<p class="comment-date"> 
-					Written on: 00/00/0000
-				</p>
-			</p>
+		<div id="<%= postBO.getPostId() + "commentSection" %>">
+		
+			<%if (postBO.getCommentIdArray()){%>
+				<% postBO.getCommentIdArray().forEach(function(commentBO) { %>
+					<% include ../partials/commentRender.ejs %>
+				<% }); %>
+			<%}%>
+
 		</div>
 	</div>
 </div>

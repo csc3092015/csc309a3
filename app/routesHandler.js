@@ -1,11 +1,10 @@
 var UserBO = require('./../control/businessObject/UserBO.js');
 var PostBO = require('./../control/businessObject/PostBO.js');
+var CommentBO = require('./../control/businessObject/CommentBO.js');
 var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
-// see http://docs.mongodb.org/manual/reference/object-id/
-var ObjectId = require('mongoose').Types.ObjectId;
 
 /**************************Home Page*************************************/
 var renderHomePage = function(req, res){
@@ -33,14 +32,14 @@ var renderHomePage = function(req, res){
 			// search for all the posts that are not owned by this user, byConsumer, not expired
 			var byConsumerCriteriaDictionary = {
 				$and:
-					[
-						{authorId: {$ne: userId}},
-						{keywordsArray: {$in: keywordsArray}},
-						{byWho: {$eq: PostEnum['byConsumer']}},
-						{isExpired: {$eq: PostEnum['isNotExpired']}}
-					]
+				[
+				{authorId: {$ne: userId}},
+				{keywordsArray: {$in: keywordsArray}},
+				{byWho: {$eq: PostEnum['byConsumer']}},
+				{isExpired: {$eq: PostEnum['isNotExpired']}}
+				]
 			};
-			PostBO.findPosts(byConsumerCriteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
+			PostBO.findPostsWithPopulatedFields('commentIdArray', byConsumerCriteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
 				// search for all the posts that are not owned by thie user, byProvider, not expired
 				if(err){
 					res.send(err);
@@ -50,14 +49,14 @@ var renderHomePage = function(req, res){
 				var postBOByConsumerArray = postBOArray;
 				var byProviderCriteriaDictionary = {
 					$and:
-						[
-							{authorId: {$ne: userId}},
-							{keywordsArray: {$in: keywordsArray}},
-							{byWho: {$eq: PostEnum['byProvider']}},
-							{isExpired: {$eq: PostEnum['isNotExpired']}}
-						]
+					[
+					{authorId: {$ne: userId}},
+					{keywordsArray: {$in: keywordsArray}},
+					{byWho: {$eq: PostEnum['byProvider']}},
+					{isExpired: {$eq: PostEnum['isNotExpired']}}
+					]
 				};
-				PostBO.findPosts(byProviderCriteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
+				PostBO.findPostsWithPopulatedFields('commentIdArray', byProviderCriteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
 					if(err){
 						res.send(err);
 						console.log('fails on finding recommended posts by provider\n ' + err);
@@ -72,17 +71,17 @@ var renderHomePage = function(req, res){
 					});
 				});
 			});
-		} else {
+} else {
 			// if i have time, show some posts that are most searched most of the time
 			// if not, show random posts (right now just show any 5 posts)
 			var criteriaDictionary = {
 				$and:
-					[
-						{authorId: {$ne: userId}},
-						{isExpired: {$eq: PostEnum['isNotExpired']}}
-					]
+				[
+				{authorId: {$ne: userId}},
+				{isExpired: {$eq: PostEnum['isNotExpired']}}
+				]
 			};
-			PostBO.findPosts(criteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
+			PostBO.findPostsWithPopulatedFields('commentIdArray', criteriaDictionary, GLOBAL_CONSTANTS.MODEL.POST_DAO.HOME_PAGE_RECOMMENDATION_NUMBER, function(err, postBOArray){
 				if(err){
 					res.send(err);
 					console.log('fails on finding recommended posts\n ' + err);
@@ -128,7 +127,7 @@ var keywordsSearchHandler = function(req, res){
 			});
 		}
 	});
-}
+};
 
 /**************************Submit a New Post*************************************/
 var postFormHandler = function(req, res){
@@ -141,26 +140,49 @@ var postFormHandler = function(req, res){
 	var isPurchased = PostEnum.isNotPurchased;
 	var isExpired = PostEnum.isNotExpired;
 	var createdAt = new Date().getTime();
-	var newPostBO = new PostBO(ObjectId().valueOf(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
+	var newPostBO = new PostBO(Converter.generateBOId(), title, keywordsArray, description, autherId, byWho, isPurchased, isExpired, createdAt);
 	newPostBO.save(function(err, postBO){
 		if(err){
 			console.error(err);
-		}
-		else{
+		} else{
 			if (postBO){
 				res.render('postAfterSubmit.ejs', {
 					user : req.user,
 					postBO: postBO,
 					PostEnum: PostEnum
 				});
-			} else{
+			} else {
 				console.log('Somehow no erro but didn\'t submit the Post!');
 				res.send('Somehow no erro but didn\'t submit the Post!');
 			}
 		}
 	}, autherId);
-}
+};
 
+/**************************Submit a New Comment*************************************/
+var postCommentHandler = function(req, res){
+	var commentId = Converter.generateBOId();
+	var description = req.body.commentDescription;
+	var authorId = req.body.commentAuthorId;
+	var createdAt = new Date().getTime();
+	var commentPostId = req.body.commentPostId;
+	var newCommentBO = new CommentBO(commentId, description, authorId, createdAt);
+	newCommentBO.save(function(err, commentBO){
+		if(err){
+			console.error(err);
+		} else {
+			if(commentBO){
+				res.render('commentRender.ejs', {
+					commentBO : commentBO
+				});
+			} else{
+				console.log('Somehow no erro but didn\'t submit the Comment!');
+				res.send('Somehow no erro but didn\'t submit the Comment!');
+			}
+		}
+
+	}, commentPostId);
+};
 /**************************General Helper*************************************/
 
 
@@ -175,3 +197,6 @@ module.exports.keywordsSearchHandler = keywordsSearchHandler;
 
 /**************************Submit a New Post*************************************/
 module.exports.postFormHandler = postFormHandler;
+
+/**************************Submit a New Comment*************************************/
+module.exports.postCommentHandler = postCommentHandler;
