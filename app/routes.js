@@ -54,8 +54,12 @@ module.exports = function (app, passport) {
 		});
 	});
 
+	app.get('/posts/:postId([0-9a-fA-F]{24}$)', redirectVisitor, function (req, res) {
+		routesHandler.singlePostHandler(req, res, req.params.postId);
+	});
+
 	// mutual agreement page
-	app.get("/serviceAgreement/:mutualAgreementId([0-9a-fA-F]{24}$)", redirectVisitor, function (req, res) {
+	app.get("/serviceAgreements/:mutualAgreementId([0-9a-fA-F]{24}$)", redirectVisitor, function (req, res) {
 		routesHandler.mutualAgreementInfoHandler(req, res, req.params.mutualAgreementId);
 	});
 

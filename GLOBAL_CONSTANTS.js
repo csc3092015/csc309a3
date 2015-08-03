@@ -8,7 +8,6 @@ model.TABLE_NAME.USER = "User";
 model.TABLE_NAME.POST = "Post";
 model.TABLE_NAME.MUTUAL_AGREEMENT = "MutualAgreement";
 model.TABLE_NAME.TEST = "Test";
-model.TABLE_NAME.TESTSANDRA = "TestSandra";
 
 model.POST_DAO = {};
 model.POST_DAO.SEARCH_RESULT_NUMBER = 10;

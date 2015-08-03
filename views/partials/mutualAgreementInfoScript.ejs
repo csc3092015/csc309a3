@@ -19,7 +19,6 @@
 	var isLocked = <%- JSON.parse(isLocked); %>
 
 	var mutualAgreementId = <%- JSON.stringify(mutualAgreementId); %>
-	var editURL = '/serviceAgreement/' + mutualAgreementId + "/edit";
 	var postURL = '/serviceAgreementPost';
 	var data;	// holds the post data
 
@@ -212,7 +211,7 @@
 			setUpSocketResponses(socket);
 
 			// set up click-triggered AJAX for service cancelling
-			$('#cancelServiceButton').click(function(event) {
+			$('#cancelServiceButton').click(function() {
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
 					"deleteAgreement" : true 
@@ -225,7 +224,7 @@
 			});
 
 			// set up click-triggered AJAX for provider consent toggle
-			$('#providerConsent').click(function(event) {
+			$('#providerConsent').click(function() {
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
 					"providerConsent" : !providerConsent 
@@ -241,7 +240,7 @@
 			});
 
 			// set up click-triggered AJAX for consumer consent toggle
-			$('#consumerConsent').click(function(event) {
+			$('#consumerConsent').click(function() {
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
 					"consumerConsent" : !consumerConsent 
@@ -257,7 +256,7 @@
 			});
 
 			// set up click-triggered AJAX for edit request
-			$('#editButton').click(function(event) {
+			$('#editButton').click(function() {
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
 					"isLocked" : true 
@@ -273,7 +272,7 @@
 			});
 
 			// set up click-triggered AJAX for provider consent toggle
-			$('#finalizeButton').click(function(event) {
+			$('#finalizeButton').click(function() {
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
 					"isFinalized" : true 
@@ -289,7 +288,7 @@
 			});
 
 			// set up click-triggered AJAX for edit submit
-			$('#editSubmit').click(function(event) {
+			$('#editSubmit').click(function() {
 				var newDescription = $("textarea#description").val();
 				var newDate = $("input#finishDate").val();
 				var newUnix = new Date(newDate).getTime() / 1000;
@@ -321,7 +320,7 @@
 			});
 
 			// set up click-triggered AJAX for edit cancelling
-			$('#editCancel').click(function(event) {
+			$('#editCancel').click(function() {
 
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,

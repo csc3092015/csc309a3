@@ -4,7 +4,6 @@ var MutualAgreementBO = require('./../control/businessObject/MutualAgreementBO.j
 var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
 var UserTypeEnum = require('./../control/Enum.js').UserTypeEnum;
-var UserRoleEnum = require('./../control/Enum.js').UserRoleEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
 // see http://docs.mongodb.org/manual/reference/object-id/
@@ -164,6 +163,24 @@ var postFormHandler = function(req, res){
 	}, autherId);
 }
 
+/**************************Post Page*************************************/
+
+var singlePostHandler = function(req, res, postId) {
+	PostBO.findPostById(postId, function(err, postBO) {
+		if (err) {
+			console.error(err);
+		} else {
+			res.render('postAfterSubmit.ejs', {
+				user : req.user,
+				postBO : postBO,
+				PostEnum : PostEnum
+			})
+		}
+	});
+}
+
+
+
 /**************************Mutual Agreement Handling*************************************/
 
 // depending on the user's identity, load the mutual agreement page or deny access.
@@ -194,7 +211,7 @@ var mutualAgreementInfoHandler = function(req, res, mutualAgreementId) {
 
 			// display insufficient permissions page if user has no permission
 			// to view the mutual agreement
-			if (UserRoleEnum.getName(userRole) === "noAccess") {
+			if (userRole === "noAccess") {
 				// trigger a 403 forbidden error since user
 				// has no access to this mutual agreement
 				var err = new Error();
@@ -226,7 +243,7 @@ var mutualAgreementInfoHandler = function(req, res, mutualAgreementId) {
 							consumerLink : "/users/" + consumerId.replace("@", "%40"),
 							postId : postId,
 							postTitle : postTitle,
-							postLink : "/post/" + postId,
+							postLink : "/posts/" + postId,
 							finishDay : finishDate.getDate(),
 							finishMonth : finishMonth,
 							finishYear : finishDate.getFullYear(),
@@ -288,7 +305,7 @@ var mutualAgreementInfoUpdateHandler = function(req, res) {
 			if (responseObj.isLocked === true) {
 				var updateDict = { isLocked : true };
 			} else {
-				if (responseObj.editted) {
+				if (responseObj.editted === true) {
 					var updateDict = { 
 						isLocked : false,
 						description : responseObj.newDescription,
@@ -297,7 +314,6 @@ var mutualAgreementInfoUpdateHandler = function(req, res) {
 						providerConsent : false
 					};
 				} else {
-					console.log("wasn't editted");
 					var updateDict = { isLocked : false };
 				}
 			}
@@ -332,6 +348,9 @@ module.exports.keywordsSearchHandler = keywordsSearchHandler;
 
 /**************************Submit a New Post*************************************/
 module.exports.postFormHandler = postFormHandler;
+
+/**************************Post Page*************************************/
+module.exports.singlePostHandler = singlePostHandler;
 
 /**************************Mutual Agreement Page*************************************/
 module.exports.mutualAgreementInfoHandler = mutualAgreementInfoHandler;
