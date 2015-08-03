@@ -7,8 +7,33 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script type="text/javascript" src="./../javascript/main.js"></script>
 	<style>
 	body  { padding-top:0px; word-wrap:break-word; }
 	</style>
+	<script>
+	$(document).ready(function(){
+		/******************** Comment Submit Ajax*******************/
+		$('.commentForm').submit(function(evt){
+			evt.preventDefault();
+			var url = $(this).attr("action");
+			var commentDescription = $("input#commentDescription").val();
+			var commentAuthorId = $("input#commentAuthorId").val();
+			var commentPostId = $("input#commentPostId").val();
+			var formData = {
+				commentDescription: commentDescription,
+				commentAuthorId: commentAuthorId,
+				commentPostId: commentPostId
+			};
+			$.ajax(url, {
+				data: formData,
+				type: "POST",
+				success: function(newCommentHtml){
+					var commentSectionId = commentPostId + 'commentSection';
+					$('#' + commentSectionId).append(newCommentHtml);
+				}
+			});
+		});
+
+	});
+	</script>
 </head>

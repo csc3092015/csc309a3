@@ -167,15 +167,13 @@ var postCommentHandler = function(req, res){
 	var createdAt = new Date().getTime();
 	var commentPostId = req.body.commentPostId;
 	var newCommentBO = new CommentBO(commentId, description, authorId, createdAt);
-	newCommentBO.save(function(err, commentBO, savedPostBO){
+	newCommentBO.save(function(err, commentBO){
 		if(err){
 			console.error(err);
 		} else {
 			if(commentBO){
-				res.render('postAfterSubmit.ejs', {
-					user : req.user,
-					postBO: savedPostBO,
-					PostEnum: PostEnum
+				res.render('commentRender.ejs', {
+					commentBO : commentBO
 				});
 			} else{
 				console.log('Somehow no erro but didn\'t submit the Comment!');

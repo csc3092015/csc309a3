@@ -29,14 +29,11 @@ CommentBO.prototype.save = function(callback, postId){
 		if (commentBO){
 			//now this comment is saved, we need to update its post so that it knows it has this comment
 			PostDAO.findById(postId, function(err, postDAO){
-				console.log(err);
 				postDAO.commentIdArray.push(commentDAO);
-				postDAO.save(function (err, savedPostDAO){
-					var savedPostBO = Converter.convertFromPostDAOtoPostBO(savedPostDAO);
-					callback(err, commentBO, savedPostBO);			
-				});
+				postDAO.save();
 			});
 		}
+		callback(err, commentBO);
 		
 	});
 };

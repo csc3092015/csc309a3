@@ -72,7 +72,6 @@ PostBO.prototype.save = function(callback, authorId){
 		if(postBO){
 			//now this post is saved, we need update its author so that it remember which post he has created
 			UserDAO.findById(authorId, function(err, userDAO){
-				console.error(err);
 				userDAO.postIdArray.push(postDAO);
 				userDAO.save();
 			});

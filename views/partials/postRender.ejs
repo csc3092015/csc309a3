@@ -83,7 +83,7 @@
 				</div>
 			</fieldset>
 		</form>
-		<div id="<%= postBO.getPostId() + "comments" %>">
+		<div id="<%= postBO.getPostId() + "commentSection" %>">
 			<%if (postBO.getCommentIdArray()){%>
 				<% postBO.getCommentIdArray().forEach(function(commentBO) { %>
 				<li>

@@ -16,7 +16,7 @@ $(document).ready(function(){
 			type: "POST",
 			success: function(newCommentHtml){
 				var commentSectionId = commentPostId + 'commentSection';
-				$('#' + commentSectionId).appendChild(newCommentHtml);
+				$('#' + commentSectionId).append(newCommentHtml);
 			}
 		});
 	});
