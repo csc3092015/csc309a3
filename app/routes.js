@@ -133,7 +133,10 @@ module.exports = function (app, passport) {
 		// } else {
 		// 	next();
 		// }
+	});
 	// click interested, create mutual agreement
+
+
 	app.post('/interested', function(req, res){
 		routesHandler.establishMutualAgreement(req, res);
 	});
@@ -153,13 +156,13 @@ module.exports = function (app, passport) {
 
 
 	// Error handler
-
+	
 	app.get('*', function (req, res, next) {
 		var err = new Error();
 		err.status = 404;
 		next(err);
 	});
-
+	
 	app.use(function(err, req, res, next){
 	  if (err.status == 404) {
 	  	res.render('404.ejs', { error: err });
@@ -172,5 +175,4 @@ module.exports = function (app, passport) {
 	  	res.render('500.ejs', { error: err });
 	  }
 	});
-
 }
