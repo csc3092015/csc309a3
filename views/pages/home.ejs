@@ -4,14 +4,15 @@
 <body>
 	<div class="container-fluid">
 		<% include ../partials/alwaysInclude.ejs %>
+		<div class="col-md-9">
+			<div class="postReqButtons col-md-12">
+				<% include ../partials/postOrRequestButtons.ejs %>
+			</div> 
 
-		<div class="postReqButtons col-md-9">
-			<% include ../partials/postOrRequestButtons.ejs %>
-		</div> 
-
-		<div class="recommendations col-md-9">
-			<% include ../partials/recommendedPosts.ejs %>
-		</div> 
+			<div class="recommendations col-md-12">
+				<% include ../partials/recommendedPosts.ejs %>
+			</div> 
+		</div>
 	</div>
 </body>
 </html>

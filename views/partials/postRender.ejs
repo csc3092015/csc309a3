@@ -84,13 +84,13 @@
 			</fieldset>
 		</form>
 		<div id="<%= postBO.getPostId() + "commentSection" %>">
+		
 			<%if (postBO.getCommentIdArray()){%>
 				<% postBO.getCommentIdArray().forEach(function(commentBO) { %>
-				<li>
-					<% include commentRender.ejs %>
-				</li>
+					<% include ../partials/commentRender.ejs %>
 				<% }); %>
 			<%}%>
+
 		</div>
 	</div>
 </div>
