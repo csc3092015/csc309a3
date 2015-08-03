@@ -126,4 +126,8 @@ module.exports = function (app, passport) {
 		// }
 	});
 
+	app.post('/changeUser', function(req, res){
+		routesHandler.changeUser(req, res);
+	});
+
 }

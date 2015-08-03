@@ -183,6 +183,15 @@ var postCommentHandler = function(req, res){
 
 	}, commentPostId);
 };
+
+/**************************Edit User*************************************/
+var changeUser = function(req, res){
+	res.send("changing user...");
+	//UserBO.findByIdAndUpdate
+}
+
+
+
 /**************************General Helper*************************************/
 
 
@@ -194,6 +203,9 @@ module.exports.renderHomePage = renderHomePage;
 
 /**************************Search Bar*************************************/
 module.exports.keywordsSearchHandler = keywordsSearchHandler;
+
+/**************************Change User*************************************/
+module.exports.changeUser = changeUser;
 
 /**************************Submit a New Post*************************************/
 module.exports.postFormHandler = postFormHandler;
