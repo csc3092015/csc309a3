@@ -1,13 +1,39 @@
 <head>
-<title>Get it Done</title>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="/stylesheets/sidebar.css" />
-<link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<title>Get it Done</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/sidebar.css" />
+	<link rel="stylesheet" type="text/css" href="/stylesheets/main.css" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<style>
+	body  { padding-top:0px; word-wrap:break-word; }
+	</style>
+	<script>
+	$(document).ready(function(){
+		/******************** Comment Submit Ajax*******************/
+		$('.commentForm').submit(function(evt){
+			evt.preventDefault();
+			var url = $(this).attr("action");
+			var commentDescription = $("input#commentDescription").val();
+			var commentAuthorId = $("input#commentAuthorId").val();
+			var commentPostId = $("input#commentPostId").val();
+			var formData = {
+				commentDescription: commentDescription,
+				commentAuthorId: commentAuthorId,
+				commentPostId: commentPostId
+			};
+			$.ajax(url, {
+				data: formData,
+				type: "POST",
+				success: function(newCommentHtml){
+					var commentSectionId = commentPostId + 'commentSection';
+					$('#' + commentSectionId).append(newCommentHtml);
+				}
+			});
+		});
 
-<style>
-    body  { padding-top:0px; word-wrap:break-word; }
-</style>
+	});
+	</script>
 </head>
