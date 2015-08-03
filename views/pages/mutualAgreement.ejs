@@ -33,35 +33,32 @@
 			});
 
 			socket.on('provider consent change', function (receivedData) {
-				console.log("SOCKET SAYS: providerConsent change");
 				if (receivedData.id === mutualAgreementId) {
-					console.log("providerConsent is now " + providerConsent);
 					providerConsent = receivedData.newProviderConsent;
 					toggleConsentButton($('#providerConsent'), providerConsent);
+					updateFinalizeButton();
 				}
 			});
 
 			socket.on('consumer consent change', function (receivedData) {
-				console.log("SOCKET SAYS: consumerConsent change");
 				if (receivedData.id === mutualAgreementId) {
-					console.log("consumerConsent is now " + consumerConsent);
 					consumerConsent = receivedData.newConsumerConsent;
 					toggleConsentButton($('#consumerConsent'), consumerConsent);
+					updateFinalizeButton();
 				}
 			});
 
 			socket.on('finalize', function (receivedData) {
 				if (receivedData.id === mutualAgreementId) {
-					console.log("agreement now finalized");
 					isFinalized = receivedData.finalized;
 					finalizeButtons();
+					updateFinalizeButton();
 				}
 			});
 
 			socket.on('enter edit mode', function (receivedData) {
 				if (receivedData.id === mutualAgreementId) {
 					isLocked = true;
-					console.log("enter edit mode: isLocked is now " + isLocked);
 					$('#editButton').attr('disabled', true);
 					updateFinalizeButton();
 				}
@@ -79,10 +76,9 @@
 		// make finalize button disabled or not according to consents
 		function updateFinalizeButton() {
 			if (providerConsent && consumerConsent) {
-				$('finalizeButton').attr('disabled', false);
-			}
-			if (!providerConsent || !consumerConsent) {
-				$('finalizeButton').attr('disabled', true);
+				$('#finalizeButton').attr('disabled', false);
+			} else {
+				$('#finalizeButton').attr('disabled', true);
 			}
 		}
 
@@ -160,7 +156,6 @@
 					};
 					$.post(postURL, data, function(returnedData){
 						if (returnedData.success) {
-							console.log("service successfully deleted");
 							socket.emit('service cancelled', { id : mutualAgreementId });
 						}
 					}, "json");
@@ -177,7 +172,6 @@
 					};
 					$.post(postURL, data, function(returnedData){
 						if (returnedData.success) {
-							console.log("provider consent successfully changed");
 							socket.emit('provider consent change', { 
 								id : mutualAgreementId,
 								newProviderConsent: providerConsent 
@@ -191,15 +185,12 @@
 					// prevent redirect
 					//event.preventDefault();
 					consumerConsent = !consumerConsent;
-					console.log("testing: consumerConsent is " + consumerConsent);
 					data = { 
 						"mutualAgreementId" : mutualAgreementId,
 						"consumerConsent" : consumerConsent 
 					};
 					$.post(postURL, data, function(returnedData){
-						console.log("testing: returnedData.success is " + returnedData.success);
 						if (returnedData.success) {
-							console.log("consumer consent successfully changed");
 							socket.emit('consumer consent change', { 
 								id : mutualAgreementId,
 								newConsumerConsent: consumerConsent 
@@ -234,7 +225,6 @@
 					};
 					$.post(postURL, data, function(returnedData){
 						if (returnedData.success) {
-							console.log("mutual agreement successfully finalized");
 							socket.emit('finalize', { 
 								id : mutualAgreementId,
 								finalized: true 
@@ -252,7 +242,7 @@
 <div class="container-fluid">
 	<% include ../partials/alwaysInclude.ejs %>
 
-	<div class="row-fluid col-md-9">
+	<div class="row col-md-9">
 		<div class="panel col-md-12 detach">
 			<% include ../partials/mutualAgreementTop.ejs %>
 			<% include ../partials/mutualAgreementInfo.ejs %>
