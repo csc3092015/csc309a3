@@ -23,8 +23,6 @@ var PostEnum = new Enum('byConsumer', 'byProvider', 'isNotPurchased', 'isPurchas
 var UserTypeEnum = new Enum('normal', 'admin');
 
 /*************** Mutual Agreement Front End Enum ***************/
-var UserRoleEnum = new Enum('consumer', 'provider', 'adminOnly', 'noAccess');
 
 module.exports.PostEnum = PostEnum;
 module.exports.UserTypeEnum = UserTypeEnum;
-module.exports.UserRoleEnum = UserRoleEnum;
