@@ -59,6 +59,10 @@ var convertFromUserDAOtoUserBO = function(userDAO){
 	if(userDAO === null){
 		return null;
 	}
+	else if(userDAO === undefined){
+		console.log("UserDAO is undefined");
+		return;
+	}
 	var userBO = new UserBO(userDAO._id, userDAO._password, 
 		userDAO._facebookId, userDAO._name, userDAO._userIdType,
 		userDAO._rating

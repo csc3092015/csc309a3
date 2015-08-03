@@ -186,9 +186,10 @@ var postCommentHandler = function(req, res){
 
 /**************************Edit User*************************************/
 var changeUser = function(req, res){
-	res.send("changing user...");
+	//res.send("changing user...");
 	var userId = req.user._userId;
-	UserBO.findByIdAndUpdate(req.user._userId)
+	var newPassword = req.body.password;
+	UserBO.findByIdAndUpdate(userId, {$set: {getPassword: newPassword}});
 }
 
 

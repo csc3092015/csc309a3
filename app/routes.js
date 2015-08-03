@@ -108,16 +108,16 @@ module.exports = function (app, passport) {
 
 
     // submitting a post
-    app.post('/post', function(req, res){
+    app.post('/post', redirectVisitor, function(req, res){
     	routesHandler.postFormHandler(req, res);
 	});
 
-	app.post('/search', function(req, res){
+	app.post('/search', redirectVisitor, function(req, res){
 		routesHandler.keywordsSearchHandler(req, res);
 	});
 
 	// submitting a comment 
-	app.post('/postComment', function(req, res, next){
+	app.post('/postComment', redirectVisitor, function(req, res, next){
 		routesHandler.postCommentHandler(req, res);	
 		// if(req.xhr){// this is an AJAX request
 			
@@ -126,7 +126,7 @@ module.exports = function (app, passport) {
 		// }
 	});
 
-	app.post('/changeUser', function(req, res){
+	app.post('/changeUser', redirectVisitor, function(req, res){
 		routesHandler.changeUser(req, res);
 	});
 
