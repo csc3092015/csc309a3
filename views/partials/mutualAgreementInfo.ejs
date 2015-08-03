@@ -1,78 +1,80 @@
 <form class="form-horizontal">
 	<div class="row">
-	<fieldset>
+		<fieldset>
 
-		<!-- Form info -->
-		<div class="form-group">
-			<label class="control-label col-sm-4" for="provider">Provider:</label>
-			<div class="col-sm-5">
-	        	<h5><a id="provider" href=<%= providerLink %>><%= providerId %></a></h5>
-	      	</div>
-      	</div>
+			<!-- Form info -->
+			<div class="form-group">
+				<label class="control-label col-sm-4" for="provider">Provider:</label>
+				<div class="col-sm-5">
+					<h5><a id="provider" href=<%= providerLink %>><%= providerId %></a></h5>
+				</div>
+			</div>
 
-      	<div class="form-group">
-			<label class="control-label col-sm-4" for="consumer">Consumer:</label>
-			<div class="col-sm-5">
-	        	<h5><a id="consumer" href=<%= consumerLink %>><%= consumerId %></a></h5>
-	      	</div>
-      	</div>
+			<div class="form-group">
+				<label class="control-label col-sm-4" for="consumer">Consumer:</label>
+				<div class="col-sm-5">
+					<h5><a id="consumer" href=<%= consumerLink %>><%= consumerId %></a></h5>
+				</div>
+			</div>
 
-      	<div class="form-group">
-			<label class="control-label col-sm-4" for="postLink">Post:</label>
-			<div class="col-sm-5">
-	        	<h5><a id="postLink" href=<%= postLink %>><%= postTitle %></a></h5>
-	      	</div>
-      	</div>
+			<div class="form-group">
+				<label class="control-label col-sm-4" for="postLink">Post:</label>
+				<div class="col-sm-5">
+					<h5><a id="postLink" href=<%= postLink %>><%= postTitle %></a></h5>
+				</div>
+			</div>
 
-      	<div class="form-group">
-			<label class="control-label col-sm-4" for="finishDate">Service Finish Date:</label>
-			<div class="col-sm-5">
-				<% 	finishDay = finishDay < 10 ? "0" + finishDay : finishDay;
+			<div class="form-group">
+				<label class="control-label col-sm-4" for="finishDate">Service Finish Date:</label>
+				<div class="col-sm-5">
+					<% 	finishDay = finishDay < 10 ? "0" + finishDay : finishDay;
 					finishMonth = finishMonth < 10 ? "0" + finishMonth : finishMonth;
 					var finishDate = finishDay + "/" + finishMonth + "/" + finishYear + " (dd/mm/yyyy)"%>
-	        	<h5 id="finishDate"><%= finishDate %></h5>
-	      	</div>
-      	</div>
-
-      	<div class="form-group">
-			<label class="control-label col-sm-4" for="description">Service Description:</label>
-			<div class="col-sm-7">
-	        	<h5 id="description"><%= description %></h5>
-	      	</div>
-      	</div>
-
-		<!-- Form actions -->
-		<div class="form-group" name="infoButton">
-			<label class="control-label col-sm-4" for="providerConsent">Provider Consent:</label>
-			<button id="providerConsent" name="agreementButton" type="button" class="btn btn-danger" disabled>Disagree</button>
-		</div>
-
-		<div class="form-group" name="infoButton">
-			<label class="control-label col-sm-4" for="consumerConsent">Consumer Consent:</label>
-			<button id="consumerConsent" name="agreementButton" type="button" class="btn btn-danger" disabled>Disagree</button>
-		</div>
-
-		<div class="form-group btn-group-vertical" name="infoButton">
-			<div class="col-sm-2 text-center">
-			</div>
-			<div class="col-sm-5 text-center">
-				<button id="editButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" disabled>Edit Agreement</button>
+					<h5 id="finishDate"><%= finishDate %></h5>
+				</div>
 			</div>
 
-			<div class="col-sm-5 text-center">
-				<button id="finalizeButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" disabled>Finalize Agreement</button>
+			<div class="form-group">
+				<label class="control-label col-sm-4" for="description">Service Description:</label>
+				<div class="col-sm-7">
+					<h5 id="description"><%= description %></h5>
+				</div>
 			</div>
-		</div>
 
-		<div class="form-group btn-group-vertical" name="editButton">
-		<div class="col-xs-6 text-center">
-			<button id="editSubmit" type="submit" class="btn btn-primary btn-lg" value="editSubmit">Submit</button>
-		</div>
-		<div class="col-xs-6 text-center">
-			<button id="editCancel" type="submit" class="btn btn-primary btn-lg" value="editCancel">Cancel</button>
-		</div>
-		</div>
+			<!-- Form actions -->
+			<div class="form-group" name="infoButton">
+				<label class="control-label col-sm-4" for="providerConsent">Provider Consent:</label>
+				<button id="providerConsent" name="agreementButton" type="button" class="btn btn-danger" disabled>Disagree</button>
+			</div>
 
-	</fieldset>
+			<div class="form-group" name="infoButton">
+				<label class="control-label col-sm-4" for="consumerConsent">Consumer Consent:</label>
+				<button id="consumerConsent" name="agreementButton" type="button" class="btn btn-danger" disabled>Disagree</button>
+			</div>
+
+			<div class="form-group btn-group-vertical center-block" name="infoButton">
+				<div class="col-md-3 text-center">
+				</div>
+				<div class="col-md-3 text-center">
+					<button id="editButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" disabled>Edit Agreement</button>
+				</div>
+
+				<div class="col-md-3 text-center">
+					<button id="finalizeButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" disabled>Finalize Agreement</button>
+				</div>
+			</div>
+
+			<div class="form-group btn-group-vertical center-block" name="editButton">
+				<div class="col-md-3 text-center">
+				</div>
+				<div class="col-md-2 text-center">
+					<button id="editSubmit" type="submit" class="btn btn-primary btn-lg" value="editSubmit">Submit</button>
+				</div>
+				<div class="col-md-2 text-center">
+					<button id="editCancel" type="submit" class="btn btn-primary btn-lg" value="editCancel">Cancel</button>
+				</div>
+			</div>
+
+		</fieldset>
 	</div>	
 </form>
