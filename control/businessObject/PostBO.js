@@ -32,6 +32,13 @@ function PostBO (postId, title, keywordsArray, description, authorId, byWho, isP
 
 /*******************************Static Method**************************************/
 
+PostBO.findPostById = function(postId, callback){
+	PostDAO.findPostById(Converter.convertFromBOIdToDaoId(postId), function(err, postDAO) {
+		var postBO = Converter.convertFromPostDAOtoPostBO(postDAO);
+		callback(err, postBO);
+	});
+}
+
 PostBO.findPostsByKeywordsArrayAndOption = function(fieldsString, keywordsArray, optionalDictionary, callback){
 	PostDAO.findPostsByKeywordsArrayAndOption(fieldsString, keywordsArray, optionalDictionary, function(err, postDAOArray){
 		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
