@@ -39,10 +39,10 @@ var postDAOSchema = new mongoose.Schema({
 		required: true
 	},
 	//expiryDate : {type: int, required: true},
-	//commentIdArray : {type: Array<String>, required: true},
 	//ongoingMutualAgreementIdArray : {type: Array<String>, required: true},
 	//pictureIdArray : {type: Array<String>, required: true},
 	//googlePlaceId : {type: Array<String}, required: true},
+	commentIdArray : [{ type: mongoose.Schema.Types.ObjectId, ref: 'CommentDAO'}],
 	createdAt : {
 		type: Number, 
 		required: true
@@ -96,6 +96,16 @@ postDAOSchema.statics.findPosts = function(criteriaDictionary, resultSizeUpperBo
 	this.find(criteriaDictionary, function(err, postDAOArray){
 		callback(err, postDAOArray);
 	}).limit(resultSizeUpperBound);
+};
+
+postDAOSchema.statics.findPostsWithPopulatedFields = function(fieldsString, criteriaDictionary, resultSizeUpperBound, callback){
+	this
+		.find(criteriaDictionary)
+		.limit(resultSizeUpperBound)
+		.populate(fieldsString)
+		.exec(function(err, postDAOArray){
+			callback(err, postDAOArray);
+	});
 };
 
 /************************ Instance Methods *************************/

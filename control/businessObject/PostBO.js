@@ -46,6 +46,24 @@ PostBO.findPosts = function(criteriaDictionary, resultSizeUpperBound, callback){
 	});
 };
 
+PostBO.findPostsWithPopulatedFields = function(fieldsString, criteriaDictionary, resultSizeUpperBound, callback){
+	PostDAO.findPostsWithPopulatedFields(fieldsString, criteriaDictionary, resultSizeUpperBound, function(err, postDAOArray){
+		var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(postDAOArray);
+		callback(err, postBOArray);
+	});
+};
+
+// PostBO.findAllCommentsByPostId = function(postBOId, callback){
+// 	var postDAOId = Converter.convertFromBOIdToDaoId(postBOId);
+// 	PostDAO
+// 		.findOne({_id: postDAOId})
+// 		.populate('commentIdArray')
+// 		.exec(function(err, postDAO){
+// 			var commentBOArray = Converter.convertFromCommentDAOArraytoCommentBOArray(postDAO.commentIdArray);
+// 			callback(err, commentBOArray);
+// 		});
+// };
+
 /*******************************Instance Method**************************************/
 PostBO.prototype.save = function(callback, authorId){
 	var newPostDAO = Converter.convertFromPostBOtoPostDAO(this);
@@ -94,6 +112,11 @@ PostBO.prototype.getIsPurchased = function(){
 
 PostBO.prototype.getIsExpired = function(){
 	return this._isExpired;
+};
+
+PostBO.prototype.getCommentIdArray = function(){
+	// beaware this may be populated
+	return this._commentIdArray;
 };
 
 PostBO.prototype.getCreatedAt = function(){
@@ -147,6 +170,13 @@ PostBO.prototype.setIsExpired = function(newIsExpired){
 	PostEnum.validate(newIsExpired);
 	this._isExpired = PostEnum[newIsExpired];
 };
+
+PostBO.prototype.setCommentIdArray = function(newCommentIdArray){
+	// beaware this may be populated
+	this._commentIdArray = newCommentIdArray.slice();
+};
+
+
 
 PostBO.prototype.setCreatedAt = function(newCreatedAt){
 	this._createdAt = newCreatedAt;

@@ -110,4 +110,14 @@ module.exports = function (app, passport) {
 		routesHandler.keywordsSearchHandler(req, res);
 	});
 
+	// submitting a comment 
+	app.post('/postComment', function(req, res, next){
+		routesHandler.postCommentHandler(req, res);	
+		// if(req.xhr){// this is an AJAX request
+			
+		// } else {
+		// 	next();
+		// }
+	});
+
 }

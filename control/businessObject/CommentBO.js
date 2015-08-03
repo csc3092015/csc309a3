@@ -1,4 +1,5 @@
 var CommentDAO = require('./../../model/dao/CommentDAO.js');
+var PostDAO = require('./../../model/dao/PostDAO.js');
 var Converter = require('./../../model/Converter.js');
 var util = require('./../util.js');
 
@@ -21,11 +22,22 @@ CommentBO.findCommentById = function(commentId, callback){
 };
 
 /*******************************Instance Method**************************************/
-CommentBO.prototype.save = function(callback){
+CommentBO.prototype.save = function(callback, postId){
 	var newCommentDAO = Converter.convertFromeCommentBOtoCommentDAO(this);
 	newCommentDAO.save(function(err, commentDAO){
 		var commentBO = Converter.convertFromCommentDAOtoCommentBO(commentDAO);
-		callback(err, commentBO);
+		if (commentBO){
+			//now this comment is saved, we need to update its post so that it knows it has this comment
+			PostDAO.findById(postId, function(err, postDAO){
+				console.log(err);
+				postDAO.commentIdArray.push(commentDAO);
+				postDAO.save(function (err, savedPostDAO){
+					var savedPostBO = Converter.convertFromPostDAOtoPostBO(savedPostDAO);
+					callback(err, commentBO, savedPostBO);			
+				});
+			});
+		}
+		
 	});
 };
 
