@@ -187,7 +187,8 @@ var postCommentHandler = function(req, res){
 /**************************Edit User*************************************/
 var changeUser = function(req, res){
 	res.send("changing user...");
-	//UserBO.findByIdAndUpdate
+	var userId = req.user._userId;
+	UserBO.findByIdAndUpdate(req.user._userId)
 }
 
 
