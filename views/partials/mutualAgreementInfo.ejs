@@ -4,28 +4,28 @@
 
 		<!-- Form info -->
 		<div class="form-group">
-			<label class="control-label col-sm-2" for="provider">Provider:</label>
+			<label class="control-label col-sm-4" for="provider">Provider:</label>
 			<div class="col-sm-5">
 	        	<h5><a id="provider" href=<%= providerLink %>><%= providerId %></a></h5>
 	      	</div>
       	</div>
 
       	<div class="form-group">
-			<label class="control-label col-sm-2" for="consumer">Consumer:</label>
+			<label class="control-label col-sm-4" for="consumer">Consumer:</label>
 			<div class="col-sm-5">
 	        	<h5><a id="consumer" href=<%= consumerLink %>><%= consumerId %></a></h5>
 	      	</div>
       	</div>
 
       	<div class="form-group">
-			<label class="control-label col-sm-2" for="postLink">Post:</label>
+			<label class="control-label col-sm-4" for="postLink">Post:</label>
 			<div class="col-sm-5">
 	        	<h5><a id="postLink" href=<%= postLink %>><%= postTitle %></a></h5>
 	      	</div>
       	</div>
 
       	<div class="form-group">
-			<label class="control-label col-sm-2" for="finishDate">Service Finish Date:</label>
+			<label class="control-label col-sm-4" for="finishDate">Service Finish Date:</label>
 			<div class="col-sm-5">
 				<% 	finishDay = finishDay < 10 ? "0" + finishDay : finishDay;
 					finishMonth = finishMonth < 10 ? "0" + finishMonth : finishMonth;
@@ -35,7 +35,7 @@
       	</div>
 
       	<div class="form-group">
-			<label class="control-label col-sm-2" for="description">Service Description:</label>
+			<label class="control-label col-sm-4" for="description">Service Description:</label>
 			<div class="col-sm-7">
 	        	<h5 id="description"><%= description %></h5>
 	      	</div>
@@ -43,23 +43,23 @@
 
 		<!-- Form actions -->
 		<div class="form-group" name="infoButton">
-			<label class="control-label col-sm-2" for="providerConsent">Provider Consent:</label>
+			<label class="control-label col-sm-4" for="providerConsent">Provider Consent:</label>
 			<button id="providerConsent" name="agreementButton" type="button" class="btn btn-danger" disabled>Disagree</button>
-			If you are the provider, click to toggle.
 		</div>
 
 		<div class="form-group" name="infoButton">
-			<label class="control-label col-sm-2" for="consumerConsent">Consumer Consent:</label>
+			<label class="control-label col-sm-4" for="consumerConsent">Consumer Consent:</label>
 			<button id="consumerConsent" name="agreementButton" type="button" class="btn btn-danger" disabled>Disagree</button>
-			If you are the consumer, click to toggle.
 		</div>
 
 		<div class="form-group btn-group-vertical" name="infoButton">
-			<div class="col-sm-6 text-center">
+			<div class="col-sm-2 text-center">
+			</div>
+			<div class="col-sm-5 text-center">
 				<button id="editButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" disabled>Edit Agreement</button>
 			</div>
 
-			<div class="col-sm-6 text-center">
+			<div class="col-sm-5 text-center">
 				<button id="finalizeButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" disabled>Finalize Agreement</button>
 			</div>
 		</div>

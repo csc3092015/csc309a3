@@ -1,4 +1,4 @@
-<script src="http://localhost:5000/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 
 <script>
 	// Requirements: userBO, userRole, mutualAgreementBO, postTitle from render
@@ -198,8 +198,13 @@
 				$("#consumerConsent").removeAttr("disabled");
 			}
 
+			if (location.hostname === "localhost") {
+				ioURL = location.protocol + "//" + location.hostname + ":5000" + "/serviceAgreement";
+			} else {
+				var ioURL = location.protocol + "//" + location.hostname + "/serviceAgreement";
+			}
 			// set up socket connection
-			var socket = io("http://localhost:5000/serviceAgreement");
+			var socket = io(ioURL);
 
 			// set up socket responses that handle all the 
 			// real-time button css and html changes in response
