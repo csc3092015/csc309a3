@@ -178,6 +178,13 @@ var convertFromCommentBOArraytoCommentDAOArray = function(commentBOArray){
 };
 
 
+var convertFromUnixTimestamptoDateObj = function(UnixTimestamp){
+	if (!UnixTimestamp) {
+		return null;
+	}
+	return new Date(UnixTimestamp * 1000);
+}
+
 /************************ Id *************************/
 module.exports.generateBOId = generateBOId;
 module.exports.convertFromDAOIdToBOId = convertFromDAOIdToBOId;
@@ -204,3 +211,5 @@ module.exports.convertFromCommentDAOtoCommentBO = convertFromCommentDAOtoComment
 module.exports.convertFromeCommentBOtoCommentDAO = convertFromeCommentBOtoCommentDAO;
 module.exports.convertFromCommentDAOArraytoCommentBOArray = convertFromCommentDAOArraytoCommentBOArray;
 module.exports.convertFromCommentBOArraytoCommentDAOArray = convertFromCommentBOArraytoCommentDAOArray;
+/************************ Unix Timestamp *************************/
+module.exports.convertFromUnixTimestamptoDateObj = convertFromUnixTimestamptoDateObj;

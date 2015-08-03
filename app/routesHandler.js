@@ -1,8 +1,10 @@
 var UserBO = require('./../control/businessObject/UserBO.js');
 var PostBO = require('./../control/businessObject/PostBO.js');
 var CommentBO = require('./../control/businessObject/CommentBO.js');
+var MutualAgreementBO = require('./../control/businessObject/MutualAgreementBO.js');
 var util = require('./../control/util.js');
 var PostEnum = require('./../control/Enum.js').PostEnum;
+var UserTypeEnum = require('./../control/Enum.js').UserTypeEnum;
 var GLOBAL_CONSTANTS = require('./../GLOBAL_CONSTANTS.js');
 var Converter = require('./../model/Converter.js');
 
@@ -183,6 +185,177 @@ var postCommentHandler = function(req, res){
 
 	}, commentPostId);
 };
+/**************************Post Page*************************************/
+
+var singlePostHandler = function(req, res, postId) {
+	PostBO.findPostById(postId, function(err, postBO) {
+		if (err) {
+			console.error(err);
+		} else {
+			res.render('postAfterSubmit.ejs', {
+				user : req.user,
+				postBO : postBO,
+				PostEnum : PostEnum
+			})
+		}
+	});
+}
+
+
+
+/**************************Mutual Agreement Handling*************************************/
+
+// depending on the user's identity, load the mutual agreement page or deny access.
+// in event of permitted access, set up socket.io for real-time agreement updates.
+var mutualAgreementInfoHandler = function(req, res, mutualAgreementId) {
+	MutualAgreementBO.findById(mutualAgreementId, function(err, mutualAgreementBO){
+
+		if (err) {
+			console.error(err);
+		}
+
+		if (mutualAgreementBO) {
+			var userId = req.user._userId;
+			var userRole = "noAccess";	
+			// user role is consumer, provider w.r.t. 
+			// mutual agreement, or neither but is 
+			// admin, or do not have permission to view
+			// agreement
+
+			// check accessing user's role
+			if (userId === mutualAgreementBO.getConsumerId()) {
+				userRole = "consumer";
+			} else if (userId === mutualAgreementBO.getProviderId()) {
+				userRole = "provider";
+			} else if (req.user._userIdType === UserTypeEnum["admin"]) {
+				userRole = "adminOnly";
+			}
+
+			// display insufficient permissions page if user has no permission
+			// to view the mutual agreement
+			if (userRole === "noAccess") {
+				// trigger a 403 forbidden error since user
+				// has no access to this mutual agreement
+				var err = new Error();
+				err.status = 403;
+				next(err);
+			} else {
+				PostBO.findPostById(mutualAgreementBO.getPostId(), function(err, postBO) {
+					if (err) {
+						console.error(err);
+					} else {
+						var postTitle = postBO.getTitle();
+
+						var providerId = mutualAgreementBO.getProviderId();
+						var consumerId = mutualAgreementBO.getConsumerId();
+
+						var postId = mutualAgreementBO.getPostId();
+
+						var finishAt = mutualAgreementBO.getFinishAt();
+						var finishDate = Converter.convertFromUnixTimestamptoDateObj(finishAt);
+						var finishMonth = finishDate.getMonth() + 1;
+
+						res.render('mutualAgreement.ejs', {
+							userRole : userRole,
+							user : req.user,
+							mutualAgreementBO : mutualAgreementBO,
+							providerId : providerId,
+							providerLink : "/users/" + providerId.replace("@", "%40"),
+							consumerId : consumerId,
+							consumerLink : "/users/" + consumerId.replace("@", "%40"),
+							postId : postId,
+							postTitle : postTitle,
+							postLink : "/posts/" + postId,
+							finishDay : finishDate.getDate(),
+							finishMonth : finishMonth,
+							finishYear : finishDate.getFullYear(),
+							description : mutualAgreementBO.getDescription(),
+							providerConsent : mutualAgreementBO.getProviderConsent(),
+							consumerConsent : mutualAgreementBO.getConsumerConsent(),
+							isFinalized : mutualAgreementBO.getIsFinalized(),
+							isLocked : mutualAgreementBO.getIsLocked(),
+							mutualAgreementId : mutualAgreementBO.getMutualAgreementId()
+						}); // end res.render
+
+					} // end else in callback function
+				}); // end PostBO.findPostById
+			}
+		} else {
+			res.render('404.ejs');
+		}
+	});
+}
+
+var mutualAgreementInfoUpdateHandler = function(req, res) {
+	var responseObj = req.body;
+	var mutualAgreementId = responseObj.mutualAgreementId;
+
+	for (var attribute in responseObj) {
+
+		if (attribute == "deleteAgreement") {
+			MutualAgreementBO.findByIdAndRemove(mutualAgreementId, function(err, mutualAgreementBO){
+				if (err) {
+					res.send({ "success" : false });
+				} else {
+					res.send({ "success" : true });
+					console.log("Mutual agreement with id " 
+						+ mutualAgreementBO.getMutualAgreementId() + " is deleted.");
+				}
+			});
+		}
+
+		if (attribute == "providerConsent") {
+			var updateDict = { providerConsent : responseObj[attribute] };
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+		}
+
+		if (attribute == "consumerConsent") {
+			var updateDict = { consumerConsent : responseObj[attribute] };
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+		}
+
+		if (attribute == "isFinalized") {
+			var updateDict = { isFinalized : responseObj[attribute] };
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+		}
+
+		if (attribute == "isLocked") {
+			// on entering edit mode, newLockStatus is true
+			// simply change the isLocked property to true
+			// otherwise, it is a submit request, so
+			// change mutual agreement according to the request
+			if (responseObj.isLocked === true) {
+				var updateDict = { isLocked : true };
+			} else {
+				if (responseObj.editted === true) {
+					var updateDict = { 
+						isLocked : false,
+						description : responseObj.newDescription,
+						finishAt : responseObj.finishAt,
+						consumerConsent : false,
+						providerConsent : false
+					};
+				} else {
+					var updateDict = { isLocked : false };
+				}
+			}
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+		}
+
+	} // end for attribute
+}
+
+function mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId) {
+	MutualAgreementBO.findByIdAndUpdate(mutualAgreementId, updateDict, function (err, newMutualAgreementBO) {
+		if (err) {
+			console.error("mutualAgreementInfoUpdateHandler error: " + err);
+			res.send({ "success" : false});
+		} else {
+			res.send({ "success" : true });
+		}
+	});
+}
+
 /**************************General Helper*************************************/
 
 
@@ -200,3 +373,9 @@ module.exports.postFormHandler = postFormHandler;
 
 /**************************Submit a New Comment*************************************/
 module.exports.postCommentHandler = postCommentHandler;
+/**************************Post Page*************************************/
+module.exports.singlePostHandler = singlePostHandler;
+
+/**************************Mutual Agreement Page*************************************/
+module.exports.mutualAgreementInfoHandler = mutualAgreementInfoHandler;
+module.exports.mutualAgreementInfoUpdateHandler = mutualAgreementInfoUpdateHandler;

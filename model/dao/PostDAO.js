@@ -76,6 +76,12 @@ postDAOSchema.statics.create = function(postId, title, keywordsArray, descriptio
 	});
 };
 
+postDAOSchema.statics.findPostById = function(postId, callback){
+	this.findById(postId, function (err, postDAO) {
+		callback(err, postDAO);
+	})
+}
+
 //The parameter keywordsArray is the input from the req, the criteriaDictionary.keywordsArray is the field name in Mongoose model
 postDAOSchema.statics.findPostsByKeywordsArrayAndOption = function(keywordsArray, optionalDictionary, callback){
 	var multiQueryExpressionArray = [];

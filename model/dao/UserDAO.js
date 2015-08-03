@@ -59,6 +59,4 @@ userDAOSchema.statics.create = function(userId, password, facebookId, name,
 //the line below has to be called after we define the methods
 var UserDAO = mongoose.model("UserDAO", userDAOSchema);
 
-// UserDAO.validate('jiecao.wang@gmail.com', '1234', function(err, v){console.log(v)});
-
 module.exports = UserDAO;

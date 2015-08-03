@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<% include ../partials/header.ejs %>
+<body>
+
+	<script src="http://localhost:5000/socket.io.js"></script>
+	<script> 
+	var socket = io("http://localhost:5000/serviceAgreement");
+	var myIdentity = <%- JSON.stringify(userRole); %>
+	var providerId = <%- JSON.stringify(providerId); %>
+	var consumerId = <%- JSON.stringify(consumerId); %>
+
+	var finishDate = <%- JSON.stringify(finishDay) %> + "/" + <%- JSON.stringify(finishMonth) %> + "/" + <%- JSON.stringify(finishYear) %> + " (date/month/year)";
+
+	var description = <%- JSON.stringify(description); %>
+	var providerConsent = <%- JSON.parse(providerConsent); %>
+	var consumerConsent = <%- JSON.parse(consumerConsent); %>
+	var isFinalized = <%- JSON.parse(isFinalized); %>
+	var isLocked = <%- JSON.parse(isLocked); %>
+
+	var mutualAgreementId = <%- JSON.stringify(mutualAgreementId); %>
+	var curURL = '/serviceAgreement/' + mutualAgreementId;
+	var data;	// holds the post data
+	</script>
+	<p> testing </p>
+	<h5><a id="provider"href=<%= providerLink %>><%= providerId %></a></h5>
+
+	<div class="col-sm-5">
+		<% var finishDate = finishDay + "/" + finishMonth + "/" + finishYear + " (dd/mm/yyyy)" %>
+	    <h5 id="finishDate"><%= finishDate %></h5>
+	</div>
+</body>
+</html>
