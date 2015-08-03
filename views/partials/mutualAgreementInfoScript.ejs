@@ -22,6 +22,9 @@
 	var postURL = '/serviceAgreementPost';
 	var data;	// holds the post data
 
+	var finishDateDOM = $(document.createElement('h5')).attr("id", "finishDate").html(finishDate);
+	var descriptionDOM = $(document.createElement('h5')).attr("id", "description").html(description);
+
 
 	function formatToTwoDigits(number) {
 		if (typeof number === "string") {
@@ -83,8 +86,9 @@
 			if (receivedData.id === mutualAgreementId) {
 				isLocked = false;
 				$('#editButton').attr('disabled', false);
-				description = receivedData.description;
-				if (receivedData.editted) {
+				description = receivedData.newDescription;
+
+				if (receivedData.editted === true) {
 					finishYear = receivedData.finishYear;
 					finishMonth = receivedData.finishMonth;
 					finishDay = receivedData.finishDay;
@@ -93,6 +97,8 @@
 					consumerConsent = false;
 					updateConsentButton($('#providerConsent'), false);
 					updateConsentButton($('#consumerConsent'), false);
+					finishDateDOM.html(finishDate);
+					descriptionDOM.html(description);
 				}
 				updateDisplayedInfo();
 			}
@@ -113,13 +119,13 @@
 	// change the buttonObj to the new consent status.
 	// parameter newConsent is a bool, where true indicates agree
 	function updateConsentButton(buttonObj, newConsent) {
-		if (newConsent) {
+		if (newConsent === true) {
 			buttonObj.html("Agree");
+			buttonObj.removeClass("btn-danger").addClass("btn-success");
 		} else {
 			buttonObj.html("Disagree");
+			buttonObj.removeClass("btn-success").addClass("btn-danger");
 		}
-		buttonObj.toggleClass("btn-success");
-		buttonObj.toggleClass("btn-danger");
 	}
 
 
@@ -156,14 +162,14 @@
 	function displayInfoMode() {
 		$('[name="infoButton"]').show();
 		$('[name="editButton"]').hide();
-		$('#finishDate').replaceWith('<h5 id="finishDate"></h5>').html(finishDate);
-		$('#description').replaceWith('<h5 id="description"></h5>').html(description);
+		$('#finishDate').replaceWith(finishDateDOM);
+		$('#description').replaceWith(descriptionDOM);
 	}
 
 
 	function updateDisplayedInfo() {
-		$('#finishDate').html(finishDate);
-		$('#description').html(description);
+		$('#finishDate').replaceWith(finishDateDOM);
+		$('#description').replaceWith(descriptionDOM);
 	}
 
 
@@ -288,13 +294,11 @@
 			});
 
 			// set up click-triggered AJAX for edit submit
-			$('#editSubmit').click(function() {
+			$('#editSubmit').click(function(evt) {
+				evt.stopImmediatePropagation();
 				var newDescription = $("textarea#description").val();
 				var newDate = $("input#finishDate").val();
 				var newUnix = new Date(newDate).getTime() / 1000;
-
-				console.log("testing: newDescription is " + newDescription);
-				console.log("testing: newUnix is " + newUnix);
 
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
@@ -309,7 +313,7 @@
 						socket.emit('exit edit mode', { 
 							id : mutualAgreementId,
 							editted : true,
-							description : newDescription,
+							newDescription : newDescription,
 							finishDay : newDate.substring(8, 10),
 							finishMonth : newDate.substring(5, 7),
 							finishYear : newDate.substring(0, 4)
