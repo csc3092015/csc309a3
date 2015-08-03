@@ -63,6 +63,18 @@ app.get('/user', function (request, response) {
 var nsp = io.of('/serviceAgreement');
 nsp.on('connection', function(socket){
   console.log('someone connected to /serviceAgreement')
+
+  setUpBroadcast(socket, 'service cancelled');
+  setUpBroadcast(socket, 'consumer consent change');
+  setUpBroadcast(socket, 'provider consent change');
+  setUpBroadcast(socket, 'finalize');
 });
+
+function setUpBroadcast(socket, eventName) {
+  socket.on(eventName, function(data) {
+    nsp.emit(eventName, data);
+    //socket.broadcast.emit(eventName, data);
+  });
+}
 
 module.exports.server = server;

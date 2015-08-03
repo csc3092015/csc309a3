@@ -247,50 +247,54 @@ var mutualAgreementInfoHandler = function(req, res, mutualAgreementId) {
 	});
 }
 
-var mutualAgreementInfoUpdateHandler = function(req, res, mutualAgreementId) {
+var mutualAgreementInfoUpdateHandler = function(req, res) {
 	var responseObj = req.body;
-	console.log("testing: responseObj from req.body is " + responseObj);
+	var mutualAgreementId = responseObj.mutualAgreementId;
 
-	if (responseObj.hasOwnProperty('deleteAgreement')) {
-		MutualAgreementBO.findByIdAndRemove(mutualAgreementId, function(err, mutualAgreementBO){
-			if (err) {
-				res.send({ "success" : false });
-			} else {
-				res.send({ "success" : true });
-				console.log("Mutual agreement with id " 
-					+ mutualAgreementBO.getMutualAgreementId() + " is deleted.");
-			}
-		});
-	}
+	for (var attribute in responseObj) {
 
-	if (responseObj.hasOwnProperty('providerConsent')) {
-		var updateDict = { providerConsent : responseObj.providerConsent };
-		mutualAgreementUpdateHelper(updateDict, mutualAgreementId);
-	}
-
-	if (responseObj.hasOwnProperty('consumerConsent')) {
-		var updateDict = { consumerConsent : responseObj.consumerConsent };
-		mutualAgreementUpdateHelper(updateDict, mutualAgreementId);
-	}
-
-	if (responseObj.hasOwnProperty('isFinalized')) {
-		var updateDict = { isFinalized : responseObj.isFinalized };
-		mutualAgreementUpdateHelper(updateDict, mutualAgreementId);
-	}
-
-	if (responseObj.hasOwnProperty('isLocked')) {
-		var newLockStatus = responseObj.isLocked;
-		// on entering edit mode, newLockStatus is true
-		// simply change the isLocked property to true
-		// otherwise, it is a submit request, so
-		// change mutual agreement according to the request
-		if (newLockStatus) {
-			var updateDict = { isLocked : true };
-			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
-		} else {
-			// TO-DO implement edit form submit request
+		if (attribute == "deleteAgreement") {
+			MutualAgreementBO.findByIdAndRemove(mutualAgreementId, function(err, mutualAgreementBO){
+				if (err) {
+					res.send({ "success" : false });
+				} else {
+					res.send({ "success" : true });
+					console.log("Mutual agreement with id " 
+						+ mutualAgreementBO.getMutualAgreementId() + " is deleted.");
+				}
+			});
 		}
-	}
+
+		if (attribute == "providerConsent") {
+			var updateDict = { providerConsent : responseObj[attribute] };
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+		}
+
+		if (attribute == "consumerConsent") {
+			var updateDict = { consumerConsent : responseObj[attribute] };
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+		}
+
+		if (attribute == "isFinalized") {
+			var updateDict = { isFinalized : responseObj[attribute] };
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+		}
+
+		if (attribute == "isLocked") {
+			var newLockStatus = responseObj.isLocked;
+			// on entering edit mode, newLockStatus is true
+			// simply change the isLocked property to true
+			// otherwise, it is a submit request, so
+			// change mutual agreement according to the request
+			if (newLockStatus) {
+				var updateDict = { isLocked : true };
+				mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+			} else {
+				// TO-DO implement edit form submit request
+			}
+		}
+
+	} // end for attribute
 }
 
 function mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId) {

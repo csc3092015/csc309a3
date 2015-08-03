@@ -54,6 +54,11 @@ module.exports = function (app, passport) {
 		});
 	});
 
+	// mutual agreement page
+	app.get("/serviceAgreement/:mutualAgreementId([0-9a-fA-F]{24}$)", redirectVisitor, function (req, res) {
+		routesHandler.mutualAgreementInfoHandler(req, res, req.params.mutualAgreementId);
+	});
+
 	app.get('/myCircle', redirectVisitor, function (req, res) {
 		res.render('circle.ejs', {
 			user : req.user
@@ -122,11 +127,8 @@ module.exports = function (app, passport) {
 	});
 
 	// handler for consent change or finalize post request on the service/mutual agreement page
-	app.post("/serviceAgreement/change", function(req, res){
-		console.log("testing: body.req from serviceAgreement/change is " + body.req);
-		//console.log("testing: mutualAgreementId from /change is " + mutualAgreementId);
-		//routesHandler.mutualAgreementInfoUpdateHandler(req, res, mutualAgreementId);
-		res.send({ "success" : false });
+	app.post("/serviceAgreementPost", function(req, res){
+		routesHandler.mutualAgreementInfoUpdateHandler(req, res);
 	});
 
 	app.use(function(req, res, next) {

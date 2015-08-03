@@ -20,7 +20,7 @@
 
 		var mutualAgreementId = <%- JSON.stringify(mutualAgreementId); %>
 		var editURL = '/serviceAgreement/' + mutualAgreementId + "/edit";
-		var postURL = '/serviceAgreement/change';
+		var postURL = '/serviceAgreementPost';
 		var data;	// holds the post data
 
 		function setUpSocketResponses(socket) {
@@ -33,18 +33,20 @@
 			});
 
 			socket.on('provider consent change', function (receivedData) {
+				console.log("SOCKET SAYS: providerConsent change");
 				if (receivedData.id === mutualAgreementId) {
 					console.log("providerConsent is now " + providerConsent);
 					providerConsent = receivedData.newProviderConsent;
-					$('#providerConsent').attr('checked', providerConsent);
+					toggleConsentButton($('#providerConsent'), providerConsent);
 				}
 			});
 
 			socket.on('consumer consent change', function (receivedData) {
+				console.log("SOCKET SAYS: consumerConsent change");
 				if (receivedData.id === mutualAgreementId) {
 					console.log("consumerConsent is now " + consumerConsent);
 					consumerConsent = receivedData.newConsumerConsent;
-					$('#consumerConsent').attr('checked', consumerConsent);
+					toggleConsentButton($('#consumerConsent'), consumerConsent);
 				}
 			});
 
@@ -152,7 +154,10 @@
 				$('#cancelServiceButton').click(function(event) {
 					// prevent redirect
 					event.preventDefault();
-					data = { "deleteAgreement" : true };
+					data = { 
+						"mutualAgreementId" : mutualAgreementId,
+						"deleteAgreement" : true 
+					};
 					$.post(postURL, data, function(returnedData){
 						if (returnedData.success) {
 							console.log("service successfully deleted");
@@ -166,7 +171,10 @@
 					// prevent redirect
 					//event.preventDefault();
 					providerConsent = !providerConsent;
-					data = { "providerConsent" : providerConsent };
+					data = { 
+						"mutualAgreementId" : mutualAgreementId,
+						"providerConsent" : providerConsent 
+					};
 					$.post(postURL, data, function(returnedData){
 						if (returnedData.success) {
 							console.log("provider consent successfully changed");
@@ -183,24 +191,29 @@
 					// prevent redirect
 					//event.preventDefault();
 					consumerConsent = !consumerConsent;
-					data = { "consumerConsent" : consumerConsent };
-					console.log("testing: consumerConsent's postURL is " + postURL);
+					console.log("testing: consumerConsent is " + consumerConsent);
+					data = { 
+						"mutualAgreementId" : mutualAgreementId,
+						"consumerConsent" : consumerConsent 
+					};
 					$.post(postURL, data, function(returnedData){
-						console.log("testing: returnedData is " + returnedData);
-						/*
+						console.log("testing: returnedData.success is " + returnedData.success);
 						if (returnedData.success) {
 							console.log("consumer consent successfully changed");
 							socket.emit('consumer consent change', { 
 								id : mutualAgreementId,
 								newConsumerConsent: consumerConsent 
 							});
-						}*/
+						}
 					});
 				});
 
 				// set up click-triggered AJAX for edit request
 				$('#editButton').click(function(event) {
-					data = { "isLocked" : true };
+					data = { 
+						"mutualAgreementId" : mutualAgreementId,
+						"isLocked" : true 
+					};
 					$.get(editURL, data, function(returnedData){
 						if (returnedData.success) {
 							socket.emit('enter edit mode', {
@@ -215,7 +228,10 @@
 					// prevent redirect
 					//event.preventDefault();
 					isFinalized = true;
-					data = { "isFinalized" : true };
+					data = { 
+						"mutualAgreementId" : mutualAgreementId,
+						"isFinalized" : true 
+					};
 					$.post(postURL, data, function(returnedData){
 						if (returnedData.success) {
 							console.log("mutual agreement successfully finalized");
