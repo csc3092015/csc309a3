@@ -63,6 +63,7 @@ var renderHomePage = function(req, res){
 						return;
 					}
 					var postBOByProviderArray = postBOArray;
+					console.log(postBOByProviderArray[0].getCommentIdArray());
 					res.render('home.ejs', {
 						user : req.user,
 						postBOByConsumerArray: postBOByConsumerArray, 
