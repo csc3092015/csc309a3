@@ -168,16 +168,16 @@ var postFormHandler = function(req, res){
 
 // depending on the user's identity, load the mutual agreement page or deny access.
 // in event of permitted access, set up socket.io for real-time agreement updates.
-var mutualAgreementInfoHandler = function(req, res) {
-	var mutualAgreementId = req.params.mutualAgreementId;
+var mutualAgreementInfoHandler = function(req, res, mutualAgreementId) {
 	MutualAgreementBO.findById(mutualAgreementId, function(err, mutualAgreementBO){
+
 		if (err) {
 			console.error(err);
 		}
 
 		if (mutualAgreementBO) {
 			var userId = req.user._userId;
-			var userRole = UserRoleEnum["noAccess"];	
+			var userRole = "noAccess";	
 			// user role is consumer, provider w.r.t. 
 			// mutual agreement, or neither but is 
 			// admin, or do not have permission to view
@@ -185,11 +185,11 @@ var mutualAgreementInfoHandler = function(req, res) {
 
 			// check accessing user's role
 			if (userId === mutualAgreementBO.getConsumerId()) {
-				userRole = UserRoleEnum["consumer"];
+				userRole = "consumer";
 			} else if (userId === mutualAgreementBO.getProviderId()) {
-				userRole = UserRoleEnum["provider"];
+				userRole = "provider";
 			} else if (req.user._userIdType === UserTypeEnum["admin"]) {
-				userRole = UserRoleEnum["adminOnly"];
+				userRole = "adminOnly";
 			}
 
 			// display insufficient permissions page if user has no permission
@@ -201,45 +201,107 @@ var mutualAgreementInfoHandler = function(req, res) {
 				err.status = 403;
 				next(err);
 			} else {
+				PostBO.findPostById(mutualAgreementBO.getPostId(), function(err, postBO) {
+					if (err) {
+						console.error(err);
+					} else {
+						var postTitle = postBO.getTitle();
 
-				var postTitle = PostBO.findPostById(mutualAgreementBO.getPostId(),
-					function(err, postBO) {
-						if (err) {
-							console.error(err);
-						} else {
-							return postBO.getTitle();
-						}
-					});
+						var providerId = mutualAgreementBO.getProviderId();
+						var consumerId = mutualAgreementBO.getConsumerId();
 
-				// set up a new mutual agreement namespace for clients to connect
-				var agreementNsp = io.of('/mutualAgreement/' + mutualAgreementId);
+						var postId = mutualAgreementBO.getPostId();
 
-				// set up socket event handlers
-				agreementNsp.on('connection', function(socket) {
-					console.log(req.user._userId + ' connected to socket ' 
-						+ 'for agreement ID ' + mutualAgreementId);
-				});
+						var finishAt = mutualAgreementBO.getFinishAt();
+						var finishDate = Converter.convertFromUnixTimestamptoDateObj(finishAt);
+						var finishMonth = finishDate.getMonth() + 1;
 
-				res.render('mutualAgreement.ejs', {
-					userRole : userRole,
-					userBO : req.user,
-					mutualAgreementBO : mutualAgreementBO,
-					postTitle : postTitle
-				});
+						res.render('mutualAgreement.ejs', {
+							userRole : userRole,
+							user : req.user,
+							mutualAgreementBO : mutualAgreementBO,
+							providerId : providerId,
+							providerLink : "/users/" + providerId.replace("@", "%40"),
+							consumerId : consumerId,
+							consumerLink : "/users/" + consumerId.replace("@", "%40"),
+							postId : postId,
+							postTitle : postTitle,
+							postLink : "/post/" + postId,
+							finishDay : finishDate.getDate(),
+							finishMonth : finishMonth,
+							finishYear : finishDate.getFullYear(),
+							description : mutualAgreementBO.getDescription(),
+							providerConsent : mutualAgreementBO.getProviderConsent(),
+							consumerConsent : mutualAgreementBO.getConsumerConsent(),
+							isFinalized : mutualAgreementBO.getIsFinalized(),
+							isLocked : mutualAgreementBO.getIsLocked(),
+							mutualAgreementId : mutualAgreementBO.getMutualAgreementId()
+						}); // end res.render
 
+					} // end else in callback function
+				}); // end PostBO.findPostById
 			}
 		} else {
-			// trigger a 404 error since mutual agreement
-			// does not exist
-			var err = new Error();
-			err.status = 404;
-			next(err);
+			res.render('404.ejs');
 		}
 	});
 }
 
-var mutualAgreementInfoUpdateHandler = function(req, res) {
+var mutualAgreementInfoUpdateHandler = function(req, res, mutualAgreementId) {
+	var responseObj = req.body;
+	console.log("testing: responseObj from req.body is " + responseObj);
 
+	if (responseObj.hasOwnProperty('deleteAgreement')) {
+		MutualAgreementBO.findByIdAndRemove(mutualAgreementId, function(err, mutualAgreementBO){
+			if (err) {
+				res.send({ "success" : false });
+			} else {
+				res.send({ "success" : true });
+				console.log("Mutual agreement with id " 
+					+ mutualAgreementBO.getMutualAgreementId() + " is deleted.");
+			}
+		});
+	}
+
+	if (responseObj.hasOwnProperty('providerConsent')) {
+		var updateDict = { providerConsent : responseObj.providerConsent };
+		mutualAgreementUpdateHelper(updateDict, mutualAgreementId);
+	}
+
+	if (responseObj.hasOwnProperty('consumerConsent')) {
+		var updateDict = { consumerConsent : responseObj.consumerConsent };
+		mutualAgreementUpdateHelper(updateDict, mutualAgreementId);
+	}
+
+	if (responseObj.hasOwnProperty('isFinalized')) {
+		var updateDict = { isFinalized : responseObj.isFinalized };
+		mutualAgreementUpdateHelper(updateDict, mutualAgreementId);
+	}
+
+	if (responseObj.hasOwnProperty('isLocked')) {
+		var newLockStatus = responseObj.isLocked;
+		// on entering edit mode, newLockStatus is true
+		// simply change the isLocked property to true
+		// otherwise, it is a submit request, so
+		// change mutual agreement according to the request
+		if (newLockStatus) {
+			var updateDict = { isLocked : true };
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
+		} else {
+			// TO-DO implement edit form submit request
+		}
+	}
+}
+
+function mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId) {
+	MutualAgreementBO.findByIdAndUpdate(mutualAgreementId, updateDict, function (err, newMutualAgreementBO) {
+		if (err) {
+			console.error("mutualAgreementInfoUpdateHandler error: " + err);
+			res.send({ "success" : false});
+		} else {
+			res.send({ "success" : true });
+		}
+	});
 }
 
 /**************************General Helper*************************************/

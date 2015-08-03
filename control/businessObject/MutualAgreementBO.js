@@ -30,7 +30,7 @@ MutualAgreementBO.findById = function(mutualAgreementId, callback){
 // updateDictionary looks like {description: "new description", isLocked : true, postId: ObjectId(this.getPostId())}
 // because really these fields are referring to the fields in the DAO
 MutualAgreementBO.findByIdAndUpdate = function(mutualAgreementId, updateDictionary, callback){
-	MutualAgreementDAO.findByIdfindByIdAndUpdate(Converter.convertFromBOIdToDaoId(mutualAgreementId), updateDictionary, function(err, MutualAgreementDAO){
+	MutualAgreementDAO.findByIdAndUpdate(Converter.convertFromBOIdToDaoId(mutualAgreementId), updateDictionary, function(err, MutualAgreementDAO){
 		var mutualAgreementBO = Converter.convertFromMutualAgreementDAOtoMutualAgreementBO(MutualAgreementDAO);
 		callback(err, mutualAgreementBO);
 	});
@@ -38,7 +38,7 @@ MutualAgreementBO.findByIdAndUpdate = function(mutualAgreementId, updateDictiona
 
 //Im not sure about this anonymous call back function, I do not know if it will return the removed object
 MutualAgreementBO.findByIdAndRemove = function(mutualAgreementId,callback){
-	MutualAgreementDAO.findByIdfindByIdAndRemove(Converter.convertFromBOIdToDaoId(mutualAgreementId), function(err, MutualAgreementDAO){
+	MutualAgreementDAO.findByIdAndRemove(Converter.convertFromBOIdToDaoId(mutualAgreementId), function(err, MutualAgreementDAO){
 		var mutualAgreementBO = Converter.convertFromMutualAgreementDAOtoMutualAgreementBO(MutualAgreementDAO);
 		callback(err, mutualAgreementBO);
 	});

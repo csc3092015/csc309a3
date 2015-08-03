@@ -48,6 +48,11 @@ module.exports = function (app, passport) {
 		});
 	});
 
+	// mutual agreement page
+	app.get("/serviceAgreement/:mutualAgreementId([0-9a-fA-F]{24}$)", redirectVisitor, function (req, res) {
+		routesHandler.mutualAgreementInfoHandler(req, res, req.params.mutualAgreementId);
+	});
+
 	// check is user is logged in
 	function loginStatus (req) {
 		return req.isAuthenticated();
@@ -109,17 +114,25 @@ module.exports = function (app, passport) {
 		routesHandler.establishMutualAgreement(req, res);
 	});
 
-	app.get("/serviceAgreement/:mutualAgreementId(^[0-9a-fA-F]{24}$)", redirectVisitor, function(req, res){
-		routesHandler.mutualAgreementInfoHandler(req, res);
+	// handler for consent change or finalize post request on the service/mutual agreement page
+	app.post("/serviceAgreement/change", function(req, res){
+		console.log("testing: body.req from serviceAgreement/change is " + body.req);
+		//console.log("testing: mutualAgreementId from /change is " + mutualAgreementId);
+		//routesHandler.mutualAgreementInfoUpdateHandler(req, res, mutualAgreementId);
+		res.send({ "success" : false });
 	});
 
-	app.post("/serviceAgreement/:mutualAgreementId(^[0-9a-fA-F]{24}$/change)", redirectVisitor, function(req, res){
-		routesHandler.mutualAgreementInfoUpdateHandler(req, res);
-	});
+	app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow-Headers", "Content-Type");
+        res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+        next();
+    });
 
-	
 
 	// Error handler
+
 	app.get('*', function (req, res, next) {
 		var err = new Error();
 		err.status = 404;

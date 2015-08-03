@@ -1,35 +1,33 @@
-<%
-	// Refresh mechanism
-%>
-
-<form class="form-horizontal" role="form" action="/post" method="post">
+<form class="form-horizontal">
+	<div class="row">
 	<fieldset>
 
 		<!-- Form info -->
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="provider">Provider:</label>
 			<div class="col-sm-5">
-	        	<h5 id="provider"><%= link_to(providerId, providerLink) %></h5>
+	        	<h5><a id="provider" href=<%= providerLink %>><%= providerId %></a></h5>
 	      	</div>
       	</div>
 
       	<div class="form-group">
 			<label class="control-label col-sm-2" for="consumer">Consumer:</label>
 			<div class="col-sm-5">
-	        	<h5 id="consumer"><%= link_to(consumerId, consumerLink) %></h5>
+	        	<h5><a id="consumer" href=<%= consumerLink %>><%= consumerId %></a></h5>
 	      	</div>
       	</div>
 
       	<div class="form-group">
 			<label class="control-label col-sm-2" for="postLink">Post:</label>
 			<div class="col-sm-5">
-	        	<h5 id="postLink"><%= link_to(postTitle, postLink) %></h5>
+	        	<h5><a id="postLink" href=<%= postLink %>><%= postTitle %></a></h5>
 	      	</div>
       	</div>
 
       	<div class="form-group">
 			<label class="control-label col-sm-2" for="finishDate">Service Finish Date:</label>
 			<div class="col-sm-5">
+				<% var finishDate = finishDay + "/" + finishMonth + "/" + finishYear + " (dd/mm/yyyy)"%>
 	        	<h5 id="finishDate"><%= finishDate %></h5>
 	      	</div>
       	</div>
@@ -43,23 +41,25 @@
 
 		<!-- Form actions -->
 		<div class="form-group">
-			<label class="checkbox-inline">
-				Consumer:<input id="consumerConsent" name="agreementButton" value="consumerConsent" type="checkbox" data-toggle="toggle" data-on="Agree" data-off="Disagree" data-onstyle="success" data-offstyle="danger" disabled>
-			</label>
-			<label class="checkbox-inline">
-				Provider:<input id="providerConsent" name="agreementButton" value="providerConsent" type="checkbox" data-toggle="toggle" data-on="Agree" data-off="Disagree" data-onstyle="success" data-offstyle="danger" disabled>
-			</label>
+			<label class="control-label col-sm-2" for="providerConsent">Provider Consent:</label>
+			<button id="providerConsent" name="agreementButton" type="button" class="btn btn-danger" disabled>Disagree</button>
 		</div>
 
 		<div class="form-group">
-			<div class="col-xs-12 text-center">
-				<button id="editButton" name="agreementButton" href=<%= URL + "/edit" %> type="button" class="btn btn-primary btn-lg" value="editRequest" disabled>Edit</button>
+			<label class="control-label col-sm-2" for="consumerConsent">Consumer Consent:</label>
+			<button id="consumerConsent" name="agreementButton" type="button" class="btn btn-danger" disabled>Disagree</button>
+		</div>
+
+		<div class="form-group">
+			<div class="col-xs-4 text-center">
+				<button id="editButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" disabled>Edit Agreement</button>
 			</div>
 
-			<div class="col-xs-12 text-center">
-				<button id="finalizeButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" value="finalizeRequest" disabled>Finalize</button>
+			<div class="col-xs-4 text-center">
+				<button id="finalizeButton" name="agreementButton" type="button" class="btn btn-primary btn-lg" disabled>Finalize Agreement</button>
 			</div>
 		</div>
 
 	</fieldset>
+	</div>	
 </form>

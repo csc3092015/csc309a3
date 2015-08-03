@@ -117,6 +117,13 @@ var convertFromMutualAgreementBOtoMutualAgreementDAO = function(mutualAgreementB
 	return mutualAgreementDAO;
 }
 
+var convertFromUnixTimestamptoDateObj = function(UnixTimestamp){
+	if (!UnixTimestamp) {
+		return null;
+	}
+	return new Date(UnixTimestamp * 1000);
+}
+
 /************************ Id *************************/
 module.exports.convertFromDAOIdToBOId = convertFromDAOIdToBOId;
 module.exports.convertFromDAOIdArrayToBOIdArray = convertFromDAOIdArrayToBOIdArray;
@@ -134,3 +141,5 @@ module.exports.convertFromPostDAOArraytoPostBOArray = convertFromPostDAOArraytoP
 /************************ MutualAgreement *************************/
 module.exports.convertFromMutualAgreementDAOtoMutualAgreementBO = convertFromMutualAgreementDAOtoMutualAgreementBO;
 module.exports.convertFromMutualAgreementBOtoMutualAgreementDAO = convertFromMutualAgreementBOtoMutualAgreementDAO;
+/************************ Unix Timestamp *************************/
+module.exports.convertFromUnixTimestamptoDateObj = convertFromUnixTimestamptoDateObj;
