@@ -117,7 +117,7 @@ module.exports = function (app, passport) {
 	});
 
 	// submitting a comment 
-	app.post('/postComment', function(req, res, next){
+	app.post('/postComment', function(req, res){
 		routesHandler.postCommentHandler(req, res);	
 		// if(req.xhr){// this is an AJAX request
 			
