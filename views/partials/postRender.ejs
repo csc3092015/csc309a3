@@ -87,7 +87,7 @@
 		
 			<%if (postBO.getCommentIdArray()){%>
 				<% postBO.getCommentIdArray().forEach(function(commentBO) { %>
-					<% include ../partials/commentRender.ejs %>
+					<% include ../pages/commentRender.ejs %>
 				<% }); %>
 			<%}%>
 

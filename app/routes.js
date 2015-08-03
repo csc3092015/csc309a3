@@ -54,6 +54,15 @@ module.exports = function (app, passport) {
 		});
 	});
 
+	app.get('/posts/:postId([0-9a-fA-F]{24}$)', redirectVisitor, function (req, res) {
+		routesHandler.singlePostHandler(req, res, req.params.postId);
+	});
+
+	// mutual agreement page
+	app.get("/serviceAgreements/:mutualAgreementId([0-9a-fA-F]{24}$)", redirectVisitor, function (req, res) {
+		routesHandler.mutualAgreementInfoHandler(req, res, req.params.mutualAgreementId);
+	});
+
 	app.get('/myCircle', redirectVisitor, function (req, res) {
 		res.render('circle.ejs', {
 			user : req.user
@@ -105,8 +114,6 @@ module.exports = function (app, passport) {
             								failureFlash: true })
     );
 
-
-
     // submitting a post
     app.post('/post', redirectVisitor, function(req, res){
     	routesHandler.postFormHandler(req, res);
@@ -117,17 +124,55 @@ module.exports = function (app, passport) {
 	});
 
 	// submitting a comment 
-	app.post('/postComment', redirectVisitor, function(req, res, next){
-		routesHandler.postCommentHandler(req, res);	
-		// if(req.xhr){// this is an AJAX request
-			
-		// } else {
-		// 	next();
-		// }
+	app.post('/postComment', redirectVisitor, function(req, res, next){		
+		if(req.xhr){// this is an AJAX request
+			routesHandler.postCommentHandler(req, res);		
+		} else {
+			next();
+		}
 	});
 
 	app.post('/changeUser', redirectVisitor, function(req, res){
 		routesHandler.changeUser(req, res);
 	});
 
+	// click interested, create mutual agreement
+	app.post('/interested', function(req, res){
+		routesHandler.establishMutualAgreement(req, res);
+	});
+
+	// handler for consent change or finalize post request on the service/mutual agreement page
+	app.post("/serviceAgreementPost", function(req, res){
+		routesHandler.mutualAgreementInfoUpdateHandler(req, res);
+	});
+
+	app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow-Headers", "Content-Type");
+        res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+        next();
+    });
+
+
+	// Error handler
+	
+	app.get('*', function (req, res, next) {
+		var err = new Error();
+		err.status = 404;
+		next(err);
+	});
+	
+	app.use(function(err, req, res, next){
+	  if (err.status == 404) {
+	  	res.render('404.ejs', { error: err });
+	  } 
+	  else if (err.status == 403) {
+	  	res.render('403.ejs', { error: err });
+	  } 
+	  else {
+	  	res.status(err.status || 500);
+	  	res.render('500.ejs', { error: err });
+	  }
+	});
 }

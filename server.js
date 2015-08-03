@@ -1,7 +1,9 @@
 // set up
 var express = require('express');
 var path = require('path');
-var app = express(); 
+var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
@@ -11,6 +13,7 @@ var session = require('express-session');
 var flash = require('connect-flash');
 var database = require('./model/database.js');
 var connected = false;
+var fs = require('fs');
 
 // get configurations
 require('./config/passport')(passport);
@@ -45,6 +48,10 @@ app.use(flash());
 app.set('views',  __dirname + '/views/pages');
 app.set('view engine', 'ejs');
 
+server.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
+
 // import routes
 require('./app/routes.js')(app, passport);
 
@@ -53,6 +60,22 @@ app.get('/user', function (request, response) {
   response.send('user_collection');
 });
 
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+var nsp = io.of('/serviceAgreement');
+nsp.on('connection', function(socket){
+  console.log('someone connected to /serviceAgreement')
+
+  setUpBroadcast(socket, 'service cancelled');
+  setUpBroadcast(socket, 'consumer consent change');
+  setUpBroadcast(socket, 'provider consent change');
+  setUpBroadcast(socket, 'finalize');
+  setUpBroadcast(socket, 'enter edit mode');
+  setUpBroadcast(socket, 'exit edit mode');
 });
+
+function setUpBroadcast(socket, eventName) {
+  socket.on(eventName, function(data) {
+    nsp.emit(eventName, data);
+  });
+}
+
+module.exports.server = server;

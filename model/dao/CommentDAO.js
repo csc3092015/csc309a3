@@ -23,7 +23,7 @@ var commentDAOSchema = new mongoose.Schema({
 		type: Number, 
 		required: true
 	},
-}, {collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.POST, _id: false});
+}, {collection: GLOBAL_CONSTANTS.MODEL.TABLE_NAME.COMMENT, _id: false});
 
 /************************ Static Methods *************************/
 /*
