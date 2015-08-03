@@ -2,11 +2,15 @@
 
 <script>
 	// Requirements: userBO, userRole, mutualAgreementBO, postTitle from render
+	// set up variables
 	var userRole = <%- JSON.stringify(userRole); %>
 	var providerId = <%- JSON.stringify(providerId); %>
 	var consumerId = <%- JSON.stringify(consumerId); %>
 
-	var finishDate = <%- JSON.stringify(finishDay) %> + "/" + <%- JSON.stringify(finishMonth) %> + "/" + <%- JSON.stringify(finishYear) %> + " (date/month/year)";
+	var finishDay = <%- JSON.stringify(finishDay); %>
+	var finishMonth = <%- JSON.stringify(finishMonth); %>
+	var finishYear = <%- JSON.stringify(finishYear); %>
+	var finishDate = formatToTwoDigits(finishDay) + "/" + formatToTwoDigits(finishMonth) + "/" + finishYear + " (date/month/year)";
 
 	var description = <%- JSON.stringify(description); %>
 	var providerConsent = <%- JSON.parse(providerConsent); %>
@@ -18,6 +22,22 @@
 	var editURL = '/serviceAgreement/' + mutualAgreementId + "/edit";
 	var postURL = '/serviceAgreementPost';
 	var data;	// holds the post data
+
+
+	function formatToTwoDigits(number) {
+		if (typeof number === "string") {
+			return number.length < 2 ? "0" + number : number;
+		}
+		return number < 10 ? "0" + number : number;
+	}
+
+
+	// using the current values of finishDay, finishMonth,
+	// and finishYear, update finishDate
+	function updateFinishDate() {
+		finishDate = formatToTwoDigits(finishDay) + "/" + formatToTwoDigits(finishMonth) + "/" + finishYear + " (date/month/year)";
+	}
+
 
 	function setUpSocketResponses(socket) {
 
@@ -31,7 +51,7 @@
 		socket.on('provider consent change', function (receivedData) {
 			if (receivedData.id === mutualAgreementId) {
 				providerConsent = receivedData.newProviderConsent;
-				toggleConsentButton($('#providerConsent'), providerConsent);
+				updateConsentButton($('#providerConsent'), providerConsent);
 				updateFinalizeButton();
 			}
 		});
@@ -39,7 +59,7 @@
 		socket.on('consumer consent change', function (receivedData) {
 			if (receivedData.id === mutualAgreementId) {
 				consumerConsent = receivedData.newConsumerConsent;
-				toggleConsentButton($('#consumerConsent'), consumerConsent);
+				updateConsentButton($('#consumerConsent'), consumerConsent);
 				updateFinalizeButton();
 			}
 		});
@@ -64,6 +84,18 @@
 			if (receivedData.id === mutualAgreementId) {
 				isLocked = false;
 				$('#editButton').attr('disabled', false);
+				description = receivedData.description;
+				if (receivedData.editted) {
+					finishYear = receivedData.finishYear;
+					finishMonth = receivedData.finishMonth;
+					finishDay = receivedData.finishDay;
+					updateFinishDate();
+					providerConsent = false;
+					consumerConsent = false;
+					updateConsentButton($('#providerConsent'), false);
+					updateConsentButton($('#consumerConsent'), false);
+				}
+				updateDisplayedInfo();
 			}
 		});
 	}
@@ -78,9 +110,10 @@
 		}
 	}
 
-	// toggle the buttonObj between agree or disagree.
+
+	// change the buttonObj to the new consent status.
 	// parameter newConsent is a bool, where true indicates agree
-	function toggleConsentButton(buttonObj, newConsent) {
+	function updateConsentButton(buttonObj, newConsent) {
 		if (newConsent) {
 			buttonObj.html("Agree");
 		} else {
@@ -89,6 +122,7 @@
 		buttonObj.toggleClass("btn-success");
 		buttonObj.toggleClass("btn-danger");
 	}
+
 
 	// change the class of a jQuery object to the new class
 	function changeClass(jQueryObj, newClass) {
@@ -106,22 +140,52 @@
 		changeClass($('#finalizeButton').text("Finalized"), "btn btn-success btn-lg");
 	}
 
+
+	function displayEditMode() {
+		$('[name="infoButton"]').hide();
+		$('[name="editButton"]').show();
+		var curFinishDate = finishYear + "-" + formatToTwoDigits(finishMonth) + "-" + formatToTwoDigits(finishDay);
+		$('#finishDate').replaceWith("<input type='date' id='finishDate'>");
+		$('input#finishDate').val(curFinishDate);
+		$('#description').replaceWith("<textarea class='form-control' id='description' placeholder='Please enter the specifics of this service.' rows='5'></textarea>");
+		$('textarea#description').html(description);
+	}
+
+
+	// display the info mode where consent buttons, edit request button,
+	// and finalize button are displayed.
+	function displayInfoMode() {
+		$('[name="infoButton"]').show();
+		$('[name="editButton"]').hide();
+		$('#finishDate').replaceWith('<h5 id="finishDate"></h5>').html(finishDate);
+		$('#description').replaceWith('<h5 id="description"></h5>').html(description);
+	}
+
+
+	function updateDisplayedInfo() {
+		$('#finishDate').html(finishDate);
+		$('#description').html(description);
+	}
+
+
 	$(document).ready(function(){
 		// since buttons and toggles are disabled by default,
 		// check if they should be enabled based on the 
 		// mutual agreement attributes, and set up
 		// onclick events if the agreement is not finalized
 		if (!isFinalized) {
+			// hide the submit and cancel buttons for edit
+			$('[name="editButton"]').hide();
 
 			// set up buttons according to mutual agreement status
 			if (!isLocked) {
 				$("#editButton").prop("disabled", false);
 			}
 			if (providerConsent) {
-				toggleConsentButton($("#providerConsent"), providerConsent);
+				updateConsentButton($("#providerConsent"), providerConsent);
 			}
 			if (consumerConsent) {
-				toggleConsentButton($("#consumerConsent"), consumerConsent);
+				updateConsentButton($("#consumerConsent"), consumerConsent);
 			}
 			if (providerConsent && consumerConsent) {
 				$('#finalizeButton').prop("disabled", false);
@@ -144,8 +208,6 @@
 
 			// set up click-triggered AJAX for service cancelling
 			$('#cancelServiceButton').click(function(event) {
-				// prevent redirect
-				event.preventDefault();
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
 					"deleteAgreement" : true 
@@ -159,18 +221,15 @@
 
 			// set up click-triggered AJAX for provider consent toggle
 			$('#providerConsent').click(function(event) {
-				// prevent redirect
-				//event.preventDefault();
-				providerConsent = !providerConsent;
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
-					"providerConsent" : providerConsent 
+					"providerConsent" : !providerConsent 
 				};
 				$.post(postURL, data, function(returnedData){
 					if (returnedData.success) {
 						socket.emit('provider consent change', { 
 							id : mutualAgreementId,
-							newProviderConsent: providerConsent 
+							newProviderConsent: !providerConsent 
 						});
 					}
 				}, "json");
@@ -178,18 +237,15 @@
 
 			// set up click-triggered AJAX for consumer consent toggle
 			$('#consumerConsent').click(function(event) {
-				// prevent redirect
-				//event.preventDefault();
-				consumerConsent = !consumerConsent;
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
-					"consumerConsent" : consumerConsent 
+					"consumerConsent" : !consumerConsent 
 				};
 				$.post(postURL, data, function(returnedData){
 					if (returnedData.success) {
 						socket.emit('consumer consent change', { 
 							id : mutualAgreementId,
-							newConsumerConsent: consumerConsent 
+							newConsumerConsent: !consumerConsent 
 						});
 					}
 				});
@@ -201,20 +257,18 @@
 					"mutualAgreementId" : mutualAgreementId,
 					"isLocked" : true 
 				};
-				$.get(editURL, data, function(returnedData){
+				$.post(postURL, data, function(returnedData){
 					if (returnedData.success) {
 						socket.emit('enter edit mode', {
 							id : mutualAgreementId
 						});
+						displayEditMode();
 					}
 				}, "json");
 			});
 
 			// set up click-triggered AJAX for provider consent toggle
 			$('#finalizeButton').click(function(event) {
-				// prevent redirect
-				//event.preventDefault();
-				isFinalized = true;
 				data = { 
 					"mutualAgreementId" : mutualAgreementId,
 					"isFinalized" : true 
@@ -228,8 +282,63 @@
 					}
 				}, "json");
 			});
+
+			// set up click-triggered AJAX for edit submit
+			$('#editSubmit').click(function(event) {
+				var newDescription = $("textarea#description").val();
+				var newDate = $("input#finishDate").val();
+				var newUnix = new Date(newDate).getTime() / 1000;
+
+				console.log("testing: newDescription is " + newDescription);
+				console.log("testing: newUnix is " + newUnix);
+
+				data = { 
+					"mutualAgreementId" : mutualAgreementId,
+					"isLocked" : false,
+					"editted" : true,
+					"finishAt" : newUnix,
+					"newDescription" : newDescription
+				};
+
+				$.post(postURL, data, function(returnedData){
+					if (returnedData.success) {
+						socket.emit('exit edit mode', { 
+							id : mutualAgreementId,
+							editted : true,
+							description : newDescription,
+							finishDay : newDate.substring(8, 10),
+							finishMonth : newDate.substring(5, 7),
+							finishYear : newDate.substring(0, 4)
+						});
+						displayInfoMode();
+					}
+				}, "json");
+			});
+
+			// set up click-triggered AJAX for edit cancelling
+			$('#editCancel').click(function(event) {
+
+				data = { 
+					"mutualAgreementId" : mutualAgreementId,
+					"isLocked" : false,
+					"editted" : false
+				};
+
+				$.post(postURL, data, function(returnedData){
+					if (returnedData.success) {
+						socket.emit('exit edit mode', { 
+							id : mutualAgreementId,
+							editted : false
+						});
+					}
+					displayInfoMode();
+				}, "json");
+			});
+
 		} else {
 			finalizeButtons();
 		}
 	});
+
+
 </script>

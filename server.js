@@ -68,12 +68,13 @@ nsp.on('connection', function(socket){
   setUpBroadcast(socket, 'consumer consent change');
   setUpBroadcast(socket, 'provider consent change');
   setUpBroadcast(socket, 'finalize');
+  setUpBroadcast(socket, 'enter edit mode');
+  setUpBroadcast(socket, 'exit edit mode');
 });
 
 function setUpBroadcast(socket, eventName) {
   socket.on(eventName, function(data) {
     nsp.emit(eventName, data);
-    //socket.broadcast.emit(eventName, data);
   });
 }
 

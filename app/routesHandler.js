@@ -281,17 +281,30 @@ var mutualAgreementInfoUpdateHandler = function(req, res) {
 		}
 
 		if (attribute == "isLocked") {
-			var newLockStatus = responseObj.isLocked;
 			// on entering edit mode, newLockStatus is true
 			// simply change the isLocked property to true
 			// otherwise, it is a submit request, so
 			// change mutual agreement according to the request
-			if (newLockStatus) {
+			if (responseObj.isLocked === true) {
+				console.log("locked true");
 				var updateDict = { isLocked : true };
-				mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
 			} else {
-				// TO-DO implement edit form submit request
+				console.log("locked false");
+				if (responseObj.editted) {
+					console.log("detected that agreement was editted");
+					var updateDict = { 
+						isLocked : false,
+						description : responseObj.newDescription,
+						finishAt : responseObj.finishAt,
+						consumerConsent : false,
+						providerConsent : false
+					};
+				} else {
+					console.log("wasn't editted");
+					var updateDict = { isLocked : false };
+				}
 			}
+			mutualAgreementUpdateHelper(res, updateDict, mutualAgreementId);
 		}
 
 	} // end for attribute
