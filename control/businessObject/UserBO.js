@@ -99,9 +99,10 @@ UserBO.validateFbId = function (facebookId, email, name, callback) {
 // callback is optional here
 UserBO.findByIdAndUpdate = function(userId, updateDictionary, callback){
 	UserDAO.findByIdAndUpdate(userId, updateDictionary, function(err, userDAO){
-		var userBO = Converter.convertFromUserDAOtoUserBO(userDAO);
+		validUserBO = new UserBO(userDAO._id, userDAO._password, userDAO._facebookId,
+     		userDAO._name, userDAO._userIdType, userDAO._rating);
 		if(callback){
-			callback(err, userBO);	
+			callback(err, validUserBO);	
 		}
 	});
 };

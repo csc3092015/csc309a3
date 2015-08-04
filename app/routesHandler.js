@@ -193,6 +193,9 @@ var changeUser = function(req, res){
 	var userId = req.user._userId;
 	var newPassword = req.body.password;
 	UserBO.findByIdAndUpdate(userId, {$set: {getPassword: newPassword}});
+	res.render('profilePage.ejs', {
+		user : req.user,
+	});
 }
 
 /**************************Post Page*************************************/
