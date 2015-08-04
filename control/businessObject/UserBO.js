@@ -4,9 +4,7 @@ var PostBO = require('./PostBO.js');
 
 /*******************************Dummy Constructor**************************************/ 
 
-function UserBO (userId, password, facebookId, name, userIdType, rating/*,
-	circleIdArray, mutualAgreementIdArrayAreOngoing, reviewIdArrayAreOngoing,
-	postIdArrayNotExpired, postIdArrayExpired*/) {
+function UserBO (userId, password, facebookId, name, userIdType, rating) {
 	this._userId = userId;
 	this._password = password;
 	this._facebookId = facebookId;
@@ -45,7 +43,7 @@ UserBO.validateId = function (userId, callback) {
 			callback(err, valid);
 		}
 	});
-}
+};
 
 // validate user login by checking userId and password combination
 // callback(err, validUserBO);
@@ -73,7 +71,7 @@ UserBO.validateIdPw = function (userId, password, callback) {
 			callback(err, validUserBO);
 		}
 	});
-}
+};
 
 // validate the user based on their facebook id and associated email
 // callback(err, validUserBO);
@@ -94,12 +92,12 @@ UserBO.validateFbId = function (facebookId, email, name, callback) {
 		callback(err, validUserBO);
 		
 	});
-}
+};
 
 // callback is optional here
 UserBO.findByIdAndUpdate = function(userId, updateDictionary, callback){
 	UserDAO.findByIdAndUpdate(userId, updateDictionary, function(err, userDAO){
-		var userBO = Converter.convertFromUserDAOtoUserBO(userDAO);
+		var userBO = new UserBO(userDAO._id, userDAO.password, userDAO.facebookId, userDAO.name, userDAO.userIdType, userDAO.rating);
 		if(callback){
 			callback(err, userBO);	
 		}
@@ -127,7 +125,7 @@ UserBO.findAllPostBOsByUserId = function(userId, callback){
 			var postBOArray = Converter.convertFromPostDAOArraytoPostBOArray(userDAO.postIdArray);
 			callback(err, postBOArray);
 		});
-}
+};
 
 /*******************************Instance Method**************************************/
 
@@ -138,7 +136,7 @@ UserBO.prototype.save = function (callback) {
 	newUserDAO.save(function (err){
 		callback(err);
 	});
-}
+};
 
 /*******************************Dummy Getters**************************************/
 
@@ -184,9 +182,8 @@ UserBO.prototype.getPostIdArray = function(){
 
 // set the UserBO object's facebook id to facebookid
 UserBO.prototype.setFbId = function (facebookId) {
-	// UserBO._facebookId = facebookId; (why u r making a static variable?)
 	this._facebookId = facebookId;
-}
+};
 
 UserBO.prototype.pushPostId = function(newPostId){
 	if(this._postIdArray){
@@ -194,10 +191,10 @@ UserBO.prototype.pushPostId = function(newPostId){
 	} else {
 		this._postIdArray = [newPostId];
 	}
-}
+};
 
 UserBO.prototype.setPostIdArray = function(newPostIdArray){
 	this._postIdArray = newPostIdArray.slice();
-}
+};
 
 module.exports = UserBO;

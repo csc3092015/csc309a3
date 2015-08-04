@@ -115,18 +115,16 @@ module.exports = function (app, passport) {
     );
 
     // submitting a post
-    app.post('/post', function(req, res){
+    app.post('/post', redirectVisitor, function(req, res){
     	routesHandler.postFormHandler(req, res);
 	});
 
-
-    // doing a search
-	app.post('/search', function(req, res){
+	app.post('/search', redirectVisitor, function(req, res){
 		routesHandler.keywordsSearchHandler(req, res);
 	});
 
 	// submitting a comment 
-	app.post('/postComment', function(req, res, next){		
+	app.post('/postComment', redirectVisitor, function(req, res, next){		
 		if(req.xhr){// this is an AJAX request
 			routesHandler.postCommentHandler(req, res);		
 		} else {
@@ -134,6 +132,9 @@ module.exports = function (app, passport) {
 		}
 	});
 
+	app.post('/changeUser', redirectVisitor, function(req, res){
+		routesHandler.changeUser(req, res);
+	});
 
 	// click interested, create mutual agreement
 	app.post('/interested/:postId([0-9a-fA-F]{24}$)', function(req, res){
