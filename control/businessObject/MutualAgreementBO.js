@@ -20,12 +20,21 @@ function MutualAgreementBO (mutualAgreementId, providerId, consumerId, descripti
 }
 
 /*******************************Static Method**************************************/
+
 MutualAgreementBO.findById = function(mutualAgreementId, callback){
 	MutualAgreementDAO.findById(Converter.convertFromBOIdToDaoId(mutualAgreementId), function(err, MutualAgreementDAO){
 		var mutualAgreementBO = Converter.convertFromMutualAgreementDAOtoMutualAgreementBO(MutualAgreementDAO);
 		callback(err, mutualAgreementBO);
 	});
 };
+
+MutualAgreementBO.findByPostId = function(postId, callback){
+	var dict = { 'postId' : Converter.convertFromBOIdToDaoId(postId) };
+	MutualAgreementDAO.findOne(dict, function(err, MutualAgreementDAO){
+		var mutualAgreementBO = Converter.convertFromMutualAgreementDAOtoMutualAgreementBO(MutualAgreementDAO);
+		callback(err, mutualAgreementBO);
+	});
+}
 
 // updateDictionary looks like {description: "new description", isLocked : true, postId: ObjectId(this.getPostId())}
 // because really these fields are referring to the fields in the DAO
@@ -47,9 +56,8 @@ MutualAgreementBO.findByIdAndRemove = function(mutualAgreementId,callback){
 /*******************************Instance Method**************************************/
 MutualAgreementBO.prototype.save = function(callback){
 	var mutualAgreementDAO = Converter.convertFromMutualAgreementBOtoMutualAgreementDAO(this);
-	mutualAgreementDAO.save(function(err, mutualAgreementDAO){
-		var mutualAgreementBO = Converter.convertFromMutualAgreementDAOtoMutualAgreementBO(MutualAgreementDAO);
-		callback(err, mutualAgreementBO);
+	mutualAgreementDAO.save(function(err){
+		callback(err);
 	});
 }
 

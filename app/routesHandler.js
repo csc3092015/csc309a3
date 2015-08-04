@@ -228,6 +228,57 @@ var singlePostHandler = function(req, res, postId) {
 
 /**************************Mutual Agreement Handling*************************************/
 
+// establish mutual agreement if the specified agreement does not exist already
+// redirect user to that mutual agreement after
+var establishMutualAgreement = function(req, res) {
+	var postId = req.params.postId;
+	MutualAgreementBO.findByPostId(postId, function(err, mutualAgreementBO) {
+		if (err) {
+			console.error(err);
+			next();
+		}
+		if (!mutualAgreementBO) {
+
+			PostBO.findPostById(postId, function (err, postBO) {
+
+				if (err) {
+					console.error(err);
+					next();
+				}
+
+				if (postBO.getByWho() === PostEnum['byConsumer']) {
+					var consumerId = postBO.getAuthorId();
+					var providerId = req.user._userId;
+				} else {
+					var providerId = postBO.getAuthorId();
+					var consumerId = req.user._userId;
+				}
+
+				var mutualAgreementId = Converter.generateBOId();
+				var d = new Date();
+				d.setDate(d.getDate() + 30);
+				var finishAt = Math.round(d.getTime()/1000);
+
+				var mutualAgreementBO = new MutualAgreementBO(mutualAgreementId,
+					providerId, consumerId, "Feel free to edit agreement to specify your service requirements!", postBO.getPostId(), false, false,
+					false, false, finishAt);
+
+				mutualAgreementBO.save(function(err){
+					if (err) {
+						console.error(err);
+						next();
+					}
+
+					res.redirect("/serviceAgreements/" + mutualAgreementId);
+				})
+			})
+
+		} else {
+			res.redirect("/serviceAgreements/" + mutualAgreementBO.getMutualAgreementId());
+		}
+	})
+}
+
 // depending on the user's identity, load the mutual agreement page or deny access.
 // in event of permitted access, set up socket.io for real-time agreement updates.
 var mutualAgreementInfoHandler = function(req, res, mutualAgreementId) {
@@ -406,6 +457,9 @@ module.exports.postFormHandler = postFormHandler;
 module.exports.postCommentHandler = postCommentHandler;
 /**************************Post Page*************************************/
 module.exports.singlePostHandler = singlePostHandler;
+
+/**************************Interested*************************************/
+module.exports.establishMutualAgreement = establishMutualAgreement;
 
 /**************************Mutual Agreement Page*************************************/
 module.exports.mutualAgreementInfoHandler = mutualAgreementInfoHandler;
