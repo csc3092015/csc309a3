@@ -193,6 +193,7 @@ var changeUser = function(req, res){
 	var userId = req.user._userId;
 	var newPassword = req.body.password;
 	UserBO.findByIdAndUpdate(userId, {$set: {getPassword: newPassword}});
+}
 
 /**************************Post Page*************************************/
 
@@ -208,6 +209,7 @@ var singlePostHandler = function(req, res, postId) {
 			})
 		}
 	});
+}
 
 /**************************Mutual Agreement Handling*************************************/
 
