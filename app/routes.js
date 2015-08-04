@@ -133,10 +133,10 @@ module.exports = function (app, passport) {
 			next();
 		}
 	});
+
+
 	// click interested, create mutual agreement
-
-
-	app.post('/interested', function(req, res){
+	app.post('/interested/:postId([0-9a-fA-F]{24}$)', function(req, res){
 		routesHandler.establishMutualAgreement(req, res);
 	});
 
