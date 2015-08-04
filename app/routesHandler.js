@@ -179,8 +179,8 @@ var postCommentHandler = function(req, res){
 					commentBO : commentBO
 				});
 			} else{
-				console.log('Somehow no erro but didn\'t submit the Comment!');
-				res.send('Somehow no erro but didn\'t submit the Comment!');
+				console.log('Sending data to server ok, but cant save on mongo lab!');
+				res.send('Sending data to server ok, but cant save on mongo lab!');
 			}
 		}
 
@@ -192,10 +192,22 @@ var changeUser = function(req, res){
 	//res.send("changing user...");
 	var userId = req.user._userId;
 	var newPassword = req.body.password;
-	UserBO.findByIdAndUpdate(userId, {$set: {getPassword: newPassword}});
-	res.render('profilePage.ejs', {
-		user : req.user,
+	UserBO.findByIdAndUpdate(userId, {$set: {password: newPassword}}, function(err, userBO){
+		if(err){
+			console.error(err);
+			res.send(err);
+		} else {
+			if(userBO){
+				res.render('profilePage.ejs', {
+					user : userBO,
+				});
+			} else {
+				console.log('Sending data to server ok, but cant save on mongo lab!');
+				res.send('Sending data to server ok, but cant save on mongo lab!');
+			}
+		}
 	});
+
 }
 
 /**************************Post Page*************************************/

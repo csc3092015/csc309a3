@@ -38,7 +38,7 @@ userDAOSchema.statics.create = function(userId, password, facebookId, name,
 		facebookId : facebookId,
 		name : name,
 		userIdType : userIdType,
-		rating : rating, // -1 rating before rated!
+		rating : rating // -1 rating before rated!
 		/*
 		circleIdArray : circleIdArray,
 		mutualAgreementIdArrayAreOngoing : mutualAgreementIdArrayAreOngoing,

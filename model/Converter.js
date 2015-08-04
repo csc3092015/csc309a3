@@ -55,21 +55,16 @@ var convertFromUserBOtoUserDAO = function(userBO){
 	return userDAO;
 };
 
+//Somehow this function doesnt work we don't know how to fix this
 var convertFromUserDAOtoUserBO = function(userDAO){
 	if(userDAO === null){
 		return null;
 	}
 	else if(userDAO === undefined){
-		console.log("UserDAO is undefined");
+		console.log("userDAO is undefined");
 		return;
 	}
-	var userBO = new UserBO(userDAO._id, userDAO._password, 
-		userDAO._facebookId, userDAO._name, userDAO._userIdType,
-		userDAO._rating
-		/*, userDAO._circleIdArray, 
-		userDAO._mutualAgreementIdArrayAreOngoing,
-		userDAO._reviewIdArrayAreOngoing, userDAO._postIdArrayNotExpired,
-		userDAO._postIdArrayExpired*/);
+	var userBO = new UserBO(userDAO._id, userDAO.password, userDAO.facebookId, userDAO.name, userDAO.userIdType, userDAO.rating);
 	if(userDAO.postIdArray && userDAO.postIdArray.length > 0){
 		userBO.setPostIdArray(convertFromDAOIdArrayToBOIdArray(userDAO.postIdArray));	
 	}
@@ -198,7 +193,7 @@ module.exports.convertFromBOIdArrayToDaoIdArray = convertFromBOIdArrayToDaoIdArr
 
 /************************ User *************************/
 module.exports.convertFromUserBOtoUserDAO = convertFromUserBOtoUserDAO;
-module.exports.convertFromUserDAOtoUserBO = convertFromUserDAOtoUserBO;
+module.exports.convertFromUserDAOtoUserBO = convertFromUserDAOtoUserBO; //Somehow this function doesnt work we don't know how to fix this
 
 /************************ Post *************************/
 module.exports.convertFromPostBOtoPostDAO = convertFromPostBOtoPostDAO;
